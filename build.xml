@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--+
+    |==========================================================================
+    | Copyright 2007 Ketan Padegaonkar http://ketan.padegaonkar.name
+    |
+    | Licensed under the Apache License, Version 2.0 (the "License");
+    | you may not use this file except in compliance with the License.
+    | You may obtain a copy of the License at
+    |
+    |     http://www.apache.org/licenses/LICENSE-2.0
+    |
+    | Unless required by applicable law or agreed to in writing, software
+    | distributed under the License is distributed on an "AS IS" BASIS,
+    | WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    | See the License for the specific language governing permissions and
+    | limitations under the License.
+    |==========================================================================
+    |-->
+<project basedir="." default="all" name="JCCTray">
+	<property name="target.jar" value="${ant.project.name}.jar" />
+	<property file="build.properties" />
+	<path id="cctray.classpath">
+		<fileset dir="${lib.dir}" />
+	</path>
+
+	<path id="test.libs">
+		<path refid="cctray.classpath" />
+	</path>
+
+
+	<path id="compile.classpath">
+		<pathelement location="${build.classes.dir}" />
+		<path refid="cctray.classpath" />
+	</path>
+
+	<path id="test.classpath">
+		<path refid="compile.classpath" />
+		<pathelement location="${build.test.dir}" />
+	</path>
+
+	<target name="init">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.classes.dir}" />
+		<copy includeemptydirs="false" todir="${build.classes.dir}">
+			<fileset dir="${src.dir}" excludes="**/*.java" />
+		</copy>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target depends="init" name="build-src">
+		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" classpathref="compile.classpath" debug="${debug.enabled}" debuglevel="${debug.level}" source="${source.version}" target="${target.version}" verbose="${javac.verbose}">
+			<include name="**/*.java" />
+		</javac>
+	</target>
+
+	<target depends="build-src" name="build-tests">
+		<mkdir dir="${build.test.dir}" />
+		<javac srcdir="${test.dir}" destdir="${build.test.dir}" classpathref="test.classpath" debug="${debug.enabled}" debuglevel="${debug.level}" source="${source.version}" target="${target.version}" verbose="${javac.verbose}">
+			<include name="**/*.java" />
+		</javac>
+	</target>
+
+	<target name="jar" depends="build-src">
+		<copy todir="${build.classes.dir}">
+			<fileset dir="src" excludes="**/*.java" />
+		</copy>
+		<jar destfile="${build.dir}/${target.jar}" basedir="${build.classes.dir}" />
+	</target>
+
+	<target name="test">
+		<mkdir dir="${junit.reports.xml.dir}" />
+		<junit fork="true" forkmode="once" printsummary="yes" haltonfailure="no" haltonerror="no" failureproperty="junit.failure" errorproperty="junit.failure">
+
+			<sysproperty key="net.sourceforge.cobertura.datafile" file="${basedir}/${cobertura.datafile}" />
+
+			<classpath location="${build.instrumented.classes.dir}" />
+			<classpath refid="test.classpath" />
+
+			<formatter type="xml" />
+
+			<batchtest fork="yes" todir="${junit.reports.xml.dir}">
+				<fileset dir="${test.dir}">
+					<include name="**/*Test.java" />
+					<exclude name="**/AllTests.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+
+		<mkdir dir="${junit.reports.html.dir}" />
+		<junitreport todir="${junit.reports.xml.dir}">
+			<fileset dir="${junit.reports.xml.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.reports.html.dir}" />
+		</junitreport>
+		<echo>Test reports available at: ${basedir}/${junit.reports.html.dir}/index.html</echo>
+		<fail message="Tests failed: check test reports." if="junit.failure" />
+	</target>
+
+	<target name="javadoc">
+		<!--
+                <javadoc access="package"
+                         author="true"
+                         classpathref="compile.classpath"
+                         destdir="${build.docs.dir}"
+                         nodeprecated="false"
+                         nodeprecatedlist="false"
+                         noindex="false"
+                         nonavbar="false"
+                         notree="false"
+                         source="${source.version}"
+                         splitindex="true"
+                         use="true"
+                         version="true">
+                        <fileset dir="${src.dir}" includes="**/*.java" />
+                </javadoc>-->
+	</target>
+
+
+
+	<target name="build-all" depends="init, build-src, build-tests" />
+
+	<target name="all" depends="clean, init, build-all, jar, javadoc, test " />
+
+</project>

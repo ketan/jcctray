@@ -1,0 +1,4 @@
+ - Add settings dialogs to manage hosts and projects.
+ - Persist hoststrings and corresponding hostnames that CCTray subscribes to.
+ - Persist projects on each host that CCTray subscribes to.
+ - A unified list of projects that CCTray subscribes to.
