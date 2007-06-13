@@ -85,7 +85,7 @@ uninst:
   ;ExecWait '$R0 _?=$INSTDIR' ;Do not copy the uninstaller to a temp file
  
   IfErrors no_remove_uninstaller
-    Delete /REBOOTOK "$INSTDIR\Uninstall.exe"
+    Delete "$INSTDIR\Uninstall.exe"
   no_remove_uninstaller:
 done:
 
@@ -129,17 +129,17 @@ SectionEnd
 Section "Uninstall"
 
   ;ADD YOUR OWN FILES HERE...
-  Delete "$INSTDIR\Uninstall.exe"
-  Delete "$INSTDIR\jcctray.cmd"
-  Delete "$INSTDIR\LICENSE.txt"
-  RMDir /r "$INSTDIR\lib"
-  RMDir "$INSTDIR"
+  Delete /REBOOTOK "$INSTDIR\Uninstall.exe"
+  Delete /REBOOTOK "$INSTDIR\jcctray.cmd"
+  Delete /REBOOTOK "$INSTDIR\LICENSE.txt"
+  RMDir /REBOOTOK /r "$INSTDIR\lib"
+  RMDir /REBOOTOK "$INSTDIR"
   
   !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
   
   ;Delete start menu parent diretories
-  Delete "$SMPROGRAMS\$MUI_TEMP\Uninstall.lnk"
-  Delete "$SMPROGRAMS\$MUI_TEMP\JCCTray.lnk"
+  Delete /REBOOTOK "$SMPROGRAMS\$MUI_TEMP\Uninstall.lnk"
+  Delete /REBOOTOK "$SMPROGRAMS\$MUI_TEMP\JCCTray.lnk"
   
   ;Delete empty start menu parent diretories
   StrCpy $MUI_TEMP "$SMPROGRAMS\$MUI_TEMP"
