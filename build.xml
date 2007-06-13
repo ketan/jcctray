@@ -144,6 +144,10 @@
 			<fileset dir="." includes="jcctray" />
 			<fileset dir="." includes="LICENSE.txt" />
 		</copy>
+		
+		<tar destfile="${build.dist.installer.dir}/JCCTray.tar.gz" compression="gzip">
+			<tarfileset dir="${build.dist.linux.dir}" preserveLeadingSlashes="false" />
+		</tar>
 	</target>
 
 	<target name="build-all" depends="init, build-src, build-tests" />
