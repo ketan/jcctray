@@ -101,7 +101,6 @@
 	</target>
 
 	<target name="javadoc">
-		<!--
                 <javadoc access="package"
                          author="true"
                          classpathref="compile.classpath"
@@ -116,13 +115,38 @@
                          use="true"
                          version="true">
                         <fileset dir="${src.dir}" includes="**/*.java" />
-                </javadoc>-->
+                </javadoc>
 	</target>
 
 
+	<target name="dist">
+		<mkdir dir="${build.dist.dir}" />
+		<mkdir dir="${build.dist.win32.dir}" />
+		<mkdir dir="${build.dist.linux.dir}" />
+		<mkdir dir="${build.dist.installer.dir}" />
+		
+		<copy todir="${build.dist.win32.dir}/lib">
+			<fileset dir="lib" excludes="**/*gtk*.jar" />
+			<fileset dir="build" includes="${target.jar}" />
+		</copy>
+		
+		<copy todir="${build.dist.win32.dir}">
+			<fileset dir="." includes="jcctray.cmd" />
+			<fileset dir="." includes="LICENSE.txt" />
+		</copy>
+		
+		<copy todir="${build.dist.linux.dir}/lib">
+			<fileset dir="lib" excludes="**/*win32*.jar" />
+			<fileset dir="build" includes="${target.jar}" />
+		</copy>
+
+		<copy todir="${build.dist.linux.dir}">
+			<fileset dir="." includes="jcctray" />
+			<fileset dir="." includes="LICENSE.txt" />
+		</copy>
+	</target>
 
 	<target name="build-all" depends="init, build-src, build-tests" />
 
-	<target name="all" depends="clean, init, build-all, jar, javadoc, test " />
-
+	<target name="all" depends="clean, init, build-all, jar, javadoc, test, dist" />
 </project>
