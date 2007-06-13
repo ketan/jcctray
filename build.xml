@@ -147,7 +147,8 @@
 		</copy>
 		
 		<tar destfile="${build.dist.installer.dir}/jcctray-${version}.tar.gz" compression="gzip">
-			<tarfileset dir="${build.dist.linux.dir}" prefix="jcctray-${version}" preserveLeadingSlashes="false" />
+			<tarfileset dir="${build.dist.linux.dir}" prefix="jcctray-${version}" preserveLeadingSlashes="false" excludes="jcctray" />
+			<tarfileset dir="${build.dist.linux.dir}" prefix="jcctray-${version}" preserveLeadingSlashes="false" mode="755" includes="jcctray" />
 		</tar>
 	</target>
 
