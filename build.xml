@@ -16,8 +16,9 @@
     | limitations under the License.
     |==========================================================================
     |-->
-<project basedir="." default="all" name="JCCTray">
+<project basedir="." default="all" name="JCCTray">	
 	<property name="target.jar" value="${ant.project.name}.jar" />
+	<property name="version" value="0.1b" />
 	<property file="build.properties" />
 	<path id="cctray.classpath">
 		<fileset dir="${lib.dir}" />
@@ -145,8 +146,8 @@
 			<fileset dir="." includes="LICENSE.txt" />
 		</copy>
 		
-		<tar destfile="${build.dist.installer.dir}/JCCTray.tar.gz" compression="gzip">
-			<tarfileset dir="${build.dist.linux.dir}" preserveLeadingSlashes="false" />
+		<tar destfile="${build.dist.installer.dir}/jcctray-${version}.tar.gz" compression="gzip">
+			<tarfileset dir="${build.dist.linux.dir}" prefix="jcctray-${version}" preserveLeadingSlashes="false" />
 		</tar>
 	</target>
 

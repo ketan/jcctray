@@ -9,7 +9,7 @@
 ;General
   ;Name and file
   Name "JCCTray"
-  OutFile "build\dist\installers\Setup.exe"
+  OutFile "build\dist\installers\JCCTray-Setup-0.1b.exe"
   ;Default installation folder
   InstallDir "$PROGRAMFILES\JCCTray"
   
