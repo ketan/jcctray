@@ -18,6 +18,7 @@ package net.sourceforge.jcctray.ui;
 import net.sourceforge.jcctray.model.DashBoardProject;
 import net.sourceforge.jcctray.ui.settings.SettingsDialog;
 
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -38,6 +39,8 @@ import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
 public class JCCTray {
+
+	private static final Logger	log	= Logger.getLogger(JCCTray.class);
 
 	private final class SettingsMenuListener implements SelectionListener {
 		public void widgetDefaultSelected(SelectionEvent e) {
@@ -250,8 +253,7 @@ public class JCCTray {
 			runnable.shouldRun = false;
 			thread.join();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Interrupted when waiting on thread.", e);
 		}
 
 	}

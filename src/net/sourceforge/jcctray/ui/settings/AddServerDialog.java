@@ -15,6 +15,13 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.ui.settings;
 
+import net.sourceforge.jcctray.model.DashBoardProject;
+import net.sourceforge.jcctray.model.DashboardXmlParser;
+import net.sourceforge.jcctray.model.Host;
+import net.sourceforge.jcctray.model.JCCTraySettings;
+import net.sourceforge.jcctray.ui.Utils;
+
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -24,20 +31,15 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import net.sourceforge.jcctray.model.JCCTraySettings;
-import net.sourceforge.jcctray.model.DashBoardProject;
-import net.sourceforge.jcctray.model.DashboardXmlParser;
-import net.sourceforge.jcctray.model.Host;
-import net.sourceforge.jcctray.ui.Utils;
-
 public class AddServerDialog {
 
-	private final Shell	parentShell;
-	private Shell		shell;
-	private Button		okButton;
-	private Button		cancelButton;
-	private Text		hostStringText;
-	private Text		serverURLString;
+	private static final Logger	log	= Logger.getLogger(AddServerDialog.class);
+	private final Shell			parentShell;
+	private Shell				shell;
+	private Button				okButton;
+	private Button				cancelButton;
+	private Text				hostStringText;
+	private Text				serverURLString;
 
 	public AddServerDialog(Shell shell) {
 		this.parentShell = shell;
@@ -78,7 +80,7 @@ public class AddServerDialog {
 						host.addProject(dashBoardProject);
 					}
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					log.error("Exception getting project list from host: " + host, ex);
 				}
 				Utils.saveSettings(shell);
 				shell.close();

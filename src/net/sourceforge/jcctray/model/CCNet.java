@@ -20,11 +20,14 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.log4j.Logger;
 
 /**
  * @author Ketan Padegaonkar
  */
 public class CCNet implements ICruise {
+
+	private static final Logger	log	= Logger.getLogger(CCNet.class);
 
 	private static HttpClient	client;
 
@@ -36,10 +39,10 @@ public class CCNet implements ICruise {
 		try {
 			statusCode = getClient().executeMethod(method);
 			if (statusCode != HttpStatus.SC_OK) {
-				System.err.println("Method failed: " + method.getStatusLine());
+				log.error("Method failed: " + method.getStatusLine());
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Could not force build on project" + project, e);
 		}
 	}
 

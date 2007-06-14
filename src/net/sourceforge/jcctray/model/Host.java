@@ -18,11 +18,14 @@ package net.sourceforge.jcctray.model;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.apache.log4j.Logger;
+
 public class Host {
-	public String	hostName;
-	public String	hostString;
-	private HashMap	projects;
-	private ICruise	cruise;
+	private static final Logger	log	= Logger.getLogger(Host.class);
+	public String				hostName;
+	public String				hostString;
+	private HashMap				projects;
+	private ICruise				cruise;
 
 	public Host() {
 		this("", "");
@@ -115,7 +118,7 @@ public class Host {
 			Class cruiseClazz = Class.forName(cruiseClassName);
 			setCruise((ICruise) cruiseClazz.newInstance());
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Could not instantiate class: " + cruiseClassName, e);
 		}
 	}
 

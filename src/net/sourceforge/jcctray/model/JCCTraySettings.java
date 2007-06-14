@@ -16,6 +16,7 @@
 package net.sourceforge.jcctray.model;
 
 import java.beans.IntrospectionException;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -146,11 +147,12 @@ public class JCCTraySettings implements ISettingsConstants {
 				JCCTraySettings.instance = new JCCTraySettings();
 				try {
 					JCCTraySettings.instance.load("jcctray.xml");
-				} catch (IOException e) {
-					log.error("Exception reading jcctray.xml", e);
-					e.printStackTrace();
+				} catch (FileNotFoundException e) {
+					// we don't care if the settings do not exist
 				} catch (SAXException e) {
 					log.error("Exception parsing jcctray.xml", e);
+				} catch (IOException e) {
+					log.error("Exception reading jcctray.xml", e);
 				}
 			}
 			return JCCTraySettings.instance;

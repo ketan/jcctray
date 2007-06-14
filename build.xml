@@ -16,22 +16,24 @@
     | limitations under the License.
     |==========================================================================
     |-->
-<project basedir="." default="all" name="JCCTray">	
+<project basedir="." default="all" name="JCCTray">
 	<property name="target.jar" value="${ant.project.name}.jar" />
 	<property name="version" value="0.1b" />
 	<property file="build.properties" />
-	<path id="cctray.classpath">
-		<fileset dir="${lib.dir}" />
-	</path>
 
-	<path id="test.libs">
-		<path refid="cctray.classpath" />
-	</path>
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 
+	<fileset id="swt.gtk.linux.x86.classpath" dir="${lib.dir}" includes="**/*swt.gtk.linux.x86_3*.jar" />
+	<fileset id="swt.gtk.linux.x86_64.classpath" dir="${lib.dir}" includes="**/*swt.gtk.linux.x86_64*.jar" />
+	<fileset id="swt.win32.classpath" dir="${lib.dir}" includes="**/*swt.win32.win32*.jar" />
+	<fileset id="swt.wpf.classpath" dir="${lib.dir}" includes="**/*swt.wpf.win32*.jar" />
+
+	<fileset id="cctray.classpath" dir="${lib.dir}" excludes="**/*swt*.jar" />
 
 	<path id="compile.classpath">
 		<pathelement location="${build.classes.dir}" />
-		<path refid="cctray.classpath" />
+		<fileset refid="cctray.classpath" />
+		<fileset refid="swt.gtk.linux.x86_64.classpath" />
 	</path>
 
 	<path id="test.classpath">
@@ -102,57 +104,136 @@
 	</target>
 
 	<target name="javadoc">
-                <javadoc access="package"
-                         author="true"
-                         classpathref="compile.classpath"
-                         destdir="${build.docs.dir}"
-                         nodeprecated="false"
-                         nodeprecatedlist="false"
-                         noindex="false"
-                         nonavbar="false"
-                         notree="false"
-                         source="${source.version}"
-                         splitindex="true"
-                         use="true"
-                         version="true">
-                        <fileset dir="${src.dir}" includes="**/*.java" />
-                </javadoc>
+		<javadoc access="package" author="true" classpathref="compile.classpath" destdir="${build.docs.dir}" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="${source.version}" splitindex="true" use="true" version="true">
+			<fileset dir="${src.dir}" includes="**/*.java" />
+		</javadoc>
+	</target>
+
+	<target name="create.cp.unix">
+		<property name="target.os" value="unix" />
+		<echo>Creating classpath and script for os=${target.os} and dist.dir=${dist.dir}</echo>
+
+		<pathconvert targetos="${target.os}" property="cp">
+			<path>
+				<fileset dir="${dist.dir}/lib" />
+			</path>
+		</pathconvert>
+
+		<pathconvert targetos="${target.os}" property="basedir.dist">
+			<path>
+				<dirset dir="${dist.dir}/lib" />
+			</path>
+		</pathconvert>
+
+		<propertyregex property="cp" override="true" input="${cp}" regexp="${basedir.dist}" replace="lib" casesensitive="false" />
+
+		<echo file="${dist.dir}/jcctray">
+				java -cp ${cp} net.sourceforge.jcctray.ui.JCCTrayMain
+		</echo>
 	</target>
 
 
-	<target name="dist">
-		<mkdir dir="${build.dist.dir}" />
-		<mkdir dir="${build.dist.win32.dir}" />
-		<mkdir dir="${build.dist.linux.dir}" />
-		<mkdir dir="${build.dist.installer.dir}" />
+	<target name="create.cp.win">
+		<property name="target.os" value="windows" />
+		<pathconvert targetos="${target.os}" property="cp">
+			<path>
+				<fileset dir="${dist.dir}/lib" />
+			</path>
+		</pathconvert>
 		
-		<copy todir="${build.dist.win32.dir}/lib">
-			<fileset dir="lib" excludes="**/*gtk*.jar" />
-			<fileset dir="build" includes="${target.jar}" />
-		</copy>
+		<pathconvert targetos="${target.os}" property="basedir.dist">
+			<path>
+				<dirset dir="${dist.dir}/lib" />
+			</path>
+		</pathconvert>
 		
-		<copy todir="${build.dist.win32.dir}">
-			<fileset dir="." includes="jcctray.cmd" />
-			<fileset dir="." includes="LICENSE.txt" />
-		</copy>
-		
-		<copy todir="${build.dist.linux.dir}/lib">
-			<fileset dir="lib" excludes="**/*win32*.jar" />
+		<propertyregex property="basedir.dist" override="true" input="${basedir.dist}" regexp="([\\])" replace="\1\1" casesensitive="false" />
+		<propertyregex property="cp" override="true" input="${cp}" regexp="${basedir.dist}" replace="lib" casesensitive="false" />
+
+		<echo file="${dist.dir}/jcctray.cmd">
+				@echo off
+				start javaw -cp ${cp} net.sourceforge.jcctray.ui.JCCTrayMain
+		</echo>
+	</target>
+
+	<target name="create.dist.unix">
+		<mkdir dir="${dist.dir}" />
+		<copy todir="${dist.dir}/lib" verbose="true">
+			<fileset refid="cctray.classpath" />
+			<fileset refid="swt.classpath" />
 			<fileset dir="build" includes="${target.jar}" />
 		</copy>
 
-		<copy todir="${build.dist.linux.dir}">
-			<fileset dir="." includes="jcctray" />
+		<copy todir="${dist.dir}">
 			<fileset dir="." includes="LICENSE.txt" />
 		</copy>
-		
-		<tar destfile="${build.dist.installer.dir}/jcctray-${version}.tar.gz" compression="gzip">
-			<tarfileset dir="${build.dist.linux.dir}" prefix="jcctray-${version}" preserveLeadingSlashes="false" excludes="jcctray" />
-			<tarfileset dir="${build.dist.linux.dir}" prefix="jcctray-${version}" preserveLeadingSlashes="false" mode="755" includes="jcctray" />
+
+		<antcall target="create.cp.unix">
+			<param name="dist.dir" value="${dist.dir}" />
+		</antcall>
+
+		<tar destfile="${build.dist.installer.dir}/jcctray-${version}_${dist.name.suffix}.tar.gz" compression="gzip">
+			<tarfileset dir="${dist.dir}" prefix="jcctray-${version}_${dist.name.suffix}" preserveLeadingSlashes="false" excludes="jcctray" />
+			<tarfileset dir="${dist.dir}" prefix="jcctray-${version}_${dist.name.suffix}" preserveLeadingSlashes="false" mode="755" includes="jcctray" />
 		</tar>
+	</target>
+
+	<target name="create.dist.win">
+		<mkdir dir="${dist.dir}" />
+		<copy todir="${dist.dir}/lib" verbose="true">
+			<fileset refid="cctray.classpath" />
+			<fileset refid="swt.classpath" />
+			<fileset dir="build" includes="${target.jar}" />
+		</copy>
+
+		<copy todir="${dist.dir}">
+			<fileset dir="." includes="LICENSE.txt" />
+		</copy>
+
+		<antcall target="create.cp.win">
+			<param name="dist.dir" value="${dist.dir}" />
+		</antcall>
+
+		<zip destfile="${build.dist.installer.dir}/jcctray-${version}_${dist.name.suffix}.zip" compress="true">
+			<zipfileset dir="${dist.dir}" prefix="jcctray-${version}_${dist.name.suffix}" excludes="jcctray" />
+			<zipfileset dir="${dist.dir}" prefix="jcctray-${version}_${dist.name.suffix}" includes="jcctray.cmd" />
+		</zip>
+	</target>
+
+	<target name="dist" depends="all">
+		<mkdir dir="${build.dist.dir}" />
+		<mkdir dir="${build.dist.installer.dir}" />
+
+		<!-- linux x86 deployable -->
+		<antcall target="create.dist.unix">
+			<param name="dist.dir" value="${build.dist.linux.x86.dir}" />
+			<param name="dist.name.suffix" value="linux_gtk_x86" />
+			<reference refid="swt.gtk.linux.x86.classpath" torefid="swt.classpath" />
+		</antcall>
+
+		<!-- linux x86_64 deployable -->
+		<antcall target="create.dist.unix">
+			<param name="dist.dir" value="${build.dist.linux.x86_64.dir}" />
+			<param name="dist.name.suffix" value="linux_gtk_x86_64" />
+			<reference refid="swt.gtk.linux.x86_64.classpath" torefid="swt.classpath" />
+		</antcall>
+
+		<!-- win32 deployable -->
+		<antcall target="create.dist.win">
+			<param name="dist.dir" value="${build.dist.win32.dir}" />
+			<param name="dist.name.suffix" value="win32" />
+			<reference refid="swt.win32.classpath" torefid="swt.classpath" />
+		</antcall>
+
+		<!-- wpf deployable -->
+		<antcall target="create.dist.win">
+			<param name="dist.dir" value="${build.dist.wpf.dir}" />
+			<param name="dist.name.suffix" value="wpf" />
+			<reference refid="swt.wpf.classpath" torefid="swt.classpath" />
+		</antcall>
 	</target>
 
 	<target name="build-all" depends="init, build-src, build-tests" />
 
-	<target name="all" depends="clean, init, build-all, jar, javadoc, test, dist" />
+	<target name="all" depends="clean, init, build-all, jar, javadoc, test" />
 </project>

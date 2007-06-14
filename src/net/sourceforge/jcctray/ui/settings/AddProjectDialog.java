@@ -17,6 +17,17 @@ package net.sourceforge.jcctray.ui.settings;
 
 import java.util.Collection;
 
+import net.sourceforge.jcctray.model.DashBoardProject;
+import net.sourceforge.jcctray.model.DashboardXmlParser;
+import net.sourceforge.jcctray.model.Host;
+import net.sourceforge.jcctray.model.JCCTraySettings;
+import net.sourceforge.jcctray.ui.Utils;
+import net.sourceforge.jcctray.ui.settings.providers.HostContentProvider;
+import net.sourceforge.jcctray.ui.settings.providers.HostLabelProvider;
+import net.sourceforge.jcctray.ui.settings.providers.ProjectContentProvider;
+import net.sourceforge.jcctray.ui.settings.providers.ProjectLabelProvider;
+
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -36,17 +47,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 
-import net.sourceforge.jcctray.model.JCCTraySettings;
-import net.sourceforge.jcctray.model.DashBoardProject;
-import net.sourceforge.jcctray.model.DashboardXmlParser;
-import net.sourceforge.jcctray.model.Host;
-import net.sourceforge.jcctray.ui.Utils;
-import net.sourceforge.jcctray.ui.settings.providers.HostContentProvider;
-import net.sourceforge.jcctray.ui.settings.providers.HostLabelProvider;
-import net.sourceforge.jcctray.ui.settings.providers.ProjectContentProvider;
-import net.sourceforge.jcctray.ui.settings.providers.ProjectLabelProvider;
-
 public class AddProjectDialog {
+
+	private static final Logger	log	= Logger.getLogger(AddProjectDialog.class);
 
 	private class OkButtonListener implements SelectionListener {
 		public void widgetDefaultSelected(SelectionEvent e) {
@@ -144,16 +147,17 @@ public class AddProjectDialog {
 
 		public void selectionChanged(SelectionChangedEvent event) {
 			ISelection sel = event.getSelection();
+			Host host = null;
 			projectListViewer.setInput(null);
 			if (sel instanceof IStructuredSelection) {
 				try {
 					IStructuredSelection selection = (IStructuredSelection) sel;
 					if (selection.isEmpty())
 						return;
-					Host host = (Host) selection.getFirstElement();
+					host = (Host) selection.getFirstElement();
 					projectListViewer.setInput(DashboardXmlParser.getProjects(host.getHostName()));
 				} catch (Exception e) {
-					e.printStackTrace();
+					log.error("Exception getting project list from host: " + host, e);
 				}
 			}
 		}

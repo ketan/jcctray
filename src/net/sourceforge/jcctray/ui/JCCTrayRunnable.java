@@ -18,6 +18,12 @@ package net.sourceforge.jcctray.ui;
 import java.util.Collection;
 import java.util.Iterator;
 
+import net.sourceforge.jcctray.model.DashBoardProject;
+import net.sourceforge.jcctray.model.DashBoardProjects;
+import net.sourceforge.jcctray.model.DashboardXmlParser;
+import net.sourceforge.jcctray.model.Host;
+import net.sourceforge.jcctray.model.JCCTraySettings;
+
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -25,28 +31,18 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TrayItem;
 
-import net.sourceforge.jcctray.model.JCCTraySettings;
-import net.sourceforge.jcctray.model.DashBoardProject;
-import net.sourceforge.jcctray.model.DashBoardProjects;
-import net.sourceforge.jcctray.model.DashboardXmlParser;
-import net.sourceforge.jcctray.model.Host;
-
 public class JCCTrayRunnable implements Runnable {
 
 	public class ProjectsFilter extends ViewerFilter {
 
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
 			if (element instanceof DashBoardProject) {
-				try {
-					DashBoardProject project = (DashBoardProject) element;
-					Host host = project.getHost();
-					Host hostInSettings = JCCTraySettings.getInstance().findHostByString(host.getHostString());
-					DashBoardProject projectInSettings = hostInSettings.getProject(project.getName());
-					if ((projectInSettings != null) && projectInSettings.isEnabled())
-						return true;
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				DashBoardProject project = (DashBoardProject) element;
+				Host host = project.getHost();
+				Host hostInSettings = JCCTraySettings.getInstance().findHostByString(host.getHostString());
+				DashBoardProject projectInSettings = hostInSettings.getProject(project.getName());
+				if ((projectInSettings != null) && projectInSettings.isEnabled())
+					return true;
 			}
 			return false;
 		}
