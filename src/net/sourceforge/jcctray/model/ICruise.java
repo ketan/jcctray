@@ -29,4 +29,6 @@ public interface ICruise {
 
 	public void forceBuild(DashBoardProject project);
 
+	public String getName();
+	
 }

@@ -104,8 +104,6 @@ public class Host {
 	}
 
 	public ICruise getCruise() {
-		if (this.cruise == null)
-			this.cruise = new DefaultCruise();
 		return cruise;
 	}
 

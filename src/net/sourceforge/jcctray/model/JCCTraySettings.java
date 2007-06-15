@@ -17,36 +17,19 @@ package net.sourceforge.jcctray.model;
 
 import java.beans.IntrospectionException;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.apache.commons.betwixt.io.BeanWriter;
-import org.apache.commons.betwixt.strategy.PropertySuppressionStrategy;
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.ObjectCreateRule;
-import org.apache.commons.digester.SetNextRule;
-import org.apache.commons.digester.SetPropertiesRule;
+import net.sourceforge.jcctray.utils.ObjectPersister;
+
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 public class JCCTraySettings implements ISettingsConstants {
 
-	private static final Logger	log	= Logger.getLogger(JCCTraySettings.class);
-
-	private static class ProjectPropertySuppressor extends PropertySuppressionStrategy {
-		public boolean suppressProperty(Class classContainingTheProperty, Class propertyType, String propertyName) {
-			if (classContainingTheProperty.equals(DashBoardProject.class) && !propertyName.equals("name")
-					&& !propertyName.equals("enabled"))
-				return true;
-			if (propertyType.equals(Class.class) && propertyName.equals("class"))
-				return true;
-			return false;
-		}
-	}
+	private static final Logger		log	= Logger.getLogger(JCCTraySettings.class);
 
 	private static JCCTraySettings	instance;
 
@@ -79,6 +62,7 @@ public class JCCTraySettings implements ISettingsConstants {
 
 	public void clear() {
 		hosts.clear();
+		settings.clear();
 	}
 
 	public void removeHost(Host host) {
@@ -98,23 +82,7 @@ public class JCCTraySettings implements ISettingsConstants {
 	}
 
 	void save(String configFile) throws IOException, SAXException, IntrospectionException {
-		FileWriter outputWriter = new FileWriter(configFile);
-		outputWriter.write("<?xml version='1.0' ?>\n");
-		BeanWriter beanWriter = new BeanWriter(outputWriter);
-
-		beanWriter.getXMLIntrospector().getConfiguration().setPropertySuppressionStrategy(
-				new ProjectPropertySuppressor());
-
-		beanWriter.getXMLIntrospector().getConfiguration().setAttributesForPrimitives(true);
-		beanWriter.getBindingConfiguration().setValueSuppressionStrategy(new CruiseValueSuppressionStrategy());
-		beanWriter.getBindingConfiguration().setMapIDs(false);
-		beanWriter.getXMLIntrospector().getConfiguration().setWrapCollectionsInElement(false);
-		beanWriter.enablePrettyPrint();
-		beanWriter.setIndent("\t");
-		beanWriter.setInitialIndentLevel(0);
-
-		beanWriter.write("cctraysettings", this);
-		outputWriter.close();
+		ObjectPersister.save(this, configFile, "cctraysettings");
 	}
 
 	public void load() throws IOException, SAXException {
@@ -122,23 +90,9 @@ public class JCCTraySettings implements ISettingsConstants {
 	}
 
 	void load(String fileName) throws IOException, SAXException {
-		Digester digester = new Digester();
-
-		FileReader fileReader = new FileReader(fileName);
-
-		digester.addRule("cctraysettings", new ObjectCreateRule(JCCTraySettings.class));
-
-		digester.addRule("cctraysettings/host", new ObjectCreateRule(Host.class));
-		digester.addRule("cctraysettings/host", new SetPropertiesRule());
-		digester.addRule("cctraysettings/host", new SetNextRule("addHost"));
-
-		digester.addRule("cctraysettings/host/project", new ObjectCreateRule(DashBoardProject.class));
-		digester.addRule("cctraysettings/host/project", new SetPropertiesRule());
-		digester.addRule("cctraysettings/host/project", new SetNextRule("addProject"));
-
-		JCCTraySettings settings = (JCCTraySettings) digester.parse(fileReader);
-		this.hosts = settings.hosts;
-		fileReader.close();
+		JCCTraySettings traySettings = ObjectPersister.loadJCCTraySettings(fileName);
+		this.hosts = traySettings.hosts;
+		this.settings = traySettings.settings;
 	}
 
 	public static JCCTraySettings getInstance() {

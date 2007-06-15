@@ -216,10 +216,8 @@ public class AddProjectDialog {
 	}
 
 	private void createButtons() {
-		Composite composite = new Composite(shell, SWT.NONE);
-		composite.setLayout(new GridLayout(2, false));
-
-		okButton = new Button(composite, SWT.NONE);
+		okButton = new Button(shell, SWT.NONE);
+		okButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		okButton.setText("&Ok");
 	}
 
@@ -274,8 +272,11 @@ public class AddProjectDialog {
 		Label label = new Label(shell, SWT.WRAP);
 		label.setText("The list on the left shows the build servers that JCCTray currently knows about. "
 				+ "Select a build server, then select one or more projects to add.");
+		label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		new Label(shell, SWT.NONE);
-		new Label(shell, SWT.NONE).setText("If you want to add a new build server, click Add Server");
+		label = new Label(shell, SWT.NONE);
+		label.setText("If you want to add a new build server, click Add Server");
+		label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 	}
 
 	private void createShell() {
@@ -298,6 +299,7 @@ public class AddProjectDialog {
 
 	public String open() {
 		shell.open();
+		shell.pack();
 		return null;
 	}
 

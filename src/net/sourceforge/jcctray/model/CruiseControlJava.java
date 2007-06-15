@@ -31,4 +31,8 @@ public class CruiseControlJava implements ICruise {
 
 	}
 
+	public String getName() {
+		return "CruiseControl";
+	}
+
 }

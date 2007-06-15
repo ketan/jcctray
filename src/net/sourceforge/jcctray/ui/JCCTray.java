@@ -136,8 +136,7 @@ public class JCCTray {
 
 	private void createButtons() {
 		Composite composite = new Composite(shell, SWT.NONE);
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 2;
+		GridLayout gridLayout = new GridLayout(2, true);
 		composite.setLayout(gridLayout);
 		displayWebPageButton = new Button(composite, SWT.NONE);
 		displayWebPageButton.setText("Display &Web Page");

@@ -65,4 +65,8 @@ public class CCNet implements ICruise {
 		}
 		return client;
 	}
+
+	public String getName() {
+		return "CruiseControl.NET";
+	}
 }
