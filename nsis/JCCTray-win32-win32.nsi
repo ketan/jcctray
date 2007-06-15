@@ -37,6 +37,7 @@
 ;Pages
   ; install pages
   !insertmacro MUI_PAGE_WELCOME
+  !define MUI_LICENSEPAGE_CHECKBOX
   !insertmacro MUI_PAGE_LICENSE "..\LICENSE.txt"
   !insertmacro MUI_PAGE_DIRECTORY
   
