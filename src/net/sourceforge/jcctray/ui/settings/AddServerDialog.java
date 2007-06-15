@@ -24,10 +24,13 @@ import net.sourceforge.jcctray.ui.Utils;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -68,11 +71,13 @@ public class AddServerDialog {
 						.setMessage("You did not enter all the parameters for to configure JCCTray with cruise server.");
 				messageBox.setText("Please enter all the values");
 				messageBox.open();
+				hostStringText.forceFocus();
 				return;
 			}
 
 			Host host = new Host(hostStringText.getText(), serverURLString.getText());
-// host.setCruiseClass(serverType);
+			IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
+			host.setCruiseClass(((Class) selection.getFirstElement()).getName());
 			JCCTraySettings.getInstance().addHost(host);
 			Utils.saveSettings(shell);
 			shell.close();
@@ -105,20 +110,19 @@ public class AddServerDialog {
 		shell.setSize(400, 200);
 		shell.setLayout(new GridLayout(2, false));
 
-		new Label(shell, SWT.NONE).setText("Server Name:");
+		new Label(shell, SWT.NONE).setText("Server &Name:");
 		hostStringText = new Text(shell, SWT.BORDER);
 		hostStringText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		new Label(shell, SWT.NONE).setText("Server Type:");
+		new Label(shell, SWT.NONE).setText("Server &Type:");
 		serverType = new CCombo(shell, SWT.BORDER);
 		serverType.setText("Select");
-		serverType.add("Select");
 		serverType.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		comboViewer = new ComboViewer(serverType);
 		comboViewer.setContentProvider(new ArrayContentProvider());
 		comboViewer.setLabelProvider(new LabelProvider());
 
-		new Label(shell, SWT.NONE).setText("Server URL:");
+		new Label(shell, SWT.NONE).setText("Server &URL:");
 		serverURLString = new Text(shell, SWT.BORDER);
 		serverURLString.setText("http://<somehost>:1234/cruise");
 		serverURLString.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
