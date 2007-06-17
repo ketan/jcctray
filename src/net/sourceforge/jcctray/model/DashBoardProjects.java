@@ -23,6 +23,7 @@ public class DashBoardProjects {
 	private List	projectList	= new ArrayList();
 
 	public void add(DashBoardProject project) {
+		projectList.remove(project); // we're not a set - want to maintain order and be called a set
 		projectList.add(project);
 	}
 

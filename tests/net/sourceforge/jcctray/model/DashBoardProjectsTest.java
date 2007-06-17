@@ -21,9 +21,9 @@ public class DashBoardProjectsTest extends TestCase {
 
 	public void testAddsTwoDashBoardProjects() throws Exception {
 		DashBoardProjects projects1 = new DashBoardProjects();
-		projects1.add(new DashBoardProject());
-		projects1.add(new DashBoardProject());
-		projects1.add(new DashBoardProject());
+		projects1.add(new DashBoardProject("a"));
+		projects1.add(new DashBoardProject("b"));
+		projects1.add(new DashBoardProject("c"));
 
 		assertEquals(3, projects1.getProjects().length);
 	}
@@ -31,9 +31,9 @@ public class DashBoardProjectsTest extends TestCase {
 	public void testAddsDashBoardProjects() throws Exception {
 
 		DashBoardProjects projects1 = new DashBoardProjects();
-		projects1.add(new DashBoardProject());
-		projects1.add(new DashBoardProject());
-		projects1.add(new DashBoardProject());
+		projects1.add(new DashBoardProject("a"));
+		projects1.add(new DashBoardProject("b"));
+		projects1.add(new DashBoardProject("c"));
 
 		DashBoardProjects projects2 = new DashBoardProjects();
 		projects2.add(projects1);

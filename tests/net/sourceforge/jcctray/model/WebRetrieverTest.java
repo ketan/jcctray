@@ -41,7 +41,7 @@ public class WebRetrieverTest extends TestCase {
 // />" +
 // "</Projects>";
 	public void testGetsTwoProjects() throws Exception {
-		String projectXml = "<Projects>" + "<Project />" + "<Project />" + "</Projects>";
+		String projectXml = "<Projects>" + "<Project name=\"p1\" />" + "<Project name=\"p2\"/>" + "</Projects>";
 		StringReader stringReader = new StringReader(projectXml);
 		DashBoardProjects projects = DashboardXmlParser.getProjects(stringReader);
 		assertEquals(2, projects.count());

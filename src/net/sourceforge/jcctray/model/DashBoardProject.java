@@ -15,7 +15,6 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.model;
 
-
 public class DashBoardProject {
 
 	private String	name;
@@ -30,7 +29,11 @@ public class DashBoardProject {
 	private Host	host;
 
 	public DashBoardProject() {
-		this("", "", "", "", "", "", "", "");
+		this("");
+	}
+
+	public DashBoardProject(String name) {
+		this(name, "", "", "", "", "", "", "");
 	}
 
 	public DashBoardProject(String name, String activity, String lastBuildStatus, String lastBuildLabel,
