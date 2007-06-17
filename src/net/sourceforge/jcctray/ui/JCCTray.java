@@ -166,9 +166,11 @@ public class JCCTray {
 		composite.setLayout(gridLayout);
 		displayWebPageButton = new Button(composite, SWT.NONE);
 		displayWebPageButton.setText("Display &Web Page");
+		displayWebPageButton.setEnabled(false);
 
 		forceBuildButton = new Button(composite, SWT.NONE);
 		forceBuildButton.setText("Force &Build");
+		forceBuildButton.setEnabled(false);
 	}
 
 	private void createSystemTray() {
@@ -186,6 +188,21 @@ public class JCCTray {
 
 		fileSettingsItem.addSelectionListener(new SettingsMenuListener());
 		fileExitItem.addSelectionListener(new FileExitMenuListener());
+
+		table.addSelectionListener(new SelectionListener() {
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				boolean enabled = table.getSelectionCount() > 0;
+				forceBuildButton.setEnabled(enabled);
+				displayWebPageButton.setEnabled(enabled);
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				widgetDefaultSelected(e);
+			}
+
+		});
+
 	}
 
 	protected void minimizeToTray() {
@@ -193,35 +210,41 @@ public class JCCTray {
 	}
 
 	private void createTable() {
-		table = new Table(shell, SWT.FULL_SELECTION);
+		table = new Table(shell, SWT.FULL_SELECTION|SWT.CHECK);
 		table.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.FILL_HORIZONTAL));
 		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
-
+		table.setLinesVisible(false);
+		
 		TableColumn tableColumn;
 
 		tableColumn = new TableColumn(table, SWT.NONE);
 		tableColumn.setWidth(100);
+		tableColumn.setMoveable(true);
 		tableColumn.setText("Project");
 
 		tableColumn = new TableColumn(table, SWT.NONE);
 		tableColumn.setWidth(100);
+		tableColumn.setMoveable(true);
 		tableColumn.setText("Host");
 
 		tableColumn = new TableColumn(table, SWT.NONE);
 		tableColumn.setWidth(100);
+		tableColumn.setMoveable(true);
 		tableColumn.setText("Activity");
 
 		tableColumn = new TableColumn(table, SWT.NONE);
 		tableColumn.setWidth(300);
+		tableColumn.setMoveable(true);
 		tableColumn.setText("Detail");
 
 		tableColumn = new TableColumn(table, SWT.NONE);
 		tableColumn.setWidth(200);
+		tableColumn.setMoveable(true);
 		tableColumn.setText("Last Build Label");
 
 		tableColumn = new TableColumn(table, SWT.NONE);
 		tableColumn.setWidth(200);
+		tableColumn.setMoveable(true);
 		tableColumn.setText("Last Build Time");
 	}
 
