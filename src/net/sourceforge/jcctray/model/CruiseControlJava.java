@@ -78,12 +78,13 @@ public class CruiseControlJava implements ICruise {
 
 	private String forceBuildURL(DashBoardProject project) {
 		String hostString = project.getHost().getHostName();
+		URL url = null;
 		try {
-			URL url = new URL(hostString);
+			url = new URL(hostString);
 			return url.getProtocol() + "://" + url.getHost()
 					+ ":8000/invoke?operation=build&objectname=CruiseControl+Project%3Aname%3D" + project.getName();
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			log.error("The url was malformed: " + url, e);
 		}
 		return null;
 	}

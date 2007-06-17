@@ -24,6 +24,7 @@ import net.sourceforge.jcctray.model.DashboardXmlParser;
 import net.sourceforge.jcctray.model.Host;
 import net.sourceforge.jcctray.model.JCCTraySettings;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -47,7 +48,7 @@ public class JCCTrayRunnable implements Runnable {
 			return false;
 		}
 	}
-
+	private static final Logger	log	= Logger.getLogger(JCCTrayRunnable.class);
 	private final Table		table;
 	private TableViewer		tableViewer;
 	public boolean			shouldRun	= true;
@@ -63,12 +64,13 @@ public class JCCTrayRunnable implements Runnable {
 	}
 
 	public void run() {
+		updateProjectsList(getAllProjects());
 		while (shouldRun) {
 			try {
 				updateUI();
 				Thread.sleep(5000);
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error("Exception waiting on the background thread that fetches project status", e);
 			}
 		}
 	}
@@ -93,39 +95,52 @@ public class JCCTrayRunnable implements Runnable {
 	}
 
 	private void updateUI() {
+		final DashBoardProjects projects = getAllProjects();
+		Collection hosts = JCCTraySettings.getInstance().getHosts();
+
+		for (Iterator iterator = hosts.iterator(); iterator.hasNext();) {
+			Host host = (Host) iterator.next();
+			try {
+				DashBoardProject[] dashBoardProjects = DashboardXmlParser.getProjects(host.getHostName())
+						.getProjects();
+				for (int i = 0; i < dashBoardProjects.length; i++) {
+					DashBoardProject project = dashBoardProjects[i];
+					project.setHost(host);
+					projects.add(project);
+				}
+			} catch (Exception e) {
+				log.error("Could not fetch project list", e);
+			}
+		}
+		
+		updateProjectsList(projects);
+	}
+
+	private void updateProjectsList(final DashBoardProjects projects) {
 		table.getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				if (!table.isDisposed()) {
-					DashBoardProjects projects = new DashBoardProjects();
-					Collection hosts = JCCTraySettings.getInstance().getHosts();
-
-					for (Iterator iterator = hosts.iterator(); iterator.hasNext();) {
-						Host host = (Host) iterator.next();
-						try {
-							DashBoardProject[] dashBoardProjects = DashboardXmlParser.getProjects(host.getHostName())
-									.getProjects();
-							for (int i = 0; i < dashBoardProjects.length; i++) {
-								DashBoardProject project = dashBoardProjects[i];
-								project.setHost(host);
-								projects.add(project);
-							}
-
-						} catch (Exception e) {
-							e.printStackTrace();
-							// MessageBox messageBox = new
-							// MessageBox(table.getShell(), SWT.NONE);
-							// messageBox.setText("Cannot connect to " + url);
-							// messageBox.setMessage(e.getMessage());
-							// messageBox.open();
-						}
-					}
 					tableViewer.setInput(projects);
 					updateTrayIcon(projects);
 					updateShellIcon(projects);
 				}
 			}
 		});
+	}
 
+	private DashBoardProjects getAllProjects() {
+		DashBoardProjects enabledProjects = new DashBoardProjects();
+		
+		Collection hosts = JCCTraySettings.getInstance().getHosts();
+		
+		for (Iterator iterator = hosts.iterator(); iterator.hasNext();) {
+			Collection projects = ((Host) iterator.next()).getProjects();
+			for (Iterator iterator2 = projects.iterator(); iterator2.hasNext();) {
+				enabledProjects.add((DashBoardProject) iterator2.next());
+			}
+		}
+		
+		return enabledProjects;
 	}
 
 	protected void updateShellIcon(DashBoardProjects projects) {
