@@ -15,6 +15,7 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.model;
 
+
 public class DashBoardProject {
 
 	private String	name;
@@ -151,11 +152,7 @@ public class DashBoardProject {
 		this.host = host;
 	}
 
-	public void forceBuild() {
+	public void forceBuild() throws Exception {
 		getHost().getCruise().forceBuild(this);
-	}
-
-	public void openBrowser() {
-		getHost().getCruise().openBrowser(this);
 	}
 }

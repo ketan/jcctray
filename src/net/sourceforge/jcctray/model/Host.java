@@ -31,10 +31,15 @@ public class Host {
 		this("", "");
 	}
 
-	public Host(String hostString, String hostName) {
+	public Host(String hostString, String hostName, ICruise cruise) {
 		this.hostString = hostString;
 		this.hostName = hostName;
+		this.cruise = cruise;
 		this.projects = new HashMap();
+	}
+
+	public Host(String hostString, String hostName) {
+		this(hostString, hostName, new DefaultCruise());
 	}
 
 	public String getHostName() {

@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -79,12 +80,37 @@ public class JCCTray {
 		}
 	}
 
+	private final class ForceBuildBackgroundThread extends Thread {
+		private final DashBoardProject	project;
+
+		private ForceBuildBackgroundThread(DashBoardProject project) {
+			this.project = project;
+		}
+
+		public void run() {
+			try {
+				this.project.forceBuild();
+			} catch (final Exception ex) {
+				display.asyncExec(new Runnable() {
+					public void run() {
+						MessageBox messageBox = new MessageBox(table.getShell(), SWT.ICON_ERROR);
+						messageBox.setText("Could not force build");
+						messageBox.setMessage(ex.getMessage());
+						messageBox.open();
+					}
+				});
+			}
+		}
+	}
+
 	private final class ForceBuildListener implements SelectionListener {
+
 		public void widgetDefaultSelected(SelectionEvent e) {
 			if (table.getSelectionCount() > 0) {
 				TableItem[] selection = table.getSelection();
-				DashBoardProject project = (DashBoardProject) selection[0].getData();
-				project.forceBuild();
+				final DashBoardProject project = (DashBoardProject) selection[0].getData();
+
+				new ForceBuildBackgroundThread(project).start();
 			}
 		}
 
@@ -98,7 +124,7 @@ public class JCCTray {
 			if (table.getSelectionCount() > 0) {
 				TableItem[] selection = table.getSelection();
 				DashBoardProject project = (DashBoardProject) selection[0].getData();
-				project.openBrowser();
+				Browser.open(project.getWebUrl());
 			}
 		}
 

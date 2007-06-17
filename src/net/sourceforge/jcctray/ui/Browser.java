@@ -15,32 +15,11 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.ui;
 
-import java.io.IOException;
+import org.eclipse.swt.program.Program;
 
 public class Browser {
 
 	public static void open(String url) {
-
-		try {
-			Runtime.getRuntime().exec(new String[] { "firefox", url });
-		} catch (IOException e) {
-			try {
-				Runtime.getRuntime().exec(new String[] { "mozilla", url });
-			} catch (IOException e1) {
-				try {
-					Runtime.getRuntime().exec(new String[] { "konqueror", url });
-				} catch (IOException e2) {
-					try {
-						Runtime.getRuntime().exec(new String[] { "iexplore", url });
-					} catch (IOException e3) {
-						// TODO Auto-generated catch block
-						e3.printStackTrace();
-					}
-				}
-
-			}
-
-		}
-
+		Program.launch(url);
 	}
 }

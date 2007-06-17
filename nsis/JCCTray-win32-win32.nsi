@@ -119,6 +119,7 @@ Section "Install" InstallSection
     ;Create shortcuts
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\JCCTray.lnk" "$INSTDIR\JCCTray.cmd"
+    CreateShortCut "$SMSTARTUP\JCCTray.lnk" "$INSTDIR\JCCTray.cmd"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
   !insertmacro MUI_STARTMENU_WRITE_END
 
@@ -133,6 +134,7 @@ Section "Uninstall"
   Delete /REBOOTOK "$INSTDIR\Uninstall.exe"
   Delete /REBOOTOK "$INSTDIR\jcctray.cmd"
   Delete /REBOOTOK "$INSTDIR\LICENSE.txt"
+  Delete /REBOOTOK "$INSTDIR\console.log.txt"
   RMDir /REBOOTOK /r "$INSTDIR\lib"
   RMDir /REBOOTOK "$INSTDIR"
   
@@ -141,6 +143,7 @@ Section "Uninstall"
   ;Delete start menu parent diretories
   Delete /REBOOTOK "$SMPROGRAMS\$MUI_TEMP\Uninstall.lnk"
   Delete /REBOOTOK "$SMPROGRAMS\$MUI_TEMP\JCCTray.lnk"
+  Delete /REBOOTOK "$SMSTARTUP\JCCTray.lnk"
   
   ;Delete empty start menu parent diretories
   StrCpy $MUI_TEMP "$SMPROGRAMS\$MUI_TEMP"

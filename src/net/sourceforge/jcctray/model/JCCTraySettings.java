@@ -15,7 +15,6 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.model;
 
-import java.beans.IntrospectionException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -77,12 +76,12 @@ public class JCCTraySettings implements ISettingsConstants {
 		return new ArrayList(hosts.values());
 	}
 
-	public void save() throws IOException, SAXException, IntrospectionException {
+	public void save() throws IOException{
 		save("jcctray.xml");
 	}
 
-	void save(String configFile) throws IOException, SAXException, IntrospectionException {
-		ObjectPersister.save(this, configFile, "cctraysettings");
+	void save(String configFile) throws IOException {
+		ObjectPersister.saveSettings(this, configFile);
 	}
 
 	public void load() throws IOException, SAXException {

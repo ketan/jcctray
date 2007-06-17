@@ -15,6 +15,11 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.model;
 
+import java.io.IOException;
+
+import net.sourceforge.jcctray.exceptions.HTTPErrorException;
+import net.sourceforge.jcctray.exceptions.InvocationException;
+
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -31,18 +36,49 @@ public class CCNet implements ICruise {
 
 	private static HttpClient	client;
 
-	public void forceBuild(DashBoardProject project) {
-		String string = forceBuildURL(project);
-		GetMethod method = new GetMethod(string);
+	public void forceBuild(DashBoardProject project) throws Exception {
+		GetMethod method = httpMethod(forceBuildURL(project));
+		if (executeMethod(method) != HttpStatus.SC_OK)
+			throw new Exception("There was an http error connecting to the server at "
+					+ project.getHost().getHostName());
+		if (!isInvokeSuccessful(method))
+			throw new Exception(
+					"The force build was not successful, the server did not return what JCCTray was expecting.");
+	}
+
+	private GetMethod httpMethod(String url) {
+		GetMethod method = new GetMethod(url);
 		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
-		int statusCode;
+		return method;
+	}
+
+	private boolean isInvokeSuccessful(GetMethod method) throws InvocationException {
 		try {
-			statusCode = getClient().executeMethod(method);
-			if (statusCode != HttpStatus.SC_OK) {
+			boolean invokeSuccessful = method.getResponseBodyAsString().contains("Invocation successful");
+			if (!invokeSuccessful)
+				log.error("Could not find the string \'Invocation successful\' in the page located at "
+						+ method.getURI());
+			return invokeSuccessful;
+		} catch (IOException e) {
+			log.error("Attempted to force the build, but the force was not successful", e);
+			throw new InvocationException("Attempted to force the build, but the force was not successful", e);
+		}
+	}
+
+	private int executeMethod(GetMethod method) throws HTTPErrorException {
+		try {
+			int httpStatus = getClient().executeMethod(method);
+			if (httpStatus == HttpStatus.SC_OK)
 				log.error("Method failed: " + method.getStatusLine());
-			}
+			return httpStatus;
 		} catch (Exception e) {
-			log.error("Could not force build on project" + project, e);
+			log
+					.error(
+							"Could not force a build on project, either the webpage is not available, or there was a timeout in connecting to the cruise server.",
+							e);
+			throw new HTTPErrorException(
+					"Could not force a build on project, either the webpage is not available, or there was a timeout in connecting to the cruise server.",
+					e);
 		}
 	}
 
@@ -52,10 +88,6 @@ public class CCNet implements ICruise {
 				+ project.getName();
 	}
 
-	public void openBrowser(DashBoardProject project) {
-		// TODO Auto-generated method stub
-
-	}
 
 	private static HttpClient getClient() {
 		if (client == null) {

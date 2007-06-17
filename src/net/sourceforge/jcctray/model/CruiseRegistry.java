@@ -79,7 +79,7 @@ public class CruiseRegistry {
 	}
 
 	public void save(String fileName) throws IOException, SAXException, IntrospectionException {
-		ObjectPersister.save(this, fileName, "cruiseregistry");
+		ObjectPersister.saveCruiseRegistry(this, fileName);
 	}
 
 	public static CruiseRegistry load(String fileName) throws IOException, SAXException {

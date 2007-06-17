@@ -15,23 +15,18 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.utils;
 
-import java.beans.IntrospectionException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
+import java.util.Collection;
+import java.util.Iterator;
 
 import net.sourceforge.jcctray.model.CruiseRegistry;
-import net.sourceforge.jcctray.model.CruiseValueSuppressionStrategy;
 import net.sourceforge.jcctray.model.DashBoardProject;
 import net.sourceforge.jcctray.model.Host;
-import net.sourceforge.jcctray.model.ICruise;
 import net.sourceforge.jcctray.model.JCCTraySettings;
 
-import org.apache.commons.betwixt.expression.Context;
-import org.apache.commons.betwixt.io.BeanWriter;
-import org.apache.commons.betwixt.strategy.DefaultNameMapper;
-import org.apache.commons.betwixt.strategy.ObjectStringConverter;
-import org.apache.commons.betwixt.strategy.PropertySuppressionStrategy;
 import org.apache.commons.digester.CallMethodRule;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.ObjectCreateRule;
@@ -44,48 +39,74 @@ import org.xml.sax.SAXException;
  */
 public class ObjectPersister {
 
-	private static class ProjectPropertySuppressor extends PropertySuppressionStrategy {
-		public boolean suppressProperty(Class classContainingTheProperty, Class propertyType, String propertyName) {
-			if (classContainingTheProperty.equals(DashBoardProject.class) && !propertyName.equals("name")
-					&& !propertyName.equals("enabled"))
-				return true;
-			if (propertyType.equals(Class.class) && propertyName.equals("class"))
-				return true;
-			return false;
+	public static void saveSettings(JCCTraySettings settings, String fileName) throws IOException {
+		FileWriter outputWriter = new FileWriter(fileName);
+		saveSettings(settings, outputWriter);
+	}
+
+	public static void saveSettings(JCCTraySettings settings, Writer writer) throws IOException {
+		try {
+			writer.write("<?xml version='1.0' ?>\n");
+			writer.write("<cctraysettings>\n");
+			saveHosts(writer, settings.getHosts());
+			writer.write("</cctraysettings>\n");
+		} catch (IOException e) {
+			throw e;
+		} finally {
+			writer.close();
 		}
 	}
 
-	public static void save(Object o, String fileName, String rootElement) throws IOException, SAXException,
-			IntrospectionException {
-		FileWriter outputWriter = new FileWriter(fileName);
-		outputWriter.write("<?xml version='1.0' ?>\n");
-		BeanWriter beanWriter = new BeanWriter(outputWriter);
+	public static void saveCruiseRegistry(CruiseRegistry registry, String fileName) throws IOException {
+		saveCruiseRegistry(registry, new FileWriter(fileName));
+	}
 
-		beanWriter.getXMLIntrospector().getConfiguration().setPropertySuppressionStrategy(
-				new ProjectPropertySuppressor());
-		beanWriter.getXMLIntrospector().getConfiguration().setAttributesForPrimitives(true);
-		beanWriter.getBindingConfiguration().setValueSuppressionStrategy(new CruiseValueSuppressionStrategy());
-		beanWriter.getBindingConfiguration().setObjectStringConverter(new ObjectStringConverter() {
-			public String objectToString(Object object, Class type, Context context) {
-				if (type == Class.class) {
-					Object bean = context.getBean();
-					String name = ((Class) bean).getName();
-					return name;
-				}
+	public static void saveCruiseRegistry(CruiseRegistry registry, FileWriter writer) throws IOException {
+		try {
+			writer.write("<?xml version='1.0' ?>\n");
+			writer.write("<cruiseregistry>\n");
+			writer.write("	<cruiseImpls>\n");
+			saveCruiseImpls(writer, registry.getCruiseImpls());
+			writer.write("	</cruiseImpls>\n");
+			writer.write("</cruiseregistry>\n");
+		} catch (IOException e) {
+			throw e;
+		} finally {
+			writer.close();
+		}
+	}
 
-				String objectToString = super.objectToString(object, type, context);
+	private static void saveCruiseImpls(FileWriter writer, Collection cruiseImpls) throws IOException {
+		for (Iterator iterator = cruiseImpls.iterator(); iterator.hasNext();) {
+			writer.write("		<cruiseImpl>" + ((Class) iterator.next()).getName() + "</cruiseImpl>\n");
+		}
+	}
 
-				return objectToString;
-			}
-		});
-		beanWriter.getBindingConfiguration().setMapIDs(false);
-		beanWriter.getXMLIntrospector().getConfiguration().setWrapCollectionsInElement(true);
-		beanWriter.enablePrettyPrint();
-		beanWriter.setIndent("\t");
-		beanWriter.setInitialIndentLevel(0);
+	private static void saveHosts(Writer writer, Collection hosts) throws IOException {
+		writer.write("	<hosts>\n");
+		for (Iterator iterator = hosts.iterator(); iterator.hasNext();) {
+			Host host = (Host) iterator.next();
+			writer.write("		<host");
+			writer.write(" cruiseClass = \"" + host.getCruiseClass() + "\"");
+			writer.write(" hostName = \"" + host.getHostName() + "\"");
+			writer.write(" hostString = \"" + host.getHostString() + "\"");
+			writer.write(">\n");
+			saveProjects(writer, host.getProjects());
+			writer.write("		</host>\n");
+		}
+		writer.write("	</hosts>\n");
+	}
 
-		beanWriter.write(rootElement, o);
-		outputWriter.close();
+	private static void saveProjects(Writer writer, Collection projects) throws IOException {
+		writer.write("			<projects>\n");
+		for (Iterator iterator2 = projects.iterator(); iterator2.hasNext();) {
+			DashBoardProject project = (DashBoardProject) iterator2.next();
+			writer.write("				<project");
+			writer.write(" enabled = \"" + project.isEnabled() + "\"");
+			writer.write(" name = \"" + project.getName() + "\"");
+			writer.write("/>\n");
+		}
+		writer.write("			</projects>\n");
 	}
 
 	public static JCCTraySettings loadJCCTraySettings(String fileName) throws IOException, SAXException {
@@ -119,4 +140,5 @@ public class ObjectPersister {
 		fileReader.close();
 		return result;
 	}
+
 }

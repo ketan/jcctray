@@ -20,15 +20,14 @@ package net.sourceforge.jcctray.model;
  * forcing a build, and opening a browser on a specific {@link DashBoardProject}.
  * 
  * @author Ketan Padegaonkar
- * @see DefaultCruise
+ * @see CruiseControlJava
  * @see CCNet
+ * @see CruiseControlRuby
  */
 public interface ICruise {
 
-	public void openBrowser(DashBoardProject project);
-
-	public void forceBuild(DashBoardProject project);
+	public void forceBuild(DashBoardProject project) throws Exception;
 
 	public String getName();
-	
+
 }
