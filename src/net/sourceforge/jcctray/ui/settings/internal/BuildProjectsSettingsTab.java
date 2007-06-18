@@ -20,8 +20,15 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sourceforge.jcctray.model.DashBoardProject;
+import net.sourceforge.jcctray.model.Host;
+import net.sourceforge.jcctray.model.JCCTraySettings;
+import net.sourceforge.jcctray.ui.Utils;
+import net.sourceforge.jcctray.ui.settings.AddProjectDialog;
+
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -39,11 +46,6 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import net.sourceforge.jcctray.model.JCCTraySettings;
-import net.sourceforge.jcctray.model.DashBoardProject;
-import net.sourceforge.jcctray.model.Host;
-import net.sourceforge.jcctray.ui.settings.AddProjectDialog;
-
 public class BuildProjectsSettingsTab {
 
 	private final class ServerProjectContentProvider implements IStructuredContentProvider {
@@ -53,8 +55,11 @@ public class BuildProjectsSettingsTab {
 			for (Iterator iterator = hosts.iterator(); iterator.hasNext();) {
 				Host host = (Host) iterator.next();
 				Collection projects = host.getProjects();
-				if (!projects.isEmpty())
-					result.addAll(projects);
+				for (Iterator iterator2 = projects.iterator(); iterator2.hasNext();) {
+					DashBoardProject project = (DashBoardProject) iterator2.next();
+					if (project.isEnabled())
+						result.add(project);
+				}
 			}
 			return result.toArray();
 		}
@@ -109,12 +114,16 @@ public class BuildProjectsSettingsTab {
 
 	private final class RemoveButtonListener implements SelectionListener {
 
-		public RemoveButtonListener(TableViewer tableViewer) {
-
-		}
-
 		public void widgetDefaultSelected(SelectionEvent e) {
-			// TODO Auto-generated method stub
+			IStructuredSelection selection = (IStructuredSelection) tableViewer.getSelection();
+			List list = selection.toList();
+			
+			for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+				DashBoardProject project = (DashBoardProject) iterator.next();
+				project.setEnabled(false);
+			}
+			Utils.saveSettings(tableViewer.getTable().getShell());
+			tableViewer.refresh();
 		}
 
 		public void widgetSelected(SelectionEvent e) {
@@ -132,7 +141,7 @@ public class BuildProjectsSettingsTab {
 		}
 
 		public void widgetDefaultSelected(SelectionEvent e) {
-			String project = new AddProjectDialog(tableViewer.getTable().getShell()).open();
+			new AddProjectDialog(tableViewer.getTable().getShell()).open();
 		}
 
 		public void widgetSelected(SelectionEvent e) {
@@ -152,7 +161,7 @@ public class BuildProjectsSettingsTab {
 
 	private void hookEvents() {
 		addButton.addSelectionListener(new AddButtonListener(tableViewer));
-		removeButton.addSelectionListener(new RemoveButtonListener(tableViewer));
+		removeButton.addSelectionListener(new RemoveButtonListener());
 	}
 
 	private void createBuildProjectsTab(TabFolder tabFolder) {

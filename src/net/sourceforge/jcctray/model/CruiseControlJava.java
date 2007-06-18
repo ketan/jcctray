@@ -18,6 +18,9 @@ package net.sourceforge.jcctray.model;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import net.sourceforge.jcctray.exceptions.HTTPErrorException;
 import net.sourceforge.jcctray.exceptions.InvocationException;
@@ -100,6 +103,17 @@ public class CruiseControlJava implements ICruise {
 			client.setTimeout(10000);
 		}
 		return client;
+	}
+
+	public String formatDate(String date) {
+		Date parse;
+		try {
+			parse = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(date);
+			return new SimpleDateFormat("h:mm:ss a").format(parse);
+		} catch (ParseException e) {
+			log.error("Could not parse date: " + date);
+		}
+		return date;
 	}
 
 }

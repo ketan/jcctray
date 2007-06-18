@@ -18,15 +18,12 @@
  */
 package net.sourceforge.jcctray.ui;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import net.sourceforge.jcctray.model.DashBoardProject;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-
-import net.sourceforge.jcctray.model.DashBoardProject;
 
 public class LabelProvider implements ITableLabelProvider {
 
@@ -75,6 +72,7 @@ public class LabelProvider implements ITableLabelProvider {
 		String nextBuildTime = project.getNextBuildTime();
 		String lastBuildLabel = project.getLastBuildLabel();
 		String lastBuildTime = project.getLastBuildTime();
+
 		switch (column) {
 		case 0:
 			return name;
@@ -83,26 +81,16 @@ public class LabelProvider implements ITableLabelProvider {
 		case 2:
 			return activity;
 		case 3:
-			return "Next build check at: " + formatDate(nextBuildTime);
+			String formatDate = project.getHost().getCruise().formatDate(nextBuildTime);
+			if (formatDate != null && !formatDate.trim().equals(""))
+				return "Next build check at: " + formatDate;
+			return "";
 		case 4:
 			return lastBuildLabel;
 		case 5:
-			return formatDate(lastBuildTime);
+			return project.getHost().getCruise().formatDate(lastBuildTime);
 		}
 		return null;
-	}
-
-	private String formatDate(String lastBuildTime) {
-		String date;
-		try {
-			Date parse = new SimpleDateFormat("yyyy-MM-dd'T'HHmmss.SSSSSSSZ").parse(lastBuildTime.replaceAll(":", ""));
-			date = new SimpleDateFormat("h:mm:ss a").format(parse);
-		} catch (Exception e) {
-			// TODO: auto generated catch block
-			// e.printStackTrace();
-			date = lastBuildTime;
-		}
-		return date;
 	}
 
 	public void addListener(ILabelProviderListener arg0) {

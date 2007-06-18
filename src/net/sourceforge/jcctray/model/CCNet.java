@@ -16,6 +16,8 @@
 package net.sourceforge.jcctray.model;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import net.sourceforge.jcctray.exceptions.HTTPErrorException;
 import net.sourceforge.jcctray.exceptions.InvocationException;
@@ -100,5 +102,15 @@ public class CCNet implements ICruise {
 
 	public String getName() {
 		return "CruiseControl.NET";
+	}
+
+	public String formatDate(String date) {
+		try {
+			Date parse = new SimpleDateFormat("yyyy-MM-dd'T'HHmmss.SSSSSSSZ").parse(date.replaceAll(":", ""));
+			return new SimpleDateFormat("h:mm:ss a").format(parse);
+		} catch (Exception e) {
+			log.error("Could not parse date: " + date);
+		}
+		return date;
 	}
 }

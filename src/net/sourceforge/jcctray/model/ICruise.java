@@ -30,4 +30,5 @@ public interface ICruise {
 
 	public String getName();
 
+	public String formatDate(String date);
 }

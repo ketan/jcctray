@@ -29,4 +29,8 @@ public class DefaultCruise implements ICruise {
 		return null;
 	}
 
+	public String formatDate(String date) {
+		return date;
+	}
+
 }

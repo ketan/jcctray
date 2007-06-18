@@ -115,7 +115,8 @@ public class DashBoardProject {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((this.host == null) ? 0 : this.host.hashCode());
+		result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
 		return result;
 	}
 
@@ -127,10 +128,15 @@ public class DashBoardProject {
 		if (getClass() != obj.getClass())
 			return false;
 		final DashBoardProject other = (DashBoardProject) obj;
-		if (name == null) {
+		if (this.host == null) {
+			if (other.host != null)
+				return false;
+		} else if (!this.host.equals(other.host))
+			return false;
+		if (this.name == null) {
 			if (other.name != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!this.name.equals(other.name))
 			return false;
 		return true;
 	}

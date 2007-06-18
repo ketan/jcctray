@@ -210,7 +210,7 @@ public class JCCTray {
 	}
 
 	private void createTable() {
-		table = new Table(shell, SWT.FULL_SELECTION|SWT.CHECK);
+		table = new Table(shell, SWT.FULL_SELECTION);
 		table.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.FILL_HORIZONTAL));
 		table.setHeaderVisible(true);
 		table.setLinesVisible(false);
@@ -238,12 +238,12 @@ public class JCCTray {
 		tableColumn.setText("Detail");
 
 		tableColumn = new TableColumn(table, SWT.NONE);
-		tableColumn.setWidth(200);
+		tableColumn.setWidth(150);
 		tableColumn.setMoveable(true);
 		tableColumn.setText("Last Build Label");
 
 		tableColumn = new TableColumn(table, SWT.NONE);
-		tableColumn.setWidth(200);
+		tableColumn.setWidth(150);
 		tableColumn.setMoveable(true);
 		tableColumn.setText("Last Build Time");
 	}
@@ -285,7 +285,7 @@ public class JCCTray {
 		shell.setText("JCCTray");
 		GridLayout gridLayout = new GridLayout();
 		shell.setLayout(gridLayout);
-		shell.setSize(1000, 400);
+		shell.setSize(900, 300);
 	}
 
 	public void open() {

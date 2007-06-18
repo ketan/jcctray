@@ -297,10 +297,9 @@ public class AddProjectDialog {
 		projectListViewer.setInput(null);
 	}
 
-	public String open() {
+	public void open() {
 		shell.open();
 		shell.pack();
-		return null;
 	}
 
 }

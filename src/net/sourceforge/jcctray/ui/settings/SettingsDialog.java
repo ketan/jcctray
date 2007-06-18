@@ -35,15 +35,16 @@ public class SettingsDialog {
 	}
 
 	private void createShell() {
-		shell = new Shell(parentShell);
+		shell = new Shell(parentShell, SWT.SHELL_TRIM);
 		shell.setText("JCCTray Settings");
 		FillLayout fillLayout = new FillLayout(SWT.VERTICAL);
 		shell.setLayout(fillLayout);
 	}
 
 	public void open() {
-		shell.setSize(500, 300);
+		shell.setSize(500, 100);
 		shell.open();
+		shell.pack();
 	}
 
 }
