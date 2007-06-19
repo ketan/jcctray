@@ -55,6 +55,9 @@ public class JCCTray {
 
 	private final class FileExitMenuListener implements SelectionListener {
 		public void widgetDefaultSelected(SelectionEvent e) {
+			shell.dispose();
+			trayItem.dispose();
+			display.dispose();
 			System.exit(0);
 		}
 
