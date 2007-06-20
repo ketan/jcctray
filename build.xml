@@ -28,6 +28,8 @@
 	<fileset id="swt.win32.classpath" dir="${lib.dir}" includes="**/*swt.win32.win32*.jar" />
 	<fileset id="swt.wpf.classpath" dir="${lib.dir}" includes="**/*swt.wpf.win32*.jar" />
 
+	<fileset id="swt.all.classpath" dir="${lib.dir}" />
+	
 	<fileset id="cctray.classpath" dir="${lib.dir}" excludes="**/*swt*.jar" />
 
 	<path id="compile.classpath">
@@ -178,6 +180,18 @@
 		</tar>
 	</target>
 
+	
+	<target name="create.src.dist">
+		<mkdir dir="${dist.dir}" />
+		
+		<tar destfile="${dist.dir}/jcctray-${version}_src.tar.gz" compression="gzip">
+			<tarfileset dir="." prefix="jcctray-${version}_src" preserveLeadingSlashes="false">
+				<exclude name="**/build/**/**.*" />
+				<exclude name="**/bin/**/**.*" />
+			</tarfileset>
+		</tar>
+	</target>
+	
 	<target name="create.dist.win">
 		<mkdir dir="${dist.dir}" />
 		<copy todir="${dist.dir}/lib" verbose="true">
@@ -230,6 +244,11 @@
 			<param name="dist.dir" value="${build.dist.wpf.dir}" />
 			<param name="dist.name.suffix" value="wpf" />
 			<reference refid="swt.wpf.classpath" torefid="swt.classpath" />
+		</antcall>
+		
+		<!-- src deployable -->
+		<antcall target="create.src.dist">
+			<param name="dist.dir" value="${build.dist.installer.dir}" />
 		</antcall>
 	</target>
 
