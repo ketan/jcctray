@@ -67,7 +67,7 @@ public class CCNet implements ICruise {
 	private boolean isInvokeSuccessful(HttpMethod method, DashBoardProject project) throws InvocationException {
 		try {
 			String message = getSuccessMessage(project);
-			boolean invokeSuccessful = method.getResponseBodyAsString().contains(message);
+			boolean invokeSuccessful = (method.getResponseBodyAsString().indexOf(message) > -1);
 			if (!invokeSuccessful)
 				log.error("Could not find the string '" + message + "' in the page located at "+ method.getURI());
 			return invokeSuccessful;

@@ -184,11 +184,15 @@
 	<target name="create.src.dist">
 		<mkdir dir="${dist.dir}" />
 		
-		<tar destfile="${dist.dir}/jcctray-${version}_src.tar.gz" compression="gzip">
-			<tarfileset dir="." prefix="jcctray-${version}_src" preserveLeadingSlashes="false">
-				<exclude name="**/build/**/**.*" />
-				<exclude name="**/bin/**/**.*" />
-			</tarfileset>
+		<copy todir="${dist.dir}" verbose="true">
+			<fileset dir=".">
+				<exclude name="**/build/**/**.*"/>
+				<exclude name="**/bin/**/**.*"/>
+			</fileset>	
+		</copy>
+				
+		<tar destfile="${build.dist.installer.dir}/jcctray-${version}_src.tar.gz" compression="gzip">
+			<tarfileset dir="${dist.dir}" prefix="jcctray-${version}_src" preserveLeadingSlashes="false" />
 		</tar>
 	</target>
 	
@@ -248,7 +252,8 @@
 		
 		<!-- src deployable -->
 		<antcall target="create.src.dist">
-			<param name="dist.dir" value="${build.dist.installer.dir}" />
+			<param name="dist.dir" value="${build.dist.src.dir}" />
+			<reference refid="swt.all.classpath" torefid="swt.classpath" />
 		</antcall>
 	</target>
 
