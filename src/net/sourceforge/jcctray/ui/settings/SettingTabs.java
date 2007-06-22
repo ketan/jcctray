@@ -15,12 +15,11 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.ui.settings;
 
+import net.sourceforge.jcctray.ui.settings.internal.BuildProjectsSettingsTab;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
-
-import net.sourceforge.jcctray.ui.settings.internal.BuildProjectsSettingsTab;
-import net.sourceforge.jcctray.ui.settings.internal.GeneralSettingsTab;
 
 public class SettingTabs {
 
@@ -31,6 +30,6 @@ public class SettingTabs {
 	private void createTabs(Shell shell) {
 		TabFolder tabFolder = new TabFolder(shell, SWT.NONE);
 		new BuildProjectsSettingsTab(tabFolder);
-		new GeneralSettingsTab(tabFolder);
+//		new GeneralSettingsTab(tabFolder);
 	}
 }

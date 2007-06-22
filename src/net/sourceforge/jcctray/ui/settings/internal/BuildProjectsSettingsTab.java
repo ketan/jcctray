@@ -33,8 +33,13 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -47,6 +52,12 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 public class BuildProjectsSettingsTab {
+
+	private final class ShellRefreshListener extends ShellAdapter{
+		public void shellActivated(ShellEvent e) {
+			tableViewer.setInput(JCCTraySettings.getInstance().getHosts());				
+		}
+	}
 
 	private final class ServerProjectContentProvider implements IStructuredContentProvider {
 		public Object[] getElements(Object elements) {
@@ -160,6 +171,7 @@ public class BuildProjectsSettingsTab {
 	}
 
 	private void hookEvents() {
+		tableViewer.getTable().getShell().addShellListener(new ShellRefreshListener());
 		addButton.addSelectionListener(new AddButtonListener(tableViewer));
 		removeButton.addSelectionListener(new RemoveButtonListener());
 	}
