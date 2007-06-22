@@ -98,7 +98,7 @@ public class JCCTray {
 					public void run() {
 						MessageBox messageBox = new MessageBox(table.getShell(), SWT.ICON_ERROR);
 						messageBox.setText("Could not force build");
-						messageBox.setMessage(ex.getMessage());
+						messageBox.setMessage(""+ex.getMessage());
 						messageBox.open();
 					}
 				});
