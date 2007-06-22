@@ -89,6 +89,7 @@ public class LabelProvider implements ITableLabelProvider {
 		case 4:
 			return lastBuildLabel;
 		case 5:
+			if (lastBuildTime == null || "".equals(lastBuildTime.trim())) return "";
 			return project.getHost().getCruise().formatDate(lastBuildTime);
 		}
 		return null;

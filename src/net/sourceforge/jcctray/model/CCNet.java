@@ -43,6 +43,7 @@ public class CCNet extends HTTPCruise implements ICruise {
 
 	public String formatDate(String date) {
 		try {
+			date = date.replaceAll("\\.\\d{6}", "");
 			date = date.replaceAll("\\.\\d{7}", "");
 			date = date.replaceAll(":", "");
 			Date parse = new SimpleDateFormat("yyyy-MM-dd'T'HHmmssZ").parse(date);
