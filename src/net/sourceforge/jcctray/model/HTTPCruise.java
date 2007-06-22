@@ -58,7 +58,7 @@ public abstract class HTTPCruise {
 			String message = getSuccessMessage(project);
 			boolean invokeSuccessful = (method.getResponseBodyAsString().indexOf(message) > -1);
 			if (!invokeSuccessful)
-				getLog().error("Could not find the string '" + message + "' in the page located at "+ method.getURI());
+				getLog().error("Could not find the string '" + message + "' in the page located at " + method.getURI());
 			return invokeSuccessful;
 		} catch (IOException e) {
 			getLog().error("Attempted to force the build, but the force was not successful", e);
@@ -88,7 +88,7 @@ public abstract class HTTPCruise {
 
 	protected abstract String getXmlReportURL(Host host);
 
-	protected Logger getLog(){
+	protected Logger getLog() {
 		return Logger.getLogger(getClass());
 	}
 }

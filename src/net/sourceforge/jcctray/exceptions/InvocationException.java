@@ -15,10 +15,9 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.exceptions;
 
-
 /**
  * @author Ketan Padegaonkar
- *
+ * 
  */
 public class InvocationException extends Exception {
 
@@ -39,6 +38,5 @@ public class InvocationException extends Exception {
 	public InvocationException(Throwable cause) {
 		super(cause);
 	}
-
 
 }

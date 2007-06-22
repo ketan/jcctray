@@ -62,8 +62,8 @@ public class AddServerDialog {
 
 	private final class OkButtonListener implements SelectionListener {
 		public void widgetDefaultSelected(SelectionEvent e) {
-			if (comboViewer.getSelection().isEmpty() || hostStringText.getText().trim().length() ==0 || serverURLString
-					.getText().trim().length() == 0) {
+			if (comboViewer.getSelection().isEmpty() || hostStringText.getText().trim().length() == 0
+					|| serverURLString.getText().trim().length() == 0) {
 				MessageBox messageBox = new MessageBox(shell, SWT.ICON_WARNING);
 				messageBox
 						.setMessage("You did not enter all the parameters for to configure JCCTray with cruise server.");

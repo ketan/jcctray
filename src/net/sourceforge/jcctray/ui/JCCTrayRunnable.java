@@ -47,11 +47,12 @@ public class JCCTrayRunnable implements Runnable {
 			return false;
 		}
 	}
-	private static final Logger	log	= Logger.getLogger(JCCTrayRunnable.class);
-	private final Table		table;
-	private TableViewer		tableViewer;
-	public boolean			shouldRun	= true;
-	private final TrayItem	trayItem;
+
+	private static final Logger	log			= Logger.getLogger(JCCTrayRunnable.class);
+	private final Table			table;
+	private TableViewer			tableViewer;
+	public boolean				shouldRun	= true;
+	private final TrayItem		trayItem;
 
 	public JCCTrayRunnable(Table table, TrayItem trayItem) {
 		this.trayItem = trayItem;
@@ -110,7 +111,7 @@ public class JCCTrayRunnable implements Runnable {
 				log.error("Could not fetch project list: " + host, e);
 			}
 		}
-		
+
 		updateProjectsList(projects);
 	}
 
@@ -128,16 +129,16 @@ public class JCCTrayRunnable implements Runnable {
 
 	private DashBoardProjects getAllProjects() {
 		DashBoardProjects enabledProjects = new DashBoardProjects();
-		
+
 		Collection hosts = JCCTraySettings.getInstance().getHosts();
-		
+
 		for (Iterator iterator = hosts.iterator(); iterator.hasNext();) {
 			Collection projects = ((Host) iterator.next()).getProjects();
 			for (Iterator iterator2 = projects.iterator(); iterator2.hasNext();) {
 				enabledProjects.add((DashBoardProject) iterator2.next());
 			}
 		}
-		
+
 		return enabledProjects;
 	}
 

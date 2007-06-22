@@ -99,11 +99,11 @@ public class Host {
 	public Collection getProjects() {
 		return projects.values();
 	}
-	
-	public DashBoardProjects getCruiseProjects() throws Exception{
+
+	public DashBoardProjects getCruiseProjects() throws Exception {
 		return getCruise().getProjects(this);
 	}
-	
+
 	public DashBoardProject getProject(String projectName) {
 		return (DashBoardProject) projects.get(projectName);
 	}

@@ -217,7 +217,7 @@ public class JCCTray {
 		table.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.FILL_HORIZONTAL));
 		table.setHeaderVisible(true);
 		table.setLinesVisible(false);
-		
+
 		TableColumn tableColumn;
 
 		tableColumn = new TableColumn(table, SWT.NONE);

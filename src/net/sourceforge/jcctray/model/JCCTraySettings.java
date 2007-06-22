@@ -76,7 +76,7 @@ public class JCCTraySettings implements ISettingsConstants {
 		return new ArrayList(hosts.values());
 	}
 
-	public void save() throws IOException{
+	public void save() throws IOException {
 		save("jcctray.xml");
 	}
 

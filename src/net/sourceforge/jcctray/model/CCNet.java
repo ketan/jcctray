@@ -40,15 +40,12 @@ public class CCNet extends HTTPCruise implements ICruise {
 		return project.getHost().getHostName() + "/ViewFarmReport.aspx";
 	}
 
-
 	public String formatDate(String date) {
 		try {
-			date = date.replaceAll("\\.\\d{6}", "");
-			date = date.replaceAll("\\.\\d{7}", "");
+			date = date.replaceAll("\\.\\d{3,}+", "");
 			date = date.replaceAll(":", "");
 			Date parse = new SimpleDateFormat("yyyy-MM-dd'T'HHmmssZ").parse(date);
-			String format = new SimpleDateFormat("h:mm:ss a, dd MMM").format(parse);
-			return format;
+			return new SimpleDateFormat("h:mm:ss a, dd MMM").format(parse);
 		} catch (Exception e) {
 			getLog().error("Could not parse date: " + date);
 		}
@@ -66,7 +63,6 @@ public class CCNet extends HTTPCruise implements ICruise {
 	protected String getXmlReportURL(Host host) {
 		return host.getHostName() + "/XmlStatusReport.aspx";
 	}
-
 
 	protected HttpMethod httpMethod(DashBoardProject project) {
 		HttpMethod method = new PostMethod(forceBuildURL(project));

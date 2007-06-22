@@ -53,9 +53,9 @@ import org.eclipse.swt.widgets.TableColumn;
 
 public class BuildProjectsSettingsTab {
 
-	private final class ShellRefreshListener extends ShellAdapter{
+	private final class ShellRefreshListener extends ShellAdapter {
 		public void shellActivated(ShellEvent e) {
-			tableViewer.setInput(JCCTraySettings.getInstance().getHosts());				
+			tableViewer.setInput(JCCTraySettings.getInstance().getHosts());
 		}
 	}
 
@@ -128,7 +128,7 @@ public class BuildProjectsSettingsTab {
 		public void widgetDefaultSelected(SelectionEvent e) {
 			IStructuredSelection selection = (IStructuredSelection) tableViewer.getSelection();
 			List list = selection.toList();
-			
+
 			for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 				DashBoardProject project = (DashBoardProject) iterator.next();
 				project.setEnabled(false);

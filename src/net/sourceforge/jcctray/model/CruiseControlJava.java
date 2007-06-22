@@ -34,7 +34,7 @@ public class CruiseControlJava extends HTTPCruise implements ICruise {
 	protected void configureMethod(HttpMethod method, DashBoardProject project) {
 		// do nothing
 	}
-	
+
 	protected String forceBuildURL(DashBoardProject project) {
 		String hostString = project.getHost().getHostName();
 		URL url = null;
@@ -47,7 +47,7 @@ public class CruiseControlJava extends HTTPCruise implements ICruise {
 		}
 		return null;
 	}
-	
+
 	public String formatDate(String date) {
 		Date parse;
 		try {
@@ -58,7 +58,7 @@ public class CruiseControlJava extends HTTPCruise implements ICruise {
 		}
 		return date;
 	}
-	
+
 	public String getName() {
 		return "CruiseControl";
 	}
