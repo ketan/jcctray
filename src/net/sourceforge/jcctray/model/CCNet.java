@@ -15,47 +15,20 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.model;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import net.sourceforge.jcctray.exceptions.HTTPErrorException;
-import net.sourceforge.jcctray.exceptions.InvocationException;
-
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.log4j.Logger;
 
 /**
  * @author Ketan Padegaonkar
  */
-public class CCNet implements ICruise {
+public class CCNet extends HTTPCruise implements ICruise {
 
-	private static final Logger	log	= Logger.getLogger(CCNet.class);
-
-	private static HttpClient	client;
-
-	public void forceBuild(DashBoardProject project) throws Exception {
-		HttpMethod method = httpMethod(project);
-		if (executeMethod(method) != HttpStatus.SC_OK)
-			throw new Exception("There was an http error connecting to the server at " + project.getHost().getHostName());
-		if (!isInvokeSuccessful(method, project))
-			throw new Exception("The force build was not successful, the server did not return what JCCTray was expecting.");
-	}
-
-
-	private HttpMethod httpMethod(DashBoardProject project) {
-		HttpMethod method = new PostMethod(forceBuildURL(project));
-		configureMethod(method, project);
-		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
-		return method;
-	}
-
-	private void configureMethod(HttpMethod method, DashBoardProject project) {
+	protected void configureMethod(HttpMethod method, DashBoardProject project) {
 		PostMethod post = (PostMethod) method;
 		post.addParameter("forcebuild", "true");
 		post.addParameter("forceBuildServer", "local");
@@ -63,53 +36,10 @@ public class CCNet implements ICruise {
 		post.addParameter("forceBuildProject", project.getName());
 	}
 
-
-	private boolean isInvokeSuccessful(HttpMethod method, DashBoardProject project) throws InvocationException {
-		try {
-			String message = getSuccessMessage(project);
-			boolean invokeSuccessful = (method.getResponseBodyAsString().indexOf(message) > -1);
-			if (!invokeSuccessful)
-				log.error("Could not find the string '" + message + "' in the page located at "+ method.getURI());
-			return invokeSuccessful;
-		} catch (IOException e) {
-			log.error("Attempted to force the build, but the force was not successful", e);
-			throw new InvocationException("Attempted to force the build, but the force was not successful", e);
-		}
-	}
-
-
-	private String getSuccessMessage(DashBoardProject project) {
-		return "Build successfully forced for " + project.getName();
-	}
-
-	private int executeMethod(HttpMethod method) throws HTTPErrorException {
-		try {
-			int httpStatus = getClient().executeMethod(method);
-			if (httpStatus == HttpStatus.SC_OK)
-				log.error("Method failed: " + method.getStatusLine());
-			return httpStatus;
-		} catch (Exception e) {
-			log.error("Could not force a build on project, either the webpage is not available, or there was a timeout in connecting to the cruise server.", e);
-			throw new HTTPErrorException("Could not force a build on project, either the webpage is not available, or there was a timeout in connecting to the cruise server.", e);
-		}
-	}
-
-	private String forceBuildURL(DashBoardProject project) {
+	protected String forceBuildURL(DashBoardProject project) {
 		return project.getHost().getHostName() + "/ViewFarmReport.aspx";
 	}
 
-	private static HttpClient getClient() {
-		if (client == null) {
-			client = new HttpClient();
-			client.setConnectionTimeout(10000);
-			client.setTimeout(10000);
-		}
-		return client;
-	}
-
-	public String getName() {
-		return "CruiseControl.NET";
-	}
 
 	public String formatDate(String date) {
 		try {
@@ -119,8 +49,28 @@ public class CCNet implements ICruise {
 			String format = new SimpleDateFormat("h:mm:ss a, dd MMM").format(parse);
 			return format;
 		} catch (Exception e) {
-			log.error("Could not parse date: " + date);
+			getLog().error("Could not parse date: " + date);
 		}
 		return date;
+	}
+
+	public String getName() {
+		return "CruiseControl.NET";
+	}
+
+	protected String getSuccessMessage(DashBoardProject project) {
+		return "Build successfully forced for " + project.getName();
+	}
+
+	protected String getXmlReportURL(Host host) {
+		return host.getHostName() + "/XmlStatusReport.aspx";
+	}
+
+
+	protected HttpMethod httpMethod(DashBoardProject project) {
+		HttpMethod method = new PostMethod(forceBuildURL(project));
+		configureMethod(method, project);
+		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+		return method;
 	}
 }

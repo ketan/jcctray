@@ -33,13 +33,11 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.xml.sax.SAXException;
 
 public class DashboardXmlParser {
-	private static HttpClient	client;
 
-	public static DashBoardProjects getProjects(String url) throws HttpException, IOException, SAXException {
-		url = url + "/XmlStatusReport.aspx";
+	public static DashBoardProjects getProjects(String url, HttpClient client) throws HttpException, IOException, SAXException {
 		GetMethod method = new GetMethod(url);
 		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
-		int statusCode = getClient().executeMethod(method);
+		int statusCode = client.executeMethod(method);
 
 		if (statusCode != HttpStatus.SC_OK) {
 			throw new RuntimeException("Could not connect to " + url + ". The server returned a " + statusCode
@@ -63,14 +61,5 @@ public class DashboardXmlParser {
 		digester.addRule("Projects/Project", new SetPropertiesRule());
 		digester.addRule("Projects/Project", new SetNextRule("add"));
 		return digester;
-	}
-
-	private static HttpClient getClient() {
-		if (DashboardXmlParser.client == null) {
-			DashboardXmlParser.client = new HttpClient();
-			DashboardXmlParser.client.setConnectionTimeout(10000);
-			DashboardXmlParser.client.setTimeout(10000);
-		}
-		return DashboardXmlParser.client;
 	}
 }

@@ -20,7 +20,6 @@ import java.util.Iterator;
 
 import net.sourceforge.jcctray.model.DashBoardProject;
 import net.sourceforge.jcctray.model.DashBoardProjects;
-import net.sourceforge.jcctray.model.DashboardXmlParser;
 import net.sourceforge.jcctray.model.Host;
 import net.sourceforge.jcctray.model.JCCTraySettings;
 
@@ -101,15 +100,14 @@ public class JCCTrayRunnable implements Runnable {
 		for (Iterator iterator = hosts.iterator(); iterator.hasNext();) {
 			Host host = (Host) iterator.next();
 			try {
-				DashBoardProject[] dashBoardProjects = DashboardXmlParser.getProjects(host.getHostName())
-						.getProjects();
+				DashBoardProject[] dashBoardProjects = host.getCruiseProjects().getProjects();
 				for (int i = 0; i < dashBoardProjects.length; i++) {
 					DashBoardProject project = dashBoardProjects[i];
 					project.setHost(host);
 					projects.add(project);
 				}
 			} catch (Exception e) {
-				log.error("Could not fetch project list", e);
+				log.error("Could not fetch project list: " + host, e);
 			}
 		}
 		

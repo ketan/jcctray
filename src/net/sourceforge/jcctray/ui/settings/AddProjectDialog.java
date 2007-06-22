@@ -18,7 +18,6 @@ package net.sourceforge.jcctray.ui.settings;
 import java.util.Collection;
 
 import net.sourceforge.jcctray.model.DashBoardProject;
-import net.sourceforge.jcctray.model.DashboardXmlParser;
 import net.sourceforge.jcctray.model.Host;
 import net.sourceforge.jcctray.model.JCCTraySettings;
 import net.sourceforge.jcctray.ui.Utils;
@@ -155,7 +154,7 @@ public class AddProjectDialog {
 					if (selection.isEmpty())
 						return;
 					host = (Host) selection.getFirstElement();
-					projectListViewer.setInput(DashboardXmlParser.getProjects(host.getHostName()));
+					projectListViewer.setInput(host.getCruiseProjects());
 				} catch (Exception e) {
 					log.error("Exception getting project list from host: " + host, e);
 				}

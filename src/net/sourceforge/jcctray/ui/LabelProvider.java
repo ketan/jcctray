@@ -65,8 +65,8 @@ public class LabelProvider implements ITableLabelProvider {
 		return LabelProvider.GRAY_IMG;
 	}
 
-	public String getColumnText(Object arg0, int column) {
-		DashBoardProject project = (DashBoardProject) arg0;
+	public String getColumnText(Object element, int column) {
+		DashBoardProject project = (DashBoardProject) element;
 		String name = project.getName();
 		String activity = project.getActivity();
 		String nextBuildTime = project.getNextBuildTime();
@@ -81,6 +81,7 @@ public class LabelProvider implements ITableLabelProvider {
 		case 2:
 			return activity;
 		case 3:
+			if (nextBuildTime == null || "".equals(nextBuildTime.trim())) return "";
 			String formatDate = project.getHost().getCruise().formatDate(nextBuildTime);
 			if (formatDate != null && !formatDate.trim().equals(""))
 				return "Next build check at: " + formatDate;

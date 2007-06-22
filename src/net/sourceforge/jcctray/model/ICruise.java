@@ -31,4 +31,6 @@ public interface ICruise {
 	public String getName();
 
 	public String formatDate(String date);
+
+	public DashBoardProjects getProjects(Host host) throws Exception;
 }

@@ -17,6 +17,8 @@ package net.sourceforge.jcctray.exceptions;
 
 public class HTTPErrorException extends Exception {
 
+	private static final long	serialVersionUID	= 4317866513329514582L;
+
 	public HTTPErrorException() {
 		super();
 	}

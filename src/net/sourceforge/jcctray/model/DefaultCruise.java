@@ -33,4 +33,8 @@ public class DefaultCruise implements ICruise {
 		return date;
 	}
 
+	public DashBoardProjects getProjects(Host host) {
+		return new DashBoardProjects();
+	}
+
 }
