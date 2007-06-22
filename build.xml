@@ -190,7 +190,8 @@
 			</fileset>
 		</copy>
 				
-		<delete dir="" />
+		<delete dir="${dist.dir}/build" />
+		<delete dir="${dist.dir}/src" />
 		<tar destfile="${build.dist.installer.dir}/jcctray-${version}_src.tar.gz" compression="gzip">
 			<tarfileset dir="${dist.dir}" prefix="jcctray-${version}_src" preserveLeadingSlashes="false" />
 		</tar>
