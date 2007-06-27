@@ -21,25 +21,6 @@ import junit.framework.TestCase;
 
 public class WebRetrieverTest extends TestCase {
 
-// String projectXml = "<Projects>" +
-// "<Project name=\"Brighton\" category=\"\" activity=\"Sleeping\"
-// lastBuildStatus=\"Success\" lastBuildLabel=\"V0.0.0.unknown\"
-// lastBuildTime=\"2007-05-09T06:57:56.2584028-04:00\"
-// nextBuildTime=\"2007-05-10T06:29:26.5109320-04:00\"
-// webUrl=\"http://renogold/ccnet/server/local/project/Brighton/ViewProjectReport.aspx\"
-// />" +
-// "<Project name=\"Perforce Mondrian\" category=\"\" activity=\"Sleeping\"
-// lastBuildStatus=\"Failure\" lastBuildLabel=\"9098\"
-// lastBuildTime=\"2007-05-09T22:00:00.0525820-04:00\"
-// nextBuildTime=\"2007-05-10T22:00:00.0000000-04:00\"
-// webUrl=\"http://localhost/ccnet\" /><Project name=\"Reno\" category=\"\"
-// activity=\"Building\" lastBuildStatus=\"Failure\"
-// lastBuildLabel=\"V0.0.0.4220\"
-// lastBuildTime=\"2007-05-10T06:01:47.4167700-04:00\"
-// nextBuildTime=\"2007-05-10T06:29:16.2138593-04:00\"
-// webUrl=\"http://renogold/ccnet/server/local/project/Reno/ViewProjectReport.aspx\"
-// />" +
-// "</Projects>";
 	public void testGetsTwoProjects() throws Exception {
 		String projectXml = "<Projects>" + "<Project name=\"p1\" />" + "<Project name=\"p2\"/>" + "</Projects>";
 		StringReader stringReader = new StringReader(projectXml);

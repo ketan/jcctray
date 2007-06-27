@@ -37,13 +37,16 @@ public class DashboardXmlParser {
 	public static DashBoardProjects getProjects(String url, HttpClient client) throws HttpException, IOException, SAXException {
 		GetMethod method = new GetMethod(url);
 		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
-		int statusCode = client.executeMethod(method);
-
-		if (statusCode != HttpStatus.SC_OK) {
-			throw new RuntimeException("Could not connect to " + url + ". The server returned a " + statusCode
-					+ " status code");
+		try {
+			int statusCode = client.executeMethod(method);
+			if (statusCode != HttpStatus.SC_OK) {
+				throw new RuntimeException("Could not connect to " + url + ". The server returned a " + statusCode
+						+ " status code");
+			}
+			return getProjects(method.getResponseBodyAsStream());
+		}finally{
+			method.releaseConnection();	
 		}
-		return getProjects(method.getResponseBodyAsStream());
 	}
 
 	public static DashBoardProjects getProjects(Reader reader) throws IOException, SAXException {

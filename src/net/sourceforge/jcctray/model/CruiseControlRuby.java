@@ -25,19 +25,31 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 
 /**
  * @author Ketan Padegaonkar
+ * 
  */
-public class CCNet extends HTTPCruise implements ICruise {
+public class CruiseControlRuby extends HTTPCruise implements ICruise {
 
 	protected void configureMethod(HttpMethod method, DashBoardProject project) {
-		PostMethod post = (PostMethod) method;
-		post.addParameter("forcebuild", "true");
-		post.addParameter("forceBuildServer", "local");
-		post.addParameter("ForceBuild", "Force");
-		post.addParameter("forceBuildProject", project.getName());
+
 	}
 
 	protected String forceBuildURL(DashBoardProject project) {
-		return project.getHost().getHostName() + "/ViewFarmReport.aspx";
+		return project.getHost().getHostName().replaceAll("/$", "") + "/projects/build/"+project.getName();
+	}
+
+	protected String getSuccessMessage(DashBoardProject project) {
+		return ""; //anything passes
+	}
+
+	protected String getXmlReportURL(Host host) {
+		return host.getHostName().replaceAll("/$", "") + "/XmlStatusReport.aspx";
+	}
+
+	protected HttpMethod httpMethod(DashBoardProject project) {
+		HttpMethod method = new PostMethod(forceBuildURL(project));
+		configureMethod(method, project);
+		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+		return method;
 	}
 
 	public String formatDate(String date) {
@@ -53,21 +65,7 @@ public class CCNet extends HTTPCruise implements ICruise {
 	}
 
 	public String getName() {
-		return "CruiseControl.NET";
+		return "CruiseControl.rb";
 	}
 
-	protected String getSuccessMessage(DashBoardProject project) {
-		return "Build successfully forced for " + project.getName();
-	}
-
-	protected String getXmlReportURL(Host host) {
-		return host.getHostName() + "/XmlStatusReport.aspx";
-	}
-
-	protected HttpMethod httpMethod(DashBoardProject project) {
-		HttpMethod method = new PostMethod(forceBuildURL(project));
-		configureMethod(method, project);
-		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
-		return method;
-	}
 }

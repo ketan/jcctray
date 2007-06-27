@@ -295,7 +295,7 @@ public class JCCTray {
 		shell.open();
 
 		JCCTrayRunnable runnable = new JCCTrayRunnable(table, trayItem);
-		Thread thread = new Thread(runnable);
+		Thread thread = new Thread(runnable, "XmlStatusReportThread");
 		thread.start();
 		while (!shell.isDisposed())
 			if (!display.readAndDispatch())

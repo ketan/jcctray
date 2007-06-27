@@ -49,9 +49,8 @@ public class CruiseControlJava extends HTTPCruise implements ICruise {
 	}
 
 	public String formatDate(String date) {
-		Date parse;
 		try {
-			parse = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(date);
+			Date parse = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(date);
 			return new SimpleDateFormat("h:mm:ss a, dd MMM").format(parse);
 		} catch (ParseException e) {
 			getLog().error("Could not parse date: " + date);

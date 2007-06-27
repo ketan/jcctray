@@ -62,6 +62,8 @@ public class CruiseRegistry {
 	protected void init() {
 		addCruiseImpl(CCNet.class);
 		addCruiseImpl(CruiseControlJava.class);
+		addCruiseImpl(CruiseControlRuby.class);
+		addCruiseImpl(CruiseControlJava2_7.class);
 	}
 
 	public void addCruiseImpl(Class clazz) {

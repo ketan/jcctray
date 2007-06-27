@@ -23,30 +23,40 @@ import net.sourceforge.jcctray.exceptions.InvocationException;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.log4j.Logger;
 
 /**
  * @author Ketan Padegaonkar
  */
-public abstract class HTTPCruise {
+public abstract class HTTPCruise implements ICruise{
 
 	private static HttpClient	client;
 
 	private static HttpClient getClient() {
 		if (client == null) {
-			client = new HttpClient();
-			client.setConnectionTimeout(10000);
-			client.setTimeout(10000);
+			MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
+			HttpConnectionManagerParams params = new HttpConnectionManagerParams();
+			params.setConnectionTimeout(10000);
+			params.setSoTimeout(10000);
+			connectionManager.setParams(params);
+			client = new HttpClient(connectionManager);
 		}
 		return client;
 	}
 
 	public void forceBuild(DashBoardProject project) throws Exception {
 		HttpMethod method = httpMethod(project);
-		if (executeMethod(method) != HttpStatus.SC_OK)
-			throw new Exception("There was an http error connecting to the server at " + project.getHost().getHostName());
-		if (!isInvokeSuccessful(method, project))
-			throw new Exception("The force build was not successful, the server did not return what JCCTray was expecting.");
+		try{
+			if (executeMethod(method) != HttpStatus.SC_OK)
+				throw new Exception("There was an http error connecting to the server at " + project.getHost().getHostName());
+			if (!isInvokeSuccessful(method, project))
+				throw new Exception("The force build was not successful, the server did not return what JCCTray was expecting.");
+		}
+		finally{
+			method.releaseConnection();
+		}
 	}
 
 	protected abstract HttpMethod httpMethod(DashBoardProject project);
@@ -71,7 +81,7 @@ public abstract class HTTPCruise {
 	private int executeMethod(HttpMethod method) throws HTTPErrorException {
 		try {
 			int httpStatus = getClient().executeMethod(method);
-			if (httpStatus == HttpStatus.SC_OK)
+			if (httpStatus != HttpStatus.SC_OK)
 				getLog().error("Method failed: " + method.getStatusLine());
 			return httpStatus;
 		} catch (Exception e) {

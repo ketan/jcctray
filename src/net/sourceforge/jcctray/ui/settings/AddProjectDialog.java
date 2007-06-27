@@ -218,6 +218,7 @@ public class AddProjectDialog {
 		okButton = new Button(shell, SWT.NONE);
 		okButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		okButton.setText("&Ok");
+		shell.setDefaultButton(okButton);
 	}
 
 	private void createGroups() {
@@ -241,7 +242,7 @@ public class AddProjectDialog {
 		projectListViewer.setLabelProvider(new ProjectLabelProvider());
 
 		addProjectButton = new Button(availableProjectsGroup, SWT.NONE);
-		addProjectButton.setText("&Add Project");
+		addProjectButton.setText("Add &Project");
 		addProjectButton.setEnabled(false);
 	}
 
