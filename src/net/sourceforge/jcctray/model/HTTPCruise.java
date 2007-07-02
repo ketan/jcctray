@@ -93,7 +93,10 @@ public abstract class HTTPCruise implements ICruise{
 	protected abstract String forceBuildURL(DashBoardProject project);
 
 	public DashBoardProjects getProjects(Host host) throws Exception {
-		return DashboardXmlParser.getProjects(getXmlReportURL(host), getClient());
+		DashBoardProjects projects = DashboardXmlParser.getProjects(getXmlReportURL(host), getClient());
+		for (int i = 0; i < projects.count(); i++)
+			projects.getProject(i).setHost(host);
+		return projects;
 	}
 
 	protected abstract String getXmlReportURL(Host host);
