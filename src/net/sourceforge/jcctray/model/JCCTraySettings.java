@@ -28,6 +28,33 @@ import org.xml.sax.SAXException;
 
 public class JCCTraySettings implements ISettingsConstants {
 
+	public static final class NameValuePair {
+		
+		private Object key;
+		private Object value;
+		
+        public Object getKey() {
+            return this.key;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+    
+        public void setValue(Object value) {
+            this.value = value;
+        }
+        
+		public void setKey(Object key) {
+			this.key = key;
+		}
+    
+        public String toString() {
+            return getKey() + "=" + getValue();
+        }
+
+	}
+
 	private static final Logger		log	= Logger.getLogger(JCCTraySettings.class);
 
 	private static JCCTraySettings	instance;
@@ -129,7 +156,11 @@ public class JCCTraySettings implements ISettingsConstants {
 	public void set(String key, String value) {
 		this.settings.put(key, value);
 	}
-
+	
+	public void set(NameValuePair entry) {
+		this.settings.put(entry.getKey(), entry.getValue());
+	}
+	
 	public HashMap getSettings() {
 		return this.settings;
 	}

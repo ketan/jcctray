@@ -20,12 +20,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import net.sourceforge.jcctray.model.CruiseRegistry;
 import net.sourceforge.jcctray.model.DashBoardProject;
 import net.sourceforge.jcctray.model.Host;
 import net.sourceforge.jcctray.model.JCCTraySettings;
+import net.sourceforge.jcctray.model.JCCTraySettings.NameValuePair;
 
 import org.apache.commons.digester.CallMethodRule;
 import org.apache.commons.digester.Digester;
@@ -49,6 +52,7 @@ public class ObjectPersister {
 			writer.write("<?xml version='1.0' ?>\n");
 			writer.write("<cctraysettings>\n");
 			saveHosts(writer, settings.getHosts());
+			saveKeyValues(writer, settings.getSettings());
 			writer.write("</cctraysettings>\n");
 		} catch (IOException e) {
 			throw e;
@@ -87,14 +91,25 @@ public class ObjectPersister {
 		for (Iterator iterator = hosts.iterator(); iterator.hasNext();) {
 			Host host = (Host) iterator.next();
 			writer.write("		<host");
-			writer.write(" cruiseClass = \"" + host.getCruiseClass() + "\"");
-			writer.write(" hostName = \"" + host.getHostName() + "\"");
-			writer.write(" hostString = \"" + host.getHostString() + "\"");
+			writer.write(" cruiseClass=\"" + host.getCruiseClass() + "\"");
+			writer.write(" hostName=\"" + host.getHostName() + "\"");
+			writer.write(" hostString=\"" + host.getHostString() + "\"");
 			writer.write(">\n");
 			saveProjects(writer, host.getProjects());
 			writer.write("		</host>\n");
 		}
 		writer.write("	</hosts>\n");
+	}
+	
+	private static void saveKeyValues(Writer writer, HashMap settings) throws IOException {
+		writer.write("	<settings>\n");
+		for (Iterator iterator = settings.entrySet().iterator(); iterator.hasNext();) {
+			Entry entry = (Entry) iterator.next();
+			writer.write("		<entry");
+			writer.write(" key=\"" + entry.getKey() + "\"");
+			writer.write(" value=\"" + entry.getValue() + "\"/>\n");
+		}
+		writer.write("	</settings>\n");
 	}
 
 	private static void saveProjects(Writer writer, Collection projects) throws IOException {
@@ -102,8 +117,8 @@ public class ObjectPersister {
 		for (Iterator iterator2 = projects.iterator(); iterator2.hasNext();) {
 			DashBoardProject project = (DashBoardProject) iterator2.next();
 			writer.write("				<project");
-			writer.write(" enabled = \"" + project.isEnabled() + "\"");
-			writer.write(" name = \"" + project.getName() + "\"");
+			writer.write(" enabled=\"" + project.isEnabled() + "\"");
+			writer.write(" name=\"" + project.getName() + "\"");
 			writer.write("/>\n");
 		}
 		writer.write("			</projects>\n");
@@ -123,7 +138,10 @@ public class ObjectPersister {
 		digester.addRule("cctraysettings/hosts/host/projects/project", new ObjectCreateRule(DashBoardProject.class));
 		digester.addRule("cctraysettings/hosts/host/projects/project", new SetPropertiesRule());
 		digester.addRule("cctraysettings/hosts/host/projects/project", new SetNextRule("addProject"));
-
+		
+		digester.addRule("cctraysettings/settings/entry", new ObjectCreateRule(NameValuePair.class));
+		digester.addRule("cctraysettings/settings/entry", new SetPropertiesRule());
+		digester.addRule("cctraysettings/settings/entry", new SetNextRule("set"));
 		JCCTraySettings result = (JCCTraySettings) digester.parse(fileReader);
 		fileReader.close();
 		return result;
