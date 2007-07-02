@@ -21,46 +21,26 @@ import java.util.Iterator;
 import net.sourceforge.jcctray.model.DashBoardProject;
 import net.sourceforge.jcctray.model.DashBoardProjects;
 import net.sourceforge.jcctray.model.Host;
+import net.sourceforge.jcctray.model.ISettingsConstants;
 import net.sourceforge.jcctray.model.JCCTraySettings;
+import net.sourceforge.jcctray.ui.settings.providers.ProjectLabelProvider;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TrayItem;
 
 public class JCCTrayRunnable implements Runnable {
 
-	public class ProjectsFilter extends ViewerFilter {
-
-		public boolean select(Viewer viewer, Object parentElement, Object element) {
-			if (element instanceof DashBoardProject) {
-				DashBoardProject project = (DashBoardProject) element;
-				Host host = project.getHost();
-				Host hostInSettings = JCCTraySettings.getInstance().findHostByString(host.getHostString());
-				DashBoardProject projectInSettings = hostInSettings.getProject(project.getName());
-				if ((projectInSettings != null) && projectInSettings.isEnabled())
-					return true;
-			}
-			return false;
-		}
-	}
-
 	private static final Logger	log			= Logger.getLogger(JCCTrayRunnable.class);
-	private final Table			table;
 	private TableViewer			tableViewer;
 	public boolean				shouldRun	= true;
 	private final TrayItem		trayItem;
 
-	public JCCTrayRunnable(Table table, TrayItem trayItem) {
+	public JCCTrayRunnable(TableViewer tableViewer, TrayItem trayItem) {
+		this.tableViewer = tableViewer;
 		this.trayItem = trayItem;
-		tableViewer = new TableViewer(table);
-		tableViewer.setLabelProvider(new LabelProvider());
-		tableViewer.setContentProvider(new ContentProvider());
-		tableViewer.setFilters(new ViewerFilter[] { new ProjectsFilter() });
-		this.table = table;
 	}
 
 	public void run() {
@@ -68,7 +48,7 @@ public class JCCTrayRunnable implements Runnable {
 		while (shouldRun) {
 			try {
 				updateUI();
-				Thread.sleep(5000);
+				Thread.sleep(JCCTraySettings.getInstance().getInt(ISettingsConstants.POLL_INTERVAL)*1000);
 			} catch (Exception e) {
 				log.error("Exception waiting on the background thread that fetches project status", e);
 			}
@@ -81,15 +61,15 @@ public class JCCTrayRunnable implements Runnable {
 
 	private Image deduceImageToSet(DashBoardProjects projects) {
 		DashBoardProject[] projectList = projects.getProjects();
-		Image icon = LabelProvider.GREEN_IMG;
+		Image icon = ProjectLabelProvider.GREEN_IMG;
 		for (int i = 0; i < projectList.length; i++) {
-			Image projectIcon = LabelProvider.getIcon(projectList[i]);
-			if (projectIcon == LabelProvider.RED_IMG)
-				icon = LabelProvider.RED_IMG;
-			if (projectIcon == LabelProvider.YELLOW_IMG)
-				icon = LabelProvider.YELLOW_IMG;
-			if (projectIcon == LabelProvider.ORANGE_IMG)
-				icon = LabelProvider.ORANGE_IMG;
+			Image projectIcon = new ProjectLabelProvider().getImage(projectList[i]);
+			if (projectIcon == ProjectLabelProvider.RED_IMG)
+				icon = ProjectLabelProvider.RED_IMG;
+			if (projectIcon == ProjectLabelProvider.YELLOW_IMG)
+				icon = ProjectLabelProvider.YELLOW_IMG;
+			if (projectIcon == ProjectLabelProvider.ORANGE_IMG)
+				icon = ProjectLabelProvider.ORANGE_IMG;
 		}
 		return icon;
 	}
@@ -116,6 +96,7 @@ public class JCCTrayRunnable implements Runnable {
 	}
 
 	private void updateProjectsList(final DashBoardProjects projects) {
+		final Table table = tableViewer.getTable();
 		table.getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				if (!table.isDisposed()) {
@@ -143,7 +124,7 @@ public class JCCTrayRunnable implements Runnable {
 	}
 
 	protected void updateShellIcon(DashBoardProjects projects) {
-		table.getShell().setImage(deduceImageToSet(projects));
+		tableViewer.getTable().getShell().setImage(deduceImageToSet(projects));
 	}
 
 }

@@ -21,17 +21,21 @@ import net.sourceforge.jcctray.model.DashBoardProject;
 import net.sourceforge.jcctray.model.Host;
 import net.sourceforge.jcctray.model.JCCTraySettings;
 import net.sourceforge.jcctray.ui.Utils;
+import net.sourceforge.jcctray.ui.settings.providers.EnabledProjectsFilter;
 import net.sourceforge.jcctray.ui.settings.providers.HostContentProvider;
 import net.sourceforge.jcctray.ui.settings.providers.HostLabelProvider;
 import net.sourceforge.jcctray.ui.settings.providers.ProjectContentProvider;
 import net.sourceforge.jcctray.ui.settings.providers.ProjectLabelProvider;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -78,7 +82,7 @@ public class AddProjectDialog {
 
 	}
 
-	public class AddProjectListener implements SelectionListener {
+	public class AddProjectListener implements SelectionListener, IDoubleClickListener {
 
 		private final ListViewer	projectListViewer;
 		private final ListViewer	serverListViewer;
@@ -89,6 +93,18 @@ public class AddProjectDialog {
 		}
 
 		public void widgetDefaultSelected(SelectionEvent e) {
+			addProject();
+		}
+
+		public void widgetSelected(SelectionEvent e) {
+			addProject();
+		}
+
+		public void doubleClick(DoubleClickEvent event) {
+			addProject();
+		}
+
+		private void addProject() {
 			ISelection sel = projectListViewer.getSelection();
 			if (sel instanceof IStructuredSelection) {
 				IStructuredSelection selection = (IStructuredSelection) sel;
@@ -105,10 +121,7 @@ public class AddProjectDialog {
 				}
 				Utils.saveSettings(shell);
 			}
-		}
-
-		public void widgetSelected(SelectionEvent e) {
-			widgetDefaultSelected(e);
+			projectListViewer.refresh();
 		}
 
 	}
@@ -201,12 +214,12 @@ public class AddProjectDialog {
 	}
 
 	private void hookEvents() {
-
 		serverListViewer.addSelectionChangedListener(new ProjectListPopulator(projectListViewer));
-
 		serverListViewer.addSelectionChangedListener(new ButtonEnabler(removeServerButton));
 
 		projectListViewer.addSelectionChangedListener(new ButtonEnabler(addProjectButton));
+		projectListViewer.addDoubleClickListener(new AddProjectListener(serverListViewer, projectListViewer));
+		
 		addProjectButton.addSelectionListener(new AddProjectListener(serverListViewer, projectListViewer));
 
 		addServerButton.addSelectionListener(new AddServerListener(shell));
@@ -240,7 +253,8 @@ public class AddProjectDialog {
 		projectListViewer = new ListViewer(projectList);
 		projectListViewer.setContentProvider(new ProjectContentProvider());
 		projectListViewer.setLabelProvider(new ProjectLabelProvider());
-
+		projectListViewer.setFilters(new ViewerFilter[]{new EnabledProjectsFilter(false)});
+		
 		addProjectButton = new Button(availableProjectsGroup, SWT.NONE);
 		addProjectButton.setText("Add &Project");
 		addProjectButton.setEnabled(false);

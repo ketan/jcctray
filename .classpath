@@ -7,7 +7,7 @@
 	<classpathentry kind="lib" path="lib/commons-digester-1.8.jar" sourcepath="lib/commons-digester-1.8-src/src/java"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-beanutils.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.jface_3.3.0.I20070503-0010.jar" sourcepath="/opt/eclipse-installs/eclipse-3.3M7-X86_64/plugins/org.eclipse.rcp.source_3.3.0.v20070405a-8w8eDpEbsN3KkG_gP8JZLGb/src/org.eclipse.jface_3.3.0.I20070503-0010/src.zip"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.jface_3.3.0.I20070503-0010.jar" sourcepath="D:/java/eclipse/plugins/org.eclipse.rcp.source_3.3.0.v20070607-8y8eE8NEbsN3X5PjTaJy8DEsjhiu/src/org.eclipse.jface_3.3.0.I20070606-0010/src.zip"/>
 	<classpathentry kind="lib" path="lib/commons-httpclient-3.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.equinox.common_3.3.0.v20070426.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.core.commands_3.3.0.I20070502-1300a.jar"/>

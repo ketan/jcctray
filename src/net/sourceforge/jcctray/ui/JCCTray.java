@@ -17,8 +17,14 @@ package net.sourceforge.jcctray.ui;
 
 import net.sourceforge.jcctray.model.DashBoardProject;
 import net.sourceforge.jcctray.ui.settings.SettingsDialog;
+import net.sourceforge.jcctray.ui.settings.providers.EnabledProjectsFilter;
+import net.sourceforge.jcctray.ui.settings.providers.ProjectLabelProvider;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -42,6 +48,22 @@ import org.eclipse.swt.widgets.TrayItem;
 public class JCCTray {
 
 	private static final Logger	log	= Logger.getLogger(JCCTray.class);
+
+	private final class TableSelectionListener implements SelectionListener {
+		public void widgetDefaultSelected(SelectionEvent e) {
+			setButtonVisibilities();
+		}
+
+		public void widgetSelected(SelectionEvent e) {
+			widgetDefaultSelected(e);
+		}
+
+		private void setButtonVisibilities() {
+			boolean enabled = table.getSelectionCount() > 0;
+			forceBuildButton.setEnabled(enabled);
+			displayWebPageButton.setEnabled(enabled);
+		}
+	}
 
 	private final class SettingsMenuListener implements SelectionListener {
 		public void widgetDefaultSelected(SelectionEvent e) {
@@ -122,8 +144,20 @@ public class JCCTray {
 		}
 	}
 
-	private final class DisplayWebPageListener implements SelectionListener {
+	private final class DisplayWebPageListener implements SelectionListener, IDoubleClickListener {
 		public void widgetDefaultSelected(SelectionEvent e) {
+			openWebPage();
+		}
+
+
+		public void widgetSelected(SelectionEvent e) {
+			openWebPage();
+		}
+
+		public void doubleClick(DoubleClickEvent event) {
+			openWebPage();
+		}
+		private void openWebPage() {
 			if (table.getSelectionCount() > 0) {
 				TableItem[] selection = table.getSelection();
 				DashBoardProject project = (DashBoardProject) selection[0].getData();
@@ -131,9 +165,6 @@ public class JCCTray {
 			}
 		}
 
-		public void widgetSelected(SelectionEvent e) {
-			widgetDefaultSelected(e);
-		}
 	}
 
 	private Shell		shell;
@@ -147,6 +178,7 @@ public class JCCTray {
 	private Button		forceBuildButton;
 	private MenuItem	fileSettingsItem;
 	private MenuItem	fileExitItem;
+	private TableViewer	tableViewer;
 
 	public JCCTray() {
 		initialize();
@@ -157,6 +189,7 @@ public class JCCTray {
 		createShell();
 		createMenus();
 		createTable();
+		createContextMenus();
 		createButtons();
 		createSystemTray();
 		hookEvents();
@@ -192,20 +225,8 @@ public class JCCTray {
 		fileSettingsItem.addSelectionListener(new SettingsMenuListener());
 		fileExitItem.addSelectionListener(new FileExitMenuListener());
 
-		table.addSelectionListener(new SelectionListener() {
-
-			public void widgetDefaultSelected(SelectionEvent e) {
-				boolean enabled = table.getSelectionCount() > 0;
-				forceBuildButton.setEnabled(enabled);
-				displayWebPageButton.setEnabled(enabled);
-			}
-
-			public void widgetSelected(SelectionEvent e) {
-				widgetDefaultSelected(e);
-			}
-
-		});
-
+		table.addSelectionListener(new TableSelectionListener());
+		tableViewer.addDoubleClickListener(new DisplayWebPageListener());
 	}
 
 	protected void minimizeToTray() {
@@ -249,12 +270,32 @@ public class JCCTray {
 		tableColumn.setWidth(150);
 		tableColumn.setMoveable(true);
 		tableColumn.setText("Last Build Time");
+		
+		tableViewer = new TableViewer(table);
+		tableViewer.setLabelProvider(new ProjectLabelProvider());
+		tableViewer.setContentProvider(new ContentProvider());
+		tableViewer.setFilters(new ViewerFilter[] { new EnabledProjectsFilter(true) });
 	}
 
 	private void createMenus() {
 		menuBar = new Menu(shell, SWT.BAR);
 		createFileMenu();
 		shell.setMenuBar(menuBar);
+	}
+	
+	private void createContextMenus() {
+		Menu menu = new Menu(table);
+		MenuItem menuItem;
+		
+		menuItem = new MenuItem(menu, SWT.CASCADE);
+		menuItem.setText("Display &Web Page");
+		menuItem.addSelectionListener(new DisplayWebPageListener());
+		
+		menuItem = new MenuItem(menu, SWT.CASCADE);
+		menuItem.setText("Force &Build");
+		menuItem.addSelectionListener(new ForceBuildListener());
+		
+		table.setMenu(menu);
 	}
 
 	private void createFileMenu() {
@@ -294,7 +335,7 @@ public class JCCTray {
 	public void open() {
 		shell.open();
 
-		JCCTrayRunnable runnable = new JCCTrayRunnable(table, trayItem);
+		JCCTrayRunnable runnable = new JCCTrayRunnable(tableViewer, trayItem);
 		Thread thread = new Thread(runnable, "XmlStatusReportThread");
 		thread.start();
 		while (!shell.isDisposed())
@@ -306,6 +347,5 @@ public class JCCTray {
 		} catch (InterruptedException e) {
 			log.error("Interrupted when waiting on thread.", e);
 		}
-
 	}
 }
