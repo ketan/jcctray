@@ -50,7 +50,10 @@ public class DashboardXmlParser {
 	}
 
 	public static DashBoardProjects getProjects(Reader reader) throws IOException, SAXException {
-		return (DashBoardProjects) createDigester().parse(reader);
+		DashBoardProjects projects = (DashBoardProjects) createDigester().parse(reader);
+		if (projects == null)
+			projects = new DashBoardProjects();
+		return projects;
 	}
 
 	public static DashBoardProjects getProjects(InputStream inStream) throws IOException, SAXException {

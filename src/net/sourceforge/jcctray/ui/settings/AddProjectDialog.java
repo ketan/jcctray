@@ -117,7 +117,7 @@ public class AddProjectDialog {
 					DashBoardProject dashBoardProject = new DashBoardProject();
 					dashBoardProject.setName(((DashBoardProject) selections[i]).getName());
 					dashBoardProject.setEnabled(true);
-					selectedHost.addProject(dashBoardProject);
+					selectedHost.addConfiguredProject(dashBoardProject);
 				}
 				Utils.saveSettings(shell);
 			}

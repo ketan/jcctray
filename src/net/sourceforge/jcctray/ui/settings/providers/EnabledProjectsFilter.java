@@ -35,7 +35,7 @@ public class EnabledProjectsFilter extends ViewerFilter {
 			DashBoardProject project = (DashBoardProject) element;
 			Host host = project.getHost();
 			Host hostInSettings = JCCTraySettings.getInstance().findHostByString(host.getHostString());
-			DashBoardProject projectInSettings = hostInSettings.getProject(project.getName());
+			DashBoardProject projectInSettings = hostInSettings.getConfiguredProject(project.getName());
 			if ((projectInSettings != null) && projectInSettings.isEnabled() == this.enabled)
 				return true;
 		}

@@ -62,7 +62,7 @@ public class BuildProjectsSettingsTab {
 			List result = new ArrayList();
 			for (Iterator iterator = hosts.iterator(); iterator.hasNext();) {
 				Host host = (Host) iterator.next();
-				Collection projects = host.getProjects();
+				Collection projects = host.getConfiguredProjects();
 				for (Iterator iterator2 = projects.iterator(); iterator2.hasNext();) {
 					DashBoardProject project = (DashBoardProject) iterator2.next();
 					if (project.isEnabled())

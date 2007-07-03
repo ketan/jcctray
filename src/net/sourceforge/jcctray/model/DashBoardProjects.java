@@ -16,6 +16,7 @@
 package net.sourceforge.jcctray.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class DashBoardProjects {
@@ -35,19 +36,26 @@ public class DashBoardProjects {
 		return (DashBoardProject) projectList.get(index);
 	}
 
-	public DashBoardProject[] getProjects() {
+	public DashBoardProject[] toArray() {
 		DashBoardProject[] projects = new DashBoardProject[count()];
 		if (count() != 0)
 			this.projectList.toArray(projects);
 		return projects;
-
 	}
 
 	public void add(DashBoardProjects projects) {
-		projectList.addAll(projects.projectList);
+		for (Iterator iterator = projects.iterator(); iterator.hasNext();) {
+			add((DashBoardProject) iterator.next());
+		}
+			
 	}
 
 	public String toString() {
 		return "Projects - " + projectList;
 	}
+
+	public Iterator iterator(){
+		return projectList.iterator();
+	}
+	
 }

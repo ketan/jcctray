@@ -25,7 +25,7 @@ public class DashBoardProjectsTest extends TestCase {
 		projects1.add(new DashBoardProject("b"));
 		projects1.add(new DashBoardProject("c"));
 
-		assertEquals(3, projects1.getProjects().length);
+		assertEquals(3, projects1.count());
 	}
 
 	public void testAddsDashBoardProjects() throws Exception {
@@ -38,6 +38,6 @@ public class DashBoardProjectsTest extends TestCase {
 		DashBoardProjects projects2 = new DashBoardProjects();
 		projects2.add(projects1);
 
-		assertEquals(3, projects2.getProjects().length);
+		assertEquals(3, projects2.count());
 	}
 }

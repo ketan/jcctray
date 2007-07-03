@@ -80,17 +80,17 @@ public class JCCTraySettingsTest extends TestCase {
 		JCCTraySettings settings1 = new JCCTraySettings();
 		DashBoardProject dashBoardProject = new DashBoardProject("myProject1", "activity", "asdf", "asdf", "asdf",
 				"asdf", "http://", "categpry");
-		host1.addProject(dashBoardProject);
+		host1.addConfiguredProject(dashBoardProject);
 		DashBoardProject dashBoardProject2 = new DashBoardProject("myProject2", "activity", "asdf", "asdf", "asdf",
 				"asdf", "http://", "categpry");
-		host1.addProject(dashBoardProject2);
+		host1.addConfiguredProject(dashBoardProject2);
 
 		DashBoardProject dashBoardProject3 = new DashBoardProject("myProject3", "activity", "asdf", "asdf", "asdf",
 				"asdf", "http://", "categpry");
-		host2.addProject(dashBoardProject3);
+		host2.addConfiguredProject(dashBoardProject3);
 		DashBoardProject dashBoardProject4 = new DashBoardProject("myProject4", "activity", "asdf", "asdf", "asdf",
 				"asdf", "http://", "categpry");
-		host2.addProject(dashBoardProject4);
+		host2.addConfiguredProject(dashBoardProject4);
 
 		settings1.addHost(host1);
 		settings1.addHost(host2);
@@ -103,7 +103,7 @@ public class JCCTraySettingsTest extends TestCase {
 		assertTrue(loadedSettings.getHosts().contains(host1));
 		assertTrue(loadedSettings.getHosts().contains(host2));
 
-		assertEquals(2, loadedSettings.findHostByString("human Readable Name1").projectCount());
+		assertEquals(2, loadedSettings.findHostByString("human Readable Name1").configuredProjectCount());
 
 	}
 }

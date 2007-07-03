@@ -24,7 +24,7 @@ public class Host {
 	private static final Logger	log	= Logger.getLogger(Host.class);
 	public String				hostName;
 	public String				hostString;
-	private HashMap				projects;
+	private HashMap				configuredProjects;
 	private ICruise				cruise;
 
 	public Host() {
@@ -35,7 +35,7 @@ public class Host {
 		this.hostString = hostString;
 		this.hostName = hostName;
 		this.cruise = cruise;
-		this.projects = new HashMap();
+		this.configuredProjects = new HashMap();
 	}
 
 	public Host(String hostString, String hostName) {
@@ -87,25 +87,25 @@ public class Host {
 		return true;
 	}
 
-	public void addProject(DashBoardProject project) {
-		projects.put(project.getName(), project);
+	public void addConfiguredProject(DashBoardProject project) {
+		configuredProjects.put(project.getName(), project);
 		project.setHost(this);
 	}
 
-	public int projectCount() {
-		return projects.size();
+	public int configuredProjectCount() {
+		return configuredProjects.size();
 	}
 
-	public Collection getProjects() {
-		return projects.values();
+	public Collection getConfiguredProjects() {
+		return configuredProjects.values();
 	}
 
 	public DashBoardProjects getCruiseProjects() throws Exception {
 		return getCruise().getProjects(this);
 	}
 
-	public DashBoardProject getProject(String projectName) {
-		return (DashBoardProject) projects.get(projectName);
+	public DashBoardProject getConfiguredProject(String projectName) {
+		return (DashBoardProject) configuredProjects.get(projectName);
 	}
 
 	public String toString() {
@@ -134,7 +134,7 @@ public class Host {
 	}
 
 	public void setProjects(HashMap projects) {
-		this.projects = projects;
+		this.configuredProjects = projects;
 	}
 
 }

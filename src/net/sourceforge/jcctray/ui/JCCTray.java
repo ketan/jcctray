@@ -18,6 +18,7 @@ package net.sourceforge.jcctray.ui;
 import net.sourceforge.jcctray.model.DashBoardProject;
 import net.sourceforge.jcctray.ui.settings.SettingsDialog;
 import net.sourceforge.jcctray.ui.settings.providers.EnabledProjectsFilter;
+import net.sourceforge.jcctray.ui.settings.providers.ProjectContentProvider;
 import net.sourceforge.jcctray.ui.settings.providers.ProjectLabelProvider;
 
 import org.apache.log4j.Logger;
@@ -273,7 +274,7 @@ public class JCCTray {
 		
 		tableViewer = new TableViewer(table);
 		tableViewer.setLabelProvider(new ProjectLabelProvider());
-		tableViewer.setContentProvider(new ContentProvider());
+		tableViewer.setContentProvider(new ProjectContentProvider());
 		tableViewer.setFilters(new ViewerFilter[] { new EnabledProjectsFilter(true) });
 	}
 

@@ -35,24 +35,24 @@ public class HostTest extends TestCase {
 	}
 
 	public void testAddsProjects() throws Exception {
-		host.addProject(project);
-		assertEquals(1, host.projectCount());
-		assertEquals(project, host.getProject("myProject"));
+		host.addConfiguredProject(project);
+		assertEquals(1, host.configuredProjectCount());
+		assertEquals(project, host.getConfiguredProject("myProject"));
 	}
 
 	public void testAddsMultipleProjectsToHost() throws Exception {
-		host.addProject(project1);
-		host.addProject(project2);
-		assertEquals(2, host.projectCount());
-		assertEquals(project1, host.getProject("myProject1"));
-		assertEquals(project2, host.getProject("myProject2"));
+		host.addConfiguredProject(project1);
+		host.addConfiguredProject(project2);
+		assertEquals(2, host.configuredProjectCount());
+		assertEquals(project1, host.getConfiguredProject("myProject1"));
+		assertEquals(project2, host.getConfiguredProject("myProject2"));
 	}
 
 	public void testDoesNotAddSameProjectTwice() throws Exception {
-		host.addProject(project1);
-		host.addProject(project1);
-		assertEquals(1, host.projectCount());
-		assertEquals(project1, host.getProject("myProject1"));
+		host.addConfiguredProject(project1);
+		host.addConfiguredProject(project1);
+		assertEquals(1, host.configuredProjectCount());
+		assertEquals(project1, host.getConfiguredProject("myProject1"));
 	}
 
 	protected void setUp() throws Exception {

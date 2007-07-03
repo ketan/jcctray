@@ -60,7 +60,7 @@ public class JCCTrayRunnable implements Runnable {
 	}
 
 	private Image deduceImageToSet(DashBoardProjects projects) {
-		DashBoardProject[] projectList = projects.getProjects();
+		DashBoardProject[] projectList = projects.toArray();
 		Image icon = ProjectLabelProvider.GREEN_IMG;
 		for (int i = 0; i < projectList.length; i++) {
 			Image projectIcon = new ProjectLabelProvider().getImage(projectList[i]);
@@ -81,12 +81,7 @@ public class JCCTrayRunnable implements Runnable {
 		for (Iterator iterator = hosts.iterator(); iterator.hasNext();) {
 			Host host = (Host) iterator.next();
 			try {
-				DashBoardProject[] dashBoardProjects = host.getCruiseProjects().getProjects();
-				for (int i = 0; i < dashBoardProjects.length; i++) {
-					DashBoardProject project = dashBoardProjects[i];
-					project.setHost(host);
-					projects.add(project);
-				}
+				projects.add(host.getCruiseProjects());
 			} catch (Exception e) {
 				log.error("Could not fetch project list: " + host, e);
 			}
@@ -114,7 +109,7 @@ public class JCCTrayRunnable implements Runnable {
 		Collection hosts = JCCTraySettings.getInstance().getHosts();
 
 		for (Iterator iterator = hosts.iterator(); iterator.hasNext();) {
-			Collection projects = ((Host) iterator.next()).getProjects();
+			Collection projects = ((Host) iterator.next()).getConfiguredProjects();
 			for (Iterator iterator2 = projects.iterator(); iterator2.hasNext();) {
 				enabledProjects.add((DashBoardProject) iterator2.next());
 			}

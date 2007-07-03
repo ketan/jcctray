@@ -27,8 +27,7 @@ public class ProjectContentProvider implements IStructuredContentProvider {
 
 	public Object[] getElements(Object inputElement) {
 		if (inputElement instanceof DashBoardProjects) {
-			DashBoardProjects projects = (DashBoardProjects) inputElement;
-			return projects.getProjects();
+			return ((DashBoardProjects) inputElement).toArray();
 		}
 		return null;
 	}

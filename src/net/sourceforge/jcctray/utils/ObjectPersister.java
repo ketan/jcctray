@@ -95,7 +95,7 @@ public class ObjectPersister {
 			writer.write(" hostName=\"" + host.getHostName() + "\"");
 			writer.write(" hostString=\"" + host.getHostString() + "\"");
 			writer.write(">\n");
-			saveProjects(writer, host.getProjects());
+			saveProjects(writer, host.getConfiguredProjects());
 			writer.write("		</host>\n");
 		}
 		writer.write("	</hosts>\n");
@@ -137,7 +137,7 @@ public class ObjectPersister {
 
 		digester.addRule("cctraysettings/hosts/host/projects/project", new ObjectCreateRule(DashBoardProject.class));
 		digester.addRule("cctraysettings/hosts/host/projects/project", new SetPropertiesRule());
-		digester.addRule("cctraysettings/hosts/host/projects/project", new SetNextRule("addProject"));
+		digester.addRule("cctraysettings/hosts/host/projects/project", new SetNextRule("addConfiguredProject"));
 		
 		digester.addRule("cctraysettings/settings/entry", new ObjectCreateRule(NameValuePair.class));
 		digester.addRule("cctraysettings/settings/entry", new SetPropertiesRule());
