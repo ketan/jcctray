@@ -175,7 +175,7 @@ public class BuildProjectsSettingsTab {
 
 	private void createBuildProjectsTab(TabFolder tabFolder) {
 		TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
-		tabItem.setText("Build Projects");
+		tabItem.setText("Build &Projects");
 		Composite composite = new Composite(tabFolder, SWT.NONE);
 		tabItem.setControl(composite);
 		composite.setLayout(new GridLayout(2, false));

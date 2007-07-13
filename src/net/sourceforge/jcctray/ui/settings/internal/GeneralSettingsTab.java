@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
@@ -39,16 +40,16 @@ public class GeneralSettingsTab {
 	private final TabFolder	tabFolder;
 
 	private final class OKButtonListener implements SelectionListener {
-		private final Text	pollIntervalText;
 		private final Text	browserPath;
+		private final Spinner	spinner;
 
-		private OKButtonListener(Text pollIntervalText, Text browserPath) {
-			this.pollIntervalText = pollIntervalText;
+		private OKButtonListener(Spinner spinner, Text browserPath) {
+			this.spinner = spinner;
 			this.browserPath = browserPath;
 		}
 
 		public void widgetDefaultSelected(SelectionEvent e) {
-			applySettings(pollIntervalText.getText(), browserPath.getText());
+			applySettings(spinner.getSelection(), browserPath.getText());
 			((Control) e.widget).getShell().close();
 		}
 
@@ -59,15 +60,15 @@ public class GeneralSettingsTab {
 
 	private final class ApplyButtonListener implements SelectionListener {
 		private final Text	browserPath;
-		private final Text	pollIntervalText;
+		private final Spinner	spinner;
 
-		private ApplyButtonListener(Text browserPath, Text pollIntervalText) {
+		private ApplyButtonListener(Text browserPath, Spinner spinner) {
 			this.browserPath = browserPath;
-			this.pollIntervalText = pollIntervalText;
+			this.spinner = spinner;
 		}
 
 		public void widgetDefaultSelected(SelectionEvent e) {
-			applySettings(pollIntervalText.getText(), browserPath.getText());
+			applySettings(spinner.getSelection(), browserPath.getText());
 		}
 
 		public void widgetSelected(SelectionEvent e) {
@@ -87,16 +88,16 @@ public class GeneralSettingsTab {
 
 	private final class RestoreButtonListener implements SelectionListener {
 		private final Text	browserPath;
-		private final Text	pollIntervalText;
+		private final Spinner	spinner;
 
-		private RestoreButtonListener(Text browserPath, Text pollIntervalText) {
+		private RestoreButtonListener(Text browserPath, Spinner spinner) {
 			this.browserPath = browserPath;
-			this.pollIntervalText = pollIntervalText;
+			this.spinner = spinner;
 		}
 
 		public void widgetDefaultSelected(SelectionEvent e) {
 			browserPath.setText(JCCTraySettings.getInstance().get(ISettingsConstants.BROWSER_PATH));
-			pollIntervalText.setText("" + JCCTraySettings.getInstance().getInt(ISettingsConstants.POLL_INTERVAL));
+			spinner.setSelection(JCCTraySettings.getInstance().getInt(ISettingsConstants.POLL_INTERVAL));
 		}
 
 		public void widgetSelected(SelectionEvent e) {
@@ -111,7 +112,7 @@ public class GeneralSettingsTab {
 
 	private void createGeneralSettingsTab(TabFolder tabFolder) {
 		TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
-		tabItem.setText("General Settings");
+		tabItem.setText("&General Settings");
 		Composite composite = new Composite(tabFolder, SWT.NONE);
 		tabItem.setControl(composite);
 		composite.setLayout(new GridLayout(4, false));
@@ -136,17 +137,19 @@ public class GeneralSettingsTab {
 		// poll interval settings
 
 		new Label(composite, SWT.NONE).setText("&Poll Interval:");
-		final Text pollIntervalText = new Text(composite, SWT.NONE);
-		pollIntervalText.setText("" + JCCTraySettings.getInstance().getInt(ISettingsConstants.POLL_INTERVAL));
+		Spinner spinner = new Spinner(composite, SWT.NONE);
+		spinner.setMinimum(1);
+		spinner.setMaximum(3600);
+		spinner.setSelection(JCCTraySettings.getInstance().getInt(ISettingsConstants.POLL_INTERVAL));
 		// just a filler
-		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE).setText("Seconds");
 		new Label(composite, SWT.NONE);
 
 		// restore, cancel, apply, ok buttons
 
 		Button restoreButton = new Button(composite, SWT.NONE);
 		restoreButton.setText("&Restore");
-		restoreButton.addSelectionListener(new RestoreButtonListener(browserPath, pollIntervalText));
+		restoreButton.addSelectionListener(new RestoreButtonListener(browserPath, spinner));
 
 		Button cancelButton = new Button(composite, SWT.NONE);
 		cancelButton.setText("&Cancel");
@@ -154,11 +157,11 @@ public class GeneralSettingsTab {
 
 		Button applyButton = new Button(composite, SWT.NONE);
 		applyButton.setText("&Apply");
-		applyButton.addSelectionListener(new ApplyButtonListener(browserPath, pollIntervalText));
+		applyButton.addSelectionListener(new ApplyButtonListener(browserPath, spinner));
 
 		Button okButton = new Button(composite, SWT.NONE);
 		okButton.setText("&Ok");
-		okButton.addSelectionListener(new OKButtonListener(pollIntervalText, browserPath));
+		okButton.addSelectionListener(new OKButtonListener(spinner, browserPath));
 	}
 
 	private String openFileDialog(Shell shell) {
@@ -169,9 +172,9 @@ public class GeneralSettingsTab {
 		return fileDialog.open();
 	}
 
-	private void applySettings(String pollInterval, String browserPath) {
+	private void applySettings(int pollInterval, String browserPath) {
 		JCCTraySettings.getInstance().set(ISettingsConstants.BROWSER_PATH, browserPath);
-		JCCTraySettings.getInstance().set(ISettingsConstants.POLL_INTERVAL, pollInterval);
+		JCCTraySettings.getInstance().set(ISettingsConstants.POLL_INTERVAL, "" + pollInterval);
 		Utils.saveSettings(tabFolder.getShell());
 	}
 

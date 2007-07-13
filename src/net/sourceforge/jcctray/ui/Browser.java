@@ -15,11 +15,28 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.ui;
 
+import java.io.File;
+import java.io.IOException;
+
+import net.sourceforge.jcctray.model.ISettingsConstants;
+import net.sourceforge.jcctray.model.JCCTraySettings;
+
+import org.apache.log4j.Logger;
 import org.eclipse.swt.program.Program;
 
 public class Browser {
+	private static final Logger	log	= Logger.getLogger(Browser.class);
 
 	public static void open(String url) {
-		Program.launch(url);
+		String browserPath = JCCTraySettings.getInstance().get(ISettingsConstants.BROWSER_PATH);
+		if (browserPath != null && new File(browserPath).exists() && new File(browserPath).isFile())
+			try {
+				String string = browserPath + " " + url;
+				Runtime.getRuntime().exec(string);
+			} catch (IOException e) {
+				log.error("Could not open browser: " + browserPath, e);
+			}
+		else
+			Program.launch(url);
 	}
 }
