@@ -29,10 +29,6 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
  */
 public class CruiseControlRuby extends HTTPCruise implements ICruise {
 
-	protected void configureMethod(HttpMethod method, DashBoardProject project) {
-
-	}
-
 	protected String forceBuildURL(DashBoardProject project) {
 		return project.getHost().getHostName().replaceAll("/*$", "") + "/projects/build/"+project.getName();
 	}

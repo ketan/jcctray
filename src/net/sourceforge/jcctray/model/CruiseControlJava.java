@@ -31,10 +31,6 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
  */
 public class CruiseControlJava extends HTTPCruise implements ICruise {
 
-	protected void configureMethod(HttpMethod method, DashBoardProject project) {
-		// do nothing
-	}
-
 	protected String forceBuildURL(DashBoardProject project) {
 		String hostName = project.getHost().getHostName();
 		URL url = null;

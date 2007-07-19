@@ -61,7 +61,9 @@ public abstract class HTTPCruise implements ICruise{
 
 	protected abstract HttpMethod httpMethod(DashBoardProject project);
 
-	protected abstract void configureMethod(HttpMethod method, DashBoardProject project);
+	protected void configureMethod(HttpMethod method, DashBoardProject project){
+		// do nothing
+	}
 
 	private boolean isInvokeSuccessful(HttpMethod method, DashBoardProject project) throws InvocationException {
 		try {
