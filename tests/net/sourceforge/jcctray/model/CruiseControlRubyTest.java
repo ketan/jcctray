@@ -61,6 +61,18 @@ public class CruiseControlRubyTest extends TestCase {
 		assertEquals("http://my.host.name/myCruise/projects/build/myProject", forceBuildURL);
 	}
 	
+	public void testGetXmlReportURL() throws Exception {
+		assertEquals("http://host.name/cruise/XmlStatusReport.aspx",cruiseControl.getXmlReportURL(new Host("blah", "http://host.name/cruise//"))); 
+	}
+	
+	public void testGetsName() throws Exception {
+		assertEquals("CruiseControl.rb",cruiseControl.getName());
+	}
+	
+	public void testGetsSuccessMessage() throws Exception {
+		assertEquals("", cruiseControl.getSuccessMessage(new DashBoardProject("myProject")));
+	}
+	
 	protected void setUp() throws Exception {
 		cruiseControl = new CruiseControlRuby();
 	}

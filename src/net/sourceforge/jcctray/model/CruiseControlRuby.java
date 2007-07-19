@@ -42,7 +42,7 @@ public class CruiseControlRuby extends HTTPCruise implements ICruise {
 	}
 
 	protected String getXmlReportURL(Host host) {
-		return host.getHostName().replaceAll("/$", "") + "/XmlStatusReport.aspx";
+		return host.getHostName().replaceAll("/*$", "") + "/XmlStatusReport.aspx";
 	}
 
 	protected HttpMethod httpMethod(DashBoardProject project) {

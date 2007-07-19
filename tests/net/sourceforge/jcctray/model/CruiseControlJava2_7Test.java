@@ -20,9 +20,9 @@ import junit.framework.TestCase;
 /**
  * @author Ketan Padegaonkar
  */
-public class CruiseControlJavaTest extends TestCase {
+public class CruiseControlJava2_7Test extends TestCase {
 
-	private CruiseControlJava	cruiseControl;
+	private CruiseControlJava2_7	cruiseControl;
 
 	public void testFormatsDate() throws Exception {
 		String formattedDate = cruiseControl.formatDate("2007-07-01T10:14:34");
@@ -48,11 +48,11 @@ public class CruiseControlJavaTest extends TestCase {
 	}
 	
 	public void testGetXmlReportURL() throws Exception {
-		assertEquals("http://host.name/cruise/xml",cruiseControl.getXmlReportURL(new Host("blah", "http://host.name/cruise//"))); 
+		assertEquals("http://host.name/cruise/dashboard/cctray.xml",cruiseControl.getXmlReportURL(new Host("blah", "http://host.name/cruise//"))); 
 	}
 	
 	public void testGetsName() throws Exception {
-		assertEquals("CruiseControl",cruiseControl.getName());
+		assertEquals("CruiseControl >= V2.7",cruiseControl.getName());
 	}
 	
 	public void testGetsSuccessMessage() throws Exception {
@@ -60,6 +60,6 @@ public class CruiseControlJavaTest extends TestCase {
 	}
 	
 	protected void setUp() throws Exception {
-		cruiseControl = new CruiseControlJava();
+		cruiseControl = new CruiseControlJava2_7();
 	}
 }

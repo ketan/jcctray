@@ -68,7 +68,7 @@ public class CruiseControlJava extends HTTPCruise implements ICruise {
 	}
 
 	protected String getXmlReportURL(Host host) {
-		return host.getHostName().replaceAll("/$", "") + "/xml";
+		return host.getHostName().replaceAll("/*$", "") + "/xml";
 	}
 
 	protected HttpMethod httpMethod(DashBoardProject project) {

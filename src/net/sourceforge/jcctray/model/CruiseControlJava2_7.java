@@ -36,12 +36,13 @@ public class CruiseControlJava2_7 extends HTTPCruise implements ICruise {
 	}
 
 	protected String forceBuildURL(DashBoardProject project) {
-		String hostString = project.getHost().getHostName();
+		String hostName = project.getHost().getHostName();
 		URL url = null;
 		try {
-			url = new URL(hostString);
-			return url.getProtocol() + "://" + url.getHost()
-					+ ":8000/invoke?operation=build&objectname=CruiseControl+Project%3Aname%3D" + project.getName();
+			url = new URL(hostName);
+			return url.getProtocol() + "://" + url.getHost()  
+					+ ":8000" + url.getPath().replaceAll("/*$", "")+
+							"/invoke?operation=build&objectname=CruiseControl+Project%3Aname%3D" + project.getName();
 		} catch (MalformedURLException e) {
 			getLog().error("The url was malformed: " + url, e);
 		}
@@ -67,7 +68,7 @@ public class CruiseControlJava2_7 extends HTTPCruise implements ICruise {
 	}
 
 	protected String getXmlReportURL(Host host) {
-		return host.getHostName().replaceAll("/$", "") + "/dashboard/cctray.xml";
+		return host.getHostName().replaceAll("/*$", "") + "/dashboard/cctray.xml";
 	}
 
 	protected HttpMethod httpMethod(DashBoardProject project) {
