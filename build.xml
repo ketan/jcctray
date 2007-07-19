@@ -28,8 +28,17 @@
 	<fileset id="swt.wpf.classpath" dir="${lib.dir}" includes="**/*swt.wpf.win32*.jar" />
 
 	<fileset id="swt.all.classpath" dir="${lib.dir}" />
-	
+
 	<fileset id="cctray.classpath" dir="${lib.dir}" excludes="**/*swt*.jar" />
+
+	<path id="cobertura.classpath">
+		<fileset dir="${cobertura.dir}">
+			<include name="cobertura.jar" />
+			<include name="lib/**/*.jar" />
+		</fileset>
+	</path>
+
+	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 
 	<path id="compile.classpath">
 		<pathelement location="${build.classes.dir}" />
@@ -38,8 +47,8 @@
 	</path>
 
 	<path id="test.classpath">
-		<path refid="compile.classpath" />
 		<pathelement location="${build.test.dir}" />
+		<path refid="compile.classpath" />
 	</path>
 
 	<target name="init">
@@ -52,6 +61,48 @@
 
 	<target name="clean">
 		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="instrument" depends="build-src">
+		<delete file="${cobertura.data.file}" />
+
+		<cobertura-instrument todir="${build.instrumented.classes.dir}" datafile="${cobertura.data.file}">
+			<fileset dir="${build.classes.dir}" />
+		</cobertura-instrument>
+	</target>
+
+	<target name="test-coverage" depends="instrument, test">
+		<!--
+		<mkdir dir="${junit.reports.xml.dir}" />
+		<junit fork="true" forkmode="once" printsummary="yes" haltonfailure="no" haltonerror="no" failureproperty="junit.failure" errorproperty="junit.failure">
+
+			<sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.data.file}" />
+
+			<classpath location="${build.instrumented.classes.dir}"/>
+			<classpath refid="cobertura.classpath" />
+			<classpath refid="test.classpath" />
+
+			<formatter type="xml" />
+
+			<batchtest fork="yes" todir="${junit.reports.xml.dir}">
+				<fileset dir="${test.dir}">
+					<include name="**/*Test.java" />
+					<exclude name="**/AllTests.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+
+		<mkdir dir="${junit.reports.html.dir}" />
+		<junitreport todir="${junit.reports.xml.dir}">
+			<fileset dir="${junit.reports.xml.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.reports.html.dir}" />
+		</junitreport>
+		<echo>Test reports available at: ${basedir}/${junit.reports.html.dir}/index.html</echo>
+		<fail message="Tests failed: check test reports." if="junit.failure" />
+		-->
+		<cobertura-report format="html" destdir="${build.instrumentation.reports.dir}" srcdir="${src.dir}" datafile="${cobertura.data.file}"/>
 	</target>
 
 	<target depends="init" name="build-src">
@@ -74,14 +125,16 @@
 		<jar destfile="${build.dir}/${target.jar}" basedir="${build.classes.dir}" />
 	</target>
 
-	<target name="test">
+	<target name="test" depends="build-tests">
 		<mkdir dir="${junit.reports.xml.dir}" />
 		<junit fork="true" forkmode="once" printsummary="yes" haltonfailure="no" haltonerror="no" failureproperty="junit.failure" errorproperty="junit.failure">
-
-			<sysproperty key="net.sourceforge.cobertura.datafile" file="${basedir}/${cobertura.datafile}" />
-
-			<classpath location="${build.instrumented.classes.dir}" />
+			<sysproperty key="net.sourceforge.cobertura.datafile"
+					file="${cobertura.data.file}" />
+			
+			<classpath location="${build.instrumented.classes.dir}"/>
 			<classpath refid="test.classpath" />
+			<classpath refid="cobertura.classpath"/>
+			
 
 			<formatter type="xml" />
 
@@ -105,9 +158,11 @@
 	</target>
 
 	<target name="javadoc">
+		<!--
 		<javadoc access="package" author="true" classpathref="compile.classpath" destdir="${build.docs.dir}" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="${source.version}" splitindex="true" use="true" version="true">
 			<fileset dir="${src.dir}" includes="**/*.java" />
 		</javadoc>
+		-->
 	</target>
 
 	<target name="create.cp.unix">
@@ -141,13 +196,13 @@
 				<fileset dir="${dist.dir}/lib" />
 			</path>
 		</pathconvert>
-		
+
 		<pathconvert targetos="${target.os}" property="basedir.dist">
 			<path>
 				<dirset dir="${dist.dir}/lib" />
 			</path>
 		</pathconvert>
-		
+
 		<propertyregex property="basedir.dist" override="true" input="${basedir.dist}" regexp="([\\])" replace="\1\1" casesensitive="false" />
 		<propertyregex property="cp" override="true" input="${cp}" regexp="${basedir.dist}" replace="lib" casesensitive="false" />
 
@@ -179,24 +234,24 @@
 		</tar>
 	</target>
 
-	
+
 	<target name="create.src.dist">
 		<mkdir dir="${dist.dir}" />
-		
+
 		<copy todir="${dist.dir}" verbose="true">
 			<fileset dir=".">
-				<exclude name="**/build/**/**.*"/>
-				<exclude name="**/bin/**/**.*"/>
+				<exclude name="**/build/**/**.*" />
+				<exclude name="**/bin/**/**.*" />
 			</fileset>
 		</copy>
-				
+
 		<delete dir="${dist.dir}/build" />
 		<delete dir="${dist.dir}/src" />
 		<tar destfile="${build.dist.installer.dir}/jcctray-${version}_src.tar.gz" compression="gzip">
 			<tarfileset dir="${dist.dir}" prefix="jcctray-${version}_src" preserveLeadingSlashes="false" />
 		</tar>
 	</target>
-	
+
 	<target name="create.dist.win">
 		<mkdir dir="${dist.dir}" />
 		<copy todir="${dist.dir}/lib" verbose="true">
@@ -250,7 +305,7 @@
 			<param name="dist.name.suffix" value="wpf" />
 			<reference refid="swt.wpf.classpath" torefid="swt.classpath" />
 		</antcall>
-		
+
 		<!-- src deployable -->
 		<antcall target="create.src.dist">
 			<param name="dist.dir" value="${build.dist.src.dir}" />
@@ -261,4 +316,6 @@
 	<target name="build-all" depends="init, build-src, build-tests" />
 
 	<target name="all" depends="clean, init, build-all, jar, javadoc, test" />
+
+	<target name="all-instrument" depends="clean, init, jar, javadoc, test-coverage" />
 </project>
