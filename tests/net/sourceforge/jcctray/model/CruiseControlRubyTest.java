@@ -22,22 +22,24 @@ import junit.framework.TestCase;
  */
 public class CruiseControlRubyTest extends TestCase {
 
+	private CruiseControlRuby	cruiseControl;
+
 	public void testFormatsDate() throws Exception {
 		String formattedDate;
 		
-		formattedDate = new CruiseControlRuby().formatDate("2007-06-22T11:30:28.82815+05:30");
+		formattedDate = cruiseControl.formatDate("2007-06-22T11:30:28.82815+05:30");
 		assertEquals("11:30:28 AM, 22 Jun", formattedDate);
 		
-		formattedDate = new CruiseControlRuby().formatDate("2007-06-22T11:30:28.8281+05:30");
+		formattedDate = cruiseControl.formatDate("2007-06-22T11:30:28.8281+05:30");
 		assertEquals("11:30:28 AM, 22 Jun", formattedDate);
 		
-		formattedDate = new CruiseControlRuby().formatDate("2007-06-22T11:30:28.82+05:30");
+		formattedDate = cruiseControl.formatDate("2007-06-22T11:30:28.82+05:30");
 		assertEquals("11:30:28 AM, 22 Jun", formattedDate);
 		
-		formattedDate = new CruiseControlRuby().formatDate("2007-06-22T11:30:28.82+05:30");
+		formattedDate = cruiseControl.formatDate("2007-06-22T11:30:28.82+05:30");
 		assertEquals("11:30:28 AM, 22 Jun", formattedDate);
 		
-		formattedDate = new CruiseControlRuby().formatDate("2007-06-22T11:30:28+05:30");
+		formattedDate = cruiseControl.formatDate("2007-06-22T11:30:28+05:30");
 		assertEquals("11:30:28 AM, 22 Jun", formattedDate);
 	}
 
@@ -45,5 +47,21 @@ public class CruiseControlRubyTest extends TestCase {
 		String invalidDate = "xyz";
 		String formattedDate = new CruiseControlRuby().formatDate(invalidDate);
 		assertEquals(invalidDate, formattedDate);
+	}
+	
+	public void testGetsForceBuildURL() throws Exception {
+		DashBoardProject dashBoardProject = new DashBoardProject("myProject", new Host("myHost", "http://my.host.name", cruiseControl));
+		String forceBuildURL = cruiseControl.forceBuildURL(dashBoardProject);
+		assertEquals("http://my.host.name/projects/build/myProject", forceBuildURL);
+	}
+	
+	public void testGetsForceBuildURLWithTrailingSlashInHostURL() throws Exception {
+		DashBoardProject dashBoardProject = new DashBoardProject("myProject", new Host("myHost", "http://my.host.name/myCruise//", cruiseControl));
+		String forceBuildURL = cruiseControl.forceBuildURL(dashBoardProject);
+		assertEquals("http://my.host.name/myCruise/projects/build/myProject", forceBuildURL);
+	}
+	
+	protected void setUp() throws Exception {
+		cruiseControl = new CruiseControlRuby();
 	}
 }

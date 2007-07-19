@@ -34,7 +34,7 @@ public class CruiseControlRuby extends HTTPCruise implements ICruise {
 	}
 
 	protected String forceBuildURL(DashBoardProject project) {
-		return project.getHost().getHostName().replaceAll("/$", "") + "/projects/build/"+project.getName();
+		return project.getHost().getHostName().replaceAll("/*$", "") + "/projects/build/"+project.getName();
 	}
 
 	protected String getSuccessMessage(DashBoardProject project) {

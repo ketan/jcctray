@@ -57,8 +57,8 @@ public class HostTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		host = new Host("foo", "bar");
-		project = new DashBoardProject("myProject", null, null, null, null, null, null, null);
-		project1 = new DashBoardProject("myProject1", null, null, null, null, null, null, null);
-		project2 = new DashBoardProject("myProject2", null, null, null, null, null, null, null);
+		project = new DashBoardProject("myProject");
+		project1 = new DashBoardProject("myProject1");
+		project2 = new DashBoardProject("myProject2");
 	}
 }

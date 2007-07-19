@@ -31,13 +31,22 @@ public class DashBoardProject {
 	public DashBoardProject() {
 		this("");
 	}
+	
+	public DashBoardProject(String name, Host host) {
+		this(name, "", "", "", "", "", "", "", host);
+	}
 
 	public DashBoardProject(String name) {
-		this(name, "", "", "", "", "", "", "");
+		this(name, new Host());
 	}
 
 	public DashBoardProject(String name, String activity, String lastBuildStatus, String lastBuildLabel,
 			String lastBuildTime, String nextBuildTime, String webUrl, String category) {
+		this(name, activity, lastBuildStatus, lastBuildLabel, lastBuildTime, nextBuildTime, webUrl, category, new Host());
+	}
+	
+	public DashBoardProject(String name, String activity, String lastBuildStatus, String lastBuildLabel,
+			String lastBuildTime, String nextBuildTime, String webUrl, String category, Host host) {
 		this.name = name;
 		this.activity = activity;
 		this.lastBuildStatus = lastBuildStatus;
@@ -46,6 +55,7 @@ public class DashBoardProject {
 		this.nextBuildTime = nextBuildTime;
 		this.webUrl = webUrl;
 		this.category = category;
+		this.host = host;
 	}
 
 	public String getCategory() {

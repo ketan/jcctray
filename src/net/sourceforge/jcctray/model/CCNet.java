@@ -37,7 +37,7 @@ public class CCNet extends HTTPCruise implements ICruise {
 	}
 
 	protected String forceBuildURL(DashBoardProject project) {
-		return project.getHost().getHostName() + "/ViewFarmReport.aspx";
+		return project.getHost().getHostName().replaceAll("/*$", "") + "/ViewFarmReport.aspx";
 	}
 
 	public String formatDate(String date) {
