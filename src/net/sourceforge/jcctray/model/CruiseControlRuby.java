@@ -54,7 +54,7 @@ public class CruiseControlRuby extends HTTPCruise implements ICruise {
 
 	public String formatDate(String date) {
 		try {
-			String theDate = date.replaceAll("\\.\\d{3,}+", "");
+			String theDate = date.replaceAll("\\.\\d+", "");
 			theDate = theDate.replaceAll(":", "");
 			Date parse = new SimpleDateFormat("yyyy-MM-dd'T'HHmmssZ").parse(theDate);
 			return new SimpleDateFormat("h:mm:ss a, dd MMM").format(parse);
