@@ -9,7 +9,7 @@
 ;General
   ;Name and file
   Name "JCCTray"
-  OutFile "..\build\dist\installers\JCCTray-vista-0.1b.exe"
+  OutFile "..\build\dist\installers\JCCTray-vista-1.0.exe"
   ;Default installation folder
   InstallDir "$PROGRAMFILES\JCCTray"
   
