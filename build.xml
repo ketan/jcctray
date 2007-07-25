@@ -27,8 +27,8 @@
 
 	<fileset id="swt.all.classpath" refid="swt.gtk.linux.x86.classpath, swt.gtk.linux.x86_64.classpath, swt.win32.classpath, swt.wpf.classpath" />
 
-	<fileset id="junit.classpath" file="${junit.jar}"/>
-	
+	<fileset id="junit.classpath" file="${junit.jar}" />
+
 	<fileset id="cctray.classpath" dir="${lib.dir}" includes="*.jar" excludes="**/*swt*.jar" />
 
 	<path id="cobertura.classpath">
@@ -38,6 +38,13 @@
 		</fileset>
 	</path>
 
+	<condition property="isWin">
+		<os family="windows" />
+	</condition>
+	
+	<condition property="isUnix">
+		<os family="unix" />
+	</condition>
 	<path id="antlib.classpath" path="${antcontrib.jar}" />
 
 	<taskdef classpathref="antlib.classpath" resource="net/sf/antcontrib/antlib.xml" />
@@ -96,7 +103,11 @@
 		<copy todir="${build.classes.dir}">
 			<fileset dir="src" excludes="**/*.java" />
 		</copy>
-		<jar destfile="${build.dir}/${target.jar}" basedir="${build.classes.dir}" />
+		<jar destfile="${build.dir}/${target.jar}" basedir="${build.classes.dir}">
+			<manifest>
+				<attribute name="Main-class" value="net.sourceforge.jcctray.ui.JCCTrayMain" />
+			</manifest>
+		</jar>
 	</target>
 
 	<target name="test" depends="build-tests">
@@ -138,7 +149,7 @@
 		-->
 	</target>
 
-	<target name="create.cp.unix">
+	<target name="create.cp">
 		<property name="target.os" value="unix" />
 		<echo>Creating classpath and script for os=${target.os} and dist.dir=${dist.dir}</echo>
 
@@ -154,40 +165,34 @@
 			</path>
 		</pathconvert>
 
-		<propertyregex property="cp" override="true" input="${cp}" regexp="${basedir.dist}" replace="lib" casesensitive="false" />
+		<propertyregex property="cp" override="true" input="${cp}" regexp="${basedir.dist}/" replace=" " casesensitive="false" />
+		<propertyregex property="cp" override="true" input="${cp}" regexp=":" replace="" casesensitive="false" />
 
-		<echo file="${dist.dir}/jcctray">
-				java -cp ${cp} net.sourceforge.jcctray.ui.JCCTrayMain
-		</echo>
+		<copy todir="${build.classes.dir}">
+			<fileset dir="src" excludes="**/*.java" />
+		</copy>
+		<jar destfile="${dist.dir}/lib/${target.jar}" basedir="${build.classes.dir}">
+			<manifest>
+				<attribute name="Main-class" value="net.sourceforge.jcctray.ui.JCCTrayMain" />
+				<attribute name="Class-Path" value="${cp}" />
+			</manifest>
+		</jar>
 	</target>
 
-
-	<target name="create.cp.win">
-		<property name="target.os" value="windows" />
-		<pathconvert targetos="${target.os}" property="cp">
-			<path>
-				<fileset dir="${dist.dir}/lib" />
-			</path>
-		</pathconvert>
-
-		<pathconvert targetos="${target.os}" property="basedir.dist">
-			<path>
-				<dirset dir="${dist.dir}/lib" />
-			</path>
-		</pathconvert>
-
-		<propertyregex property="basedir.dist" override="true" input="${basedir.dist}" regexp="([\\])" replace="\1\1" casesensitive="false" />
-		<propertyregex property="cp" override="true" input="${cp}" regexp="${basedir.dist}" replace="lib" casesensitive="false" />
-
+	<target name="-copy.executable.unix">
+		<echo file="${dist.dir}/jcctray">
+				java -jar lib/JCCTray.jar
+		</echo>
+	</target>
+	<target name="-copy.executable.win">
 		<echo file="${dist.dir}/jcctray.cmd">
-				@echo off
-				start javaw -cp ${cp} net.sourceforge.jcctray.ui.JCCTrayMain
+				start javaw -jar lib/JCCTray.jar
 		</echo>
 	</target>
 
 	<target name="create.dist.unix">
 		<mkdir dir="${dist.dir}" />
-		<copy todir="${dist.dir}/lib" verbose="true">
+		<copy todir="${dist.dir}/lib" verbose="false">
 			<fileset refid="cctray.classpath" />
 			<fileset refid="swt.classpath" />
 			<fileset dir="build" includes="${target.jar}" />
@@ -197,10 +202,12 @@
 			<fileset dir="." includes="LICENSE.txt" />
 		</copy>
 
-		<antcall target="create.cp.unix">
+		<antcall target="create.cp">
 			<param name="dist.dir" value="${dist.dir}" />
 		</antcall>
 
+		<antcall target="-copy.executable.unix" />
+		
 		<tar destfile="${build.dist.installer.dir}/jcctray-${version}_${dist.name.suffix}.tar.gz" compression="gzip">
 			<tarfileset dir="${dist.dir}" prefix="jcctray-${version}_${dist.name.suffix}" preserveLeadingSlashes="false" excludes="jcctray" />
 			<tarfileset dir="${dist.dir}" prefix="jcctray-${version}_${dist.name.suffix}" preserveLeadingSlashes="false" mode="755" includes="jcctray" />
@@ -211,7 +218,7 @@
 	<target name="create.src.dist">
 		<mkdir dir="${dist.dir}" />
 
-		<copy todir="${dist.dir}" verbose="true">
+		<copy todir="${dist.dir}" verbose="false">
 			<fileset dir=".">
 				<exclude name="**/build/**/**.*" />
 				<exclude name="**/bin/**/**.*" />
@@ -220,6 +227,10 @@
 
 		<delete dir="${dist.dir}/build" />
 		<delete dir="${dist.dir}/src" />
+		
+		<antcall target="-copy.executable.win"/>
+		<antcall target="-copy.executable.unix"/>
+		
 		<tar destfile="${build.dist.installer.dir}/jcctray-${version}_src.tar.gz" compression="gzip">
 			<tarfileset dir="${dist.dir}" prefix="jcctray-${version}_src" preserveLeadingSlashes="false" />
 		</tar>
@@ -227,7 +238,7 @@
 
 	<target name="create.dist.win">
 		<mkdir dir="${dist.dir}" />
-		<copy todir="${dist.dir}/lib" verbose="true">
+		<copy todir="${dist.dir}/lib" verbose="false">
 			<fileset refid="cctray.classpath" />
 			<fileset refid="swt.classpath" />
 			<fileset dir="build" includes="${target.jar}" />
@@ -237,10 +248,12 @@
 			<fileset dir="." includes="LICENSE.txt" />
 		</copy>
 
-		<antcall target="create.cp.win">
+		<antcall target="create.cp">
 			<param name="dist.dir" value="${dist.dir}" />
 		</antcall>
 
+		<antcall target="-copy.executable.win"/>
+		
 		<zip destfile="${build.dist.installer.dir}/jcctray-${version}_${dist.name.suffix}.zip" compress="true">
 			<zipfileset dir="${dist.dir}" prefix="jcctray-${version}_${dist.name.suffix}" excludes="jcctray" />
 			<zipfileset dir="${dist.dir}" prefix="jcctray-${version}_${dist.name.suffix}" includes="jcctray.cmd" />
