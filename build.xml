@@ -16,20 +16,20 @@
     | limitations under the License.
     |==========================================================================
     |-->
-<project basedir="." default="all-instrument" name="JCCTray">
+<project basedir="." default="all" name="JCCTray">
 	<property name="target.jar" value="${ant.project.name}.jar" />
 	<property file="build.properties" />
-
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 
 	<fileset id="swt.gtk.linux.x86.classpath" dir="${lib.dir}" includes="**/*swt.gtk.linux.x86_3*.jar" />
 	<fileset id="swt.gtk.linux.x86_64.classpath" dir="${lib.dir}" includes="**/*swt.gtk.linux.x86_64*.jar" />
 	<fileset id="swt.win32.classpath" dir="${lib.dir}" includes="**/*swt.win32.win32*.jar" />
 	<fileset id="swt.wpf.classpath" dir="${lib.dir}" includes="**/*swt.wpf.win32*.jar" />
 
-	<fileset id="swt.all.classpath" dir="${lib.dir}" />
+	<fileset id="swt.all.classpath" refid="swt.gtk.linux.x86.classpath, swt.gtk.linux.x86_64.classpath, swt.win32.classpath, swt.wpf.classpath" />
 
-	<fileset id="cctray.classpath" dir="${lib.dir}" excludes="**/*swt*.jar" />
+	<fileset id="junit.classpath" file="${junit.jar}"/>
+	
+	<fileset id="cctray.classpath" dir="${lib.dir}" includes="*.jar" excludes="**/*swt*.jar" />
 
 	<path id="cobertura.classpath">
 		<fileset dir="${cobertura.dir}">
@@ -38,6 +38,9 @@
 		</fileset>
 	</path>
 
+	<path id="antlib.classpath" path="${antcontrib.jar}" />
+
+	<taskdef classpathref="antlib.classpath" resource="net/sf/antcontrib/antlib.xml" />
 	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 
 	<path id="compile.classpath">
@@ -49,6 +52,7 @@
 	<path id="test.classpath">
 		<pathelement location="${build.test.dir}" />
 		<path refid="compile.classpath" />
+		<fileset refid="junit.classpath" />
 	</path>
 
 	<target name="init">
@@ -72,37 +76,7 @@
 	</target>
 
 	<target name="test-coverage" depends="instrument, test">
-		<!--
-		<mkdir dir="${junit.reports.xml.dir}" />
-		<junit fork="true" forkmode="once" printsummary="yes" haltonfailure="no" haltonerror="no" failureproperty="junit.failure" errorproperty="junit.failure">
-
-			<sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.data.file}" />
-
-			<classpath location="${build.instrumented.classes.dir}"/>
-			<classpath refid="cobertura.classpath" />
-			<classpath refid="test.classpath" />
-
-			<formatter type="xml" />
-
-			<batchtest fork="yes" todir="${junit.reports.xml.dir}">
-				<fileset dir="${test.dir}">
-					<include name="**/*Test.java" />
-					<exclude name="**/AllTests.java" />
-				</fileset>
-			</batchtest>
-		</junit>
-
-		<mkdir dir="${junit.reports.html.dir}" />
-		<junitreport todir="${junit.reports.xml.dir}">
-			<fileset dir="${junit.reports.xml.dir}">
-				<include name="TEST-*.xml" />
-			</fileset>
-			<report format="frames" todir="${junit.reports.html.dir}" />
-		</junitreport>
-		<echo>Test reports available at: ${basedir}/${junit.reports.html.dir}/index.html</echo>
-		<fail message="Tests failed: check test reports." if="junit.failure" />
-		-->
-		<cobertura-report format="html" destdir="${build.instrumentation.reports.dir}" srcdir="${src.dir}" datafile="${cobertura.data.file}"/>
+		<cobertura-report format="html" destdir="${build.instrumentation.reports.dir}" srcdir="${src.dir}" datafile="${cobertura.data.file}" />
 	</target>
 
 	<target depends="init" name="build-src">
@@ -128,13 +102,12 @@
 	<target name="test" depends="build-tests">
 		<mkdir dir="${junit.reports.xml.dir}" />
 		<junit fork="true" forkmode="once" printsummary="yes" haltonfailure="no" haltonerror="no" failureproperty="junit.failure" errorproperty="junit.failure">
-			<sysproperty key="net.sourceforge.cobertura.datafile"
-					file="${cobertura.data.file}" />
-			
-			<classpath location="${build.instrumented.classes.dir}"/>
+			<sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.data.file}" />
+
+			<classpath location="${build.instrumented.classes.dir}" />
 			<classpath refid="test.classpath" />
-			<classpath refid="cobertura.classpath"/>
-			
+			<classpath refid="cobertura.classpath" />
+
 
 			<formatter type="xml" />
 
@@ -274,7 +247,7 @@
 		</zip>
 	</target>
 
-	<target name="dist" depends="all">
+	<target name="dist" depends="all-instrument">
 		<mkdir dir="${build.dist.dir}" />
 		<mkdir dir="${build.dist.installer.dir}" />
 
