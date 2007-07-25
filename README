@@ -1,0 +1,46 @@
+-----------------
+0.0 Introduction:
+-----------------
+
+Thanks for downloading JCCTray. For more information on JCCTray visit 
+http://jcctray.sourceforge.net
+
+JCCTray is a Java port of CCTray that was originally written in .NET.
+
+JCCTray is a utility for use with all flavors of CruiseControl Continuous 
+Integration servers. Specifically it works with CruiseControl, 
+CruiseControl.NET, CruiseControl.Rb. It provides feedback on build progress,
+and allows control over some of the server's operations.
+
+-----------------------------
+1.0 INSTALLING FROM BINARIES:
+-----------------------------
+  You can download the binaries for windows and Linux via the Sourceforge 
+  File Release System
+  (http://sourceforge.net/project/showfiles.php?group_id=197757)
+
+  Binaries for windows are available in 2 flavors
+    * A windows installer
+    * A zip file
+
+  The prefered way of downloading JCCTray is to build it yourself :)
+
+----------------------------
+2.0 INSTALLING FROM SOURCES:
+----------------------------
+
+  You can download the source code via the Sourceforge File Release System
+  (http://sourceforge.net/project/showfiles.php?group_id=197757)
+  OR
+  You can also download the source code using svn:
+    $ svn co http://jcctray.svn.sourceforge.net/svnroot/jcctray/trunk jcctray
+	
+  To build JCCTray you will need Apache Ant
+    $ cd jcctray-whatever-version
+    $ ant
+	
+  JCCTray is released under the Apache License, Version 2.0. Feel free to 
+  contribute to JCCTray.
+	
+  You can browse the subversion reporitory at:
+    * http://jcctray.svn.sourceforge.net/viewvc/jcctray/ (ViewVC)
