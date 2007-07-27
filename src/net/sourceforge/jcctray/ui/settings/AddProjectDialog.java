@@ -313,7 +313,6 @@ public class AddProjectDialog {
 
 	public void open() {
 		shell.open();
-		shell.pack();
 	}
 
 }
