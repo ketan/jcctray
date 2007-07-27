@@ -18,7 +18,7 @@ package net.sourceforge.jcctray.ui.settings;
 import net.sourceforge.jcctray.model.CruiseRegistry;
 import net.sourceforge.jcctray.model.Host;
 import net.sourceforge.jcctray.model.ICruise;
-import net.sourceforge.jcctray.model.JCCTraySettings;
+import net.sourceforge.jcctray.model.IJCCTraySettings;
 import net.sourceforge.jcctray.ui.Utils;
 
 import org.apache.log4j.Logger;
@@ -60,7 +60,8 @@ public class AddServerDialog {
 		}
 	}
 
-	private final class OkButtonListener implements SelectionListener {
+	private class OkButtonListener implements SelectionListener {
+
 		public void widgetDefaultSelected(SelectionEvent e) {
 			if (comboViewer.getSelection().isEmpty() || hostStringText.getText().trim().length() == 0
 					|| serverURLString.getText().trim().length() == 0) {
@@ -76,7 +77,7 @@ public class AddServerDialog {
 			Host host = new Host(hostStringText.getText(), serverURLString.getText());
 			IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
 			host.setCruiseClass(((Class) selection.getFirstElement()).getName());
-			JCCTraySettings.getInstance().addHost(host);
+			traySettings.addHost(host);
 			Utils.saveSettings(shell);
 			shell.close();
 		}
@@ -86,18 +87,20 @@ public class AddServerDialog {
 		}
 	}
 
-	private static final Logger	log	= Logger.getLogger(AddServerDialog.class);
-	private final Shell			parentShell;
-	private Shell				shell;
-	private Button				okButton;
-	private Button				cancelButton;
-	private Text				hostStringText;
-	private Text				serverURLString;
-	private CCombo				serverType;
-	private ComboViewer			comboViewer;
+	private static final Logger		log	= Logger.getLogger(AddServerDialog.class);
+	private final Shell				parentShell;
+	private Shell					shell;
+	private Button					okButton;
+	private Button					cancelButton;
+	private Text					hostStringText;
+	private Text					serverURLString;
+	private CCombo					serverType;
+	private ComboViewer				comboViewer;
+	private final IJCCTraySettings	traySettings;
 
-	public AddServerDialog(Shell shell) {
+	public AddServerDialog(Shell shell, IJCCTraySettings traySettings) {
 		this.parentShell = shell;
+		this.traySettings = traySettings;
 		initialize();
 		hookEvents();
 	}

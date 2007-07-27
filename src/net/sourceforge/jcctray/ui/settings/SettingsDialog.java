@@ -15,23 +15,27 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.ui.settings;
 
+import net.sourceforge.jcctray.model.IJCCTraySettings;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Shell;
 
 public class SettingsDialog {
 
-	private final Shell	parentShell;
-	private Shell		shell;
+	private final Shell			parentShell;
+	private Shell				shell;
+	private IJCCTraySettings	traySettings;
 
-	public SettingsDialog(Shell shell) {
+	public SettingsDialog(Shell shell, IJCCTraySettings traySettings) {
 		this.parentShell = shell;
+		this.traySettings = traySettings;
 		initialize();
 	}
 
 	private void initialize() {
 		createShell();
-		new SettingTabs(shell);
+		new SettingTabs(shell, traySettings);
 	}
 
 	private void createShell() {

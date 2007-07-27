@@ -22,7 +22,7 @@ import java.util.List;
 
 import net.sourceforge.jcctray.model.DashBoardProject;
 import net.sourceforge.jcctray.model.Host;
-import net.sourceforge.jcctray.model.JCCTraySettings;
+import net.sourceforge.jcctray.model.IJCCTraySettings;
 import net.sourceforge.jcctray.ui.Utils;
 import net.sourceforge.jcctray.ui.settings.AddProjectDialog;
 
@@ -52,7 +52,7 @@ public class BuildProjectsSettingsTab {
 
 	private final class ShellRefreshListener extends ShellAdapter {
 		public void shellActivated(ShellEvent e) {
-			tableViewer.setInput(JCCTraySettings.getInstance().getHosts());
+			tableViewer.setInput(traySettings.getHosts());
 		}
 	}
 
@@ -142,14 +142,16 @@ public class BuildProjectsSettingsTab {
 	private final class AddButtonListener implements SelectionListener {
 
 		private final TableViewer	tableViewer;
+		private IJCCTraySettings	traySettings;
 
-		public AddButtonListener(TableViewer tableViewer) {
+		public AddButtonListener(TableViewer tableViewer, IJCCTraySettings	traySettings) {
 			this.tableViewer = tableViewer;
+			this.traySettings = traySettings;
 
 		}
 
 		public void widgetDefaultSelected(SelectionEvent e) {
-			new AddProjectDialog(tableViewer.getTable().getShell()).open();
+			new AddProjectDialog(tableViewer.getTable().getShell(), traySettings).open();
 		}
 
 		public void widgetSelected(SelectionEvent e) {
@@ -160,16 +162,18 @@ public class BuildProjectsSettingsTab {
 	private TableViewer	tableViewer;
 	private Button		addButton;
 	private Button		removeButton;
+	private IJCCTraySettings	traySettings;
 
-	public BuildProjectsSettingsTab(TabFolder folder) {
+	public BuildProjectsSettingsTab(TabFolder folder, IJCCTraySettings traySettings) {
+		this.traySettings = traySettings;
 		createBuildProjectsTab(folder);
 		hookEvents();
-		tableViewer.setInput(JCCTraySettings.getInstance().getHosts());
+		tableViewer.setInput(traySettings.getHosts());
 	}
 
 	private void hookEvents() {
 		tableViewer.getTable().getShell().addShellListener(new ShellRefreshListener());
-		addButton.addSelectionListener(new AddButtonListener(tableViewer));
+		addButton.addSelectionListener(new AddButtonListener(tableViewer, traySettings));
 		removeButton.addSelectionListener(new RemoveButtonListener());
 	}
 

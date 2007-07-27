@@ -18,17 +18,22 @@ package net.sourceforge.jcctray.ui;
 import java.io.File;
 import java.io.IOException;
 
+import net.sourceforge.jcctray.model.IJCCTraySettings;
 import net.sourceforge.jcctray.model.ISettingsConstants;
-import net.sourceforge.jcctray.model.JCCTraySettings;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.program.Program;
 
 public class Browser {
 	private static final Logger	log	= Logger.getLogger(Browser.class);
+	private final IJCCTraySettings	traySettings;
 
-	public static void open(String url) {
-		String browserPath = JCCTraySettings.getInstance().get(ISettingsConstants.BROWSER_PATH);
+	public Browser(IJCCTraySettings traySettings) {
+		this.traySettings = traySettings;
+	}
+
+	public void open(String url) {
+		String browserPath = traySettings.get(ISettingsConstants.BROWSER_PATH);
 		if (browserPath != null && new File(browserPath).exists() && new File(browserPath).isFile())
 			try {
 				String string = browserPath + " " + url;

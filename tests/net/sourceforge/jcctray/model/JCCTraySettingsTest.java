@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 
 public class JCCTraySettingsTest extends TestCase {
 
-	private JCCTraySettings	settings;
+	private IJCCTraySettings	settings;
 	private Host			host;
 	private Host			host1;
 	private Host			host2;

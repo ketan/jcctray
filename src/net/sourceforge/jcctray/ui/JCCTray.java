@@ -16,6 +16,8 @@
 package net.sourceforge.jcctray.ui;
 
 import net.sourceforge.jcctray.model.DashBoardProject;
+import net.sourceforge.jcctray.model.IJCCTraySettings;
+import net.sourceforge.jcctray.model.JCCTraySettings;
 import net.sourceforge.jcctray.ui.settings.SettingsDialog;
 import net.sourceforge.jcctray.ui.settings.providers.EnabledProjectsFilter;
 import net.sourceforge.jcctray.ui.settings.providers.ProjectContentProvider;
@@ -121,7 +123,7 @@ public class JCCTray {
 					public void run() {
 						MessageBox messageBox = new MessageBox(table.getShell(), SWT.ICON_ERROR);
 						messageBox.setText("Could not force build");
-						messageBox.setMessage(""+ex.getMessage());
+						messageBox.setMessage("" + ex.getMessage());
 						messageBox.open();
 					}
 				});
@@ -150,7 +152,6 @@ public class JCCTray {
 			openWebPage();
 		}
 
-
 		public void widgetSelected(SelectionEvent e) {
 			openWebPage();
 		}
@@ -158,30 +159,37 @@ public class JCCTray {
 		public void doubleClick(DoubleClickEvent event) {
 			openWebPage();
 		}
+
 		private void openWebPage() {
 			if (table.getSelectionCount() > 0) {
 				TableItem[] selection = table.getSelection();
 				DashBoardProject project = (DashBoardProject) selection[0].getData();
-				Browser.open(project.getWebUrl());
+				new Browser(traySettings).open(project.getWebUrl());
 			}
 		}
 
 	}
 
-	private Shell		shell;
-	private Display		display;
-	private Menu		menuBar;
-	private MenuItem	fileMenuHeader;
-	private Menu		fileMenu;
-	private Table		table;
-	private TrayItem	trayItem;
-	private Button		displayWebPageButton;
-	private Button		forceBuildButton;
-	private MenuItem	fileSettingsItem;
-	private MenuItem	fileExitItem;
-	private TableViewer	tableViewer;
+	private Shell				shell;
+	private Display				display;
+	private Menu				menuBar;
+	private MenuItem			fileMenuHeader;
+	private Menu				fileMenu;
+	private Table				table;
+	private TrayItem			trayItem;
+	private Button				displayWebPageButton;
+	private Button				forceBuildButton;
+	private MenuItem			fileSettingsItem;
+	private MenuItem			fileExitItem;
+	private TableViewer			tableViewer;
+	private IJCCTraySettings	traySettings;
 
 	public JCCTray() {
+		this(JCCTraySettings.getInstance());
+	}
+
+	public JCCTray(IJCCTraySettings traySettings) {
+		this.traySettings = traySettings;
 		initialize();
 	}
 
@@ -271,11 +279,11 @@ public class JCCTray {
 		tableColumn.setWidth(150);
 		tableColumn.setMoveable(true);
 		tableColumn.setText("Last Build Time");
-		
+
 		tableViewer = new TableViewer(table);
 		tableViewer.setLabelProvider(new ProjectLabelProvider());
 		tableViewer.setContentProvider(new ProjectContentProvider());
-		tableViewer.setFilters(new ViewerFilter[] { new EnabledProjectsFilter() });
+		tableViewer.setFilters(new ViewerFilter[] { new EnabledProjectsFilter(traySettings) });
 	}
 
 	private void createMenus() {
@@ -283,19 +291,19 @@ public class JCCTray {
 		createFileMenu();
 		shell.setMenuBar(menuBar);
 	}
-	
+
 	private void createContextMenus() {
 		Menu menu = new Menu(table);
 		MenuItem menuItem;
-		
+
 		menuItem = new MenuItem(menu, SWT.CASCADE);
 		menuItem.setText("Display &Web Page");
 		menuItem.addSelectionListener(new DisplayWebPageListener());
-		
+
 		menuItem = new MenuItem(menu, SWT.CASCADE);
 		menuItem.setText("Force &Build");
 		menuItem.addSelectionListener(new ForceBuildListener());
-		
+
 		table.setMenu(menu);
 	}
 
@@ -316,7 +324,7 @@ public class JCCTray {
 	}
 
 	protected void showSettingsDialog() {
-		new SettingsDialog(shell).open();
+		new SettingsDialog(shell, traySettings).open();
 	}
 
 	private void createFileExitMenuItem() {
@@ -336,7 +344,7 @@ public class JCCTray {
 	public void open() {
 		shell.open();
 
-		JCCTrayRunnable runnable = new JCCTrayRunnable(tableViewer, trayItem);
+		JCCTrayRunnable runnable = new JCCTrayRunnable(tableViewer, trayItem, traySettings);
 		Thread thread = new Thread(runnable, "XmlStatusReportThread");
 		thread.start();
 		while (!shell.isDisposed())

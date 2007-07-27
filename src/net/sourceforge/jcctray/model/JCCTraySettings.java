@@ -26,7 +26,7 @@ import net.sourceforge.jcctray.utils.ObjectPersister;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
-public class JCCTraySettings implements ISettingsConstants {
+public class JCCTraySettings implements ISettingsConstants, IJCCTraySettings {
 
 	public static final class NameValuePair {
 		
@@ -121,7 +121,7 @@ public class JCCTraySettings implements ISettingsConstants {
 		this.settings = traySettings.settings;
 	}
 
-	public static JCCTraySettings getInstance() {
+	public static IJCCTraySettings getInstance() {
 		synchronized (JCCTraySettings.class) {
 			if (JCCTraySettings.instance == null) {
 				JCCTraySettings.instance = new JCCTraySettings();

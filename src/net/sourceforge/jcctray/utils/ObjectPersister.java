@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 import net.sourceforge.jcctray.model.CruiseRegistry;
 import net.sourceforge.jcctray.model.DashBoardProject;
 import net.sourceforge.jcctray.model.Host;
+import net.sourceforge.jcctray.model.IJCCTraySettings;
 import net.sourceforge.jcctray.model.JCCTraySettings;
 import net.sourceforge.jcctray.model.JCCTraySettings.NameValuePair;
 
@@ -42,12 +43,12 @@ import org.xml.sax.SAXException;
  */
 public class ObjectPersister {
 
-	public static void saveSettings(JCCTraySettings settings, String fileName) throws IOException {
+	public static void saveSettings(IJCCTraySettings settings, String fileName) throws IOException {
 		FileWriter outputWriter = new FileWriter(fileName);
 		saveSettings(settings, outputWriter);
 	}
 
-	public static void saveSettings(JCCTraySettings settings, Writer writer) throws IOException {
+	public static void saveSettings(IJCCTraySettings settings, Writer writer) throws IOException {
 		try {
 			writer.write("<?xml version='1.0' ?>\n");
 			writer.write("<cctraysettings>\n");

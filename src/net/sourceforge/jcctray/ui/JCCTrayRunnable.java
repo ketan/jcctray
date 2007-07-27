@@ -21,8 +21,8 @@ import java.util.Iterator;
 import net.sourceforge.jcctray.model.DashBoardProject;
 import net.sourceforge.jcctray.model.DashBoardProjects;
 import net.sourceforge.jcctray.model.Host;
+import net.sourceforge.jcctray.model.IJCCTraySettings;
 import net.sourceforge.jcctray.model.ISettingsConstants;
-import net.sourceforge.jcctray.model.JCCTraySettings;
 import net.sourceforge.jcctray.ui.settings.providers.ProjectLabelProvider;
 
 import org.apache.log4j.Logger;
@@ -37,10 +37,12 @@ public class JCCTrayRunnable implements Runnable {
 	private TableViewer			tableViewer;
 	public boolean				shouldRun	= true;
 	private final TrayItem		trayItem;
+	private IJCCTraySettings		traySettings;
 
-	public JCCTrayRunnable(TableViewer tableViewer, TrayItem trayItem) {
+	public JCCTrayRunnable(TableViewer tableViewer, TrayItem trayItem, IJCCTraySettings traySettings) {
 		this.tableViewer = tableViewer;
 		this.trayItem = trayItem;
+		this.traySettings = traySettings;
 	}
 
 	public void run() {
@@ -48,7 +50,7 @@ public class JCCTrayRunnable implements Runnable {
 		while (shouldRun) {
 			try {
 				updateUI();
-				Thread.sleep(JCCTraySettings.getInstance().getInt(ISettingsConstants.POLL_INTERVAL)*1000);
+				Thread.sleep(traySettings.getInt(ISettingsConstants.POLL_INTERVAL) * 1000);
 			} catch (Exception e) {
 				log.error("Exception waiting on the background thread that fetches project status", e);
 			}
@@ -76,7 +78,7 @@ public class JCCTrayRunnable implements Runnable {
 
 	private void updateUI() {
 		final DashBoardProjects projects = getAllProjects();
-		Collection hosts = JCCTraySettings.getInstance().getHosts();
+		Collection hosts = traySettings.getHosts();
 
 		for (Iterator iterator = hosts.iterator(); iterator.hasNext();) {
 			Host host = (Host) iterator.next();
@@ -106,7 +108,7 @@ public class JCCTrayRunnable implements Runnable {
 	private DashBoardProjects getAllProjects() {
 		DashBoardProjects enabledProjects = new DashBoardProjects();
 
-		Collection hosts = JCCTraySettings.getInstance().getHosts();
+		Collection hosts = traySettings.getHosts();
 
 		for (Iterator iterator = hosts.iterator(); iterator.hasNext();) {
 			Collection projects = ((Host) iterator.next()).getConfiguredProjects();

@@ -19,7 +19,7 @@ import java.util.Collection;
 
 import net.sourceforge.jcctray.model.DashBoardProject;
 import net.sourceforge.jcctray.model.Host;
-import net.sourceforge.jcctray.model.JCCTraySettings;
+import net.sourceforge.jcctray.model.IJCCTraySettings;
 import net.sourceforge.jcctray.ui.Utils;
 import net.sourceforge.jcctray.ui.settings.providers.EnabledProjectsFilter;
 import net.sourceforge.jcctray.ui.settings.providers.HostContentProvider;
@@ -139,7 +139,7 @@ public class AddProjectDialog {
 			ISelection sel = this.serverListViewer.getSelection();
 			if ((sel instanceof IStructuredSelection) && !sel.isEmpty()) {
 				Host host = (Host) ((IStructuredSelection) sel).getFirstElement();
-				JCCTraySettings.getInstance().removeHost(host);
+				traySettings.removeHost(host);
 				Utils.saveSettings(shell);
 			}
 			refreshUI();
@@ -184,7 +184,7 @@ public class AddProjectDialog {
 		}
 
 		public void widgetDefaultSelected(SelectionEvent e) {
-			new AddServerDialog(shell).open();
+			new AddServerDialog(shell, traySettings).open();
 		}
 
 		public void widgetSelected(SelectionEvent e) {
@@ -200,9 +200,11 @@ public class AddProjectDialog {
 	private Button		removeServerButton;
 	private Button		addServerButton;
 	private Button		okButton;
+	private IJCCTraySettings	traySettings;
 
-	public AddProjectDialog(Shell shell) {
+	public AddProjectDialog(Shell shell, IJCCTraySettings traySettings) {
 		parentShell = shell;
+		this.traySettings = traySettings;
 		initialize();
 	}
 
@@ -254,7 +256,7 @@ public class AddProjectDialog {
 		projectListViewer = new ListViewer(projectList);
 		projectListViewer.setContentProvider(new ProjectContentProvider());
 		projectListViewer.setLabelProvider(new ProjectLabelProvider());
-		projectListViewer.setFilters(new ViewerFilter[]{new NotFilter(new EnabledProjectsFilter())});
+		projectListViewer.setFilters(new ViewerFilter[]{new NotFilter(new EnabledProjectsFilter(traySettings))});
 		
 		addProjectButton = new Button(availableProjectsGroup, SWT.NONE);
 		addProjectButton.setText("Add &Project");
@@ -307,7 +309,7 @@ public class AddProjectDialog {
 	}
 
 	protected void refreshUI() {
-		Collection hosts = JCCTraySettings.getInstance().getHosts();
+		Collection hosts = traySettings.getHosts();
 		serverListViewer.setInput(hosts);
 		projectListViewer.setInput(null);
 	}

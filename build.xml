@@ -16,7 +16,7 @@
     | limitations under the License.
     |==========================================================================
     |-->
-<project basedir="." default="all" name="JCCTray">
+<project basedir="." default="all-instrument" name="JCCTray">
 	<property name="target.jar" value="${ant.project.name}.jar" />
 	<property file="build.properties" />
 

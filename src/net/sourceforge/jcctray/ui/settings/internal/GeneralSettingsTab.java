@@ -15,6 +15,10 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.ui.settings.internal;
 
+import net.sourceforge.jcctray.model.IJCCTraySettings;
+import net.sourceforge.jcctray.model.ISettingsConstants;
+import net.sourceforge.jcctray.ui.Utils;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -31,13 +35,10 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 
-import net.sourceforge.jcctray.model.JCCTraySettings;
-import net.sourceforge.jcctray.model.ISettingsConstants;
-import net.sourceforge.jcctray.ui.Utils;
-
 public class GeneralSettingsTab {
 
 	private final TabFolder	tabFolder;
+	private IJCCTraySettings	traySettings;
 
 	private final class OKButtonListener implements SelectionListener {
 		private final Text	browserPath;
@@ -96,8 +97,8 @@ public class GeneralSettingsTab {
 		}
 
 		public void widgetDefaultSelected(SelectionEvent e) {
-			browserPath.setText(JCCTraySettings.getInstance().get(ISettingsConstants.BROWSER_PATH));
-			spinner.setSelection(JCCTraySettings.getInstance().getInt(ISettingsConstants.POLL_INTERVAL));
+			browserPath.setText(traySettings.get(ISettingsConstants.BROWSER_PATH));
+			spinner.setSelection(traySettings.getInt(ISettingsConstants.POLL_INTERVAL));
 		}
 
 		public void widgetSelected(SelectionEvent e) {
@@ -119,7 +120,7 @@ public class GeneralSettingsTab {
 		// browser settings
 		new Label(composite, SWT.NONE).setText("&Browser:");
 		final Text browserPath = new Text(composite, SWT.NONE);
-		browserPath.setText(JCCTraySettings.getInstance().get(ISettingsConstants.BROWSER_PATH));
+		browserPath.setText(traySettings.get(ISettingsConstants.BROWSER_PATH));
 		browserPath.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		Button browserPathButton = new Button(composite, SWT.NONE);
 		browserPathButton.setText("&Browse");
@@ -140,7 +141,7 @@ public class GeneralSettingsTab {
 		Spinner spinner = new Spinner(composite, SWT.NONE);
 		spinner.setMinimum(1);
 		spinner.setMaximum(3600);
-		spinner.setSelection(JCCTraySettings.getInstance().getInt(ISettingsConstants.POLL_INTERVAL));
+		spinner.setSelection(traySettings.getInt(ISettingsConstants.POLL_INTERVAL));
 		// just a filler
 		new Label(composite, SWT.NONE).setText("Seconds");
 		new Label(composite, SWT.NONE);
@@ -173,8 +174,8 @@ public class GeneralSettingsTab {
 	}
 
 	private void applySettings(int pollInterval, String browserPath) {
-		JCCTraySettings.getInstance().set(ISettingsConstants.BROWSER_PATH, browserPath);
-		JCCTraySettings.getInstance().set(ISettingsConstants.POLL_INTERVAL, "" + pollInterval);
+		traySettings.set(ISettingsConstants.BROWSER_PATH, browserPath);
+		traySettings.set(ISettingsConstants.POLL_INTERVAL, "" + pollInterval);
 		Utils.saveSettings(tabFolder.getShell());
 	}
 
