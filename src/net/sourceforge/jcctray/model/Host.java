@@ -137,4 +137,8 @@ public class Host {
 		this.configuredProjects = projects;
 	}
 
+	public void removeConfiguredProject(DashBoardProject project) {
+		configuredProjects.remove(project.getName());
+	}
+
 }

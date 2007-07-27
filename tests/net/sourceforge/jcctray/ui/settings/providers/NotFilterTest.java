@@ -15,29 +15,38 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.ui.settings.providers;
 
-import net.sourceforge.jcctray.model.DashBoardProject;
-import net.sourceforge.jcctray.model.Host;
-import net.sourceforge.jcctray.model.IJCCTraySettings;
-
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
-public class EnabledProjectsFilter extends ViewerFilter {
+import junit.framework.TestCase;
 
-	private final IJCCTraySettings	traySettings;
+/**
+ * @author Ketan Padegaonkar
+ */
+public class NotFilterTest extends TestCase {
 
-	public EnabledProjectsFilter(IJCCTraySettings traySettings) {
-		this.traySettings = traySettings;
+	
+	private final class ViewerFilterExtension extends ViewerFilter {
+		private boolean	b;
+
+		public ViewerFilterExtension(boolean b) {
+			this.b = b;
+		}
+
+		public boolean select(Viewer arg0, Object arg1, Object arg2) {
+			return b;
+		}
 	}
 
-	public boolean select(Viewer viewer, Object parentElement, Object aProject) {
-		if (aProject instanceof DashBoardProject) {
-			DashBoardProject project = (DashBoardProject) aProject;
-			Host host = project.getHost();
-			Host hostInSettings = traySettings.findHostByString(host.getHostString());
-			DashBoardProject projectInSettings = hostInSettings.getConfiguredProject(project.getName());
-			return (projectInSettings != null && projectInSettings.isEnabled());
-		}
-		return false;
+	public void testReversesFilter1() throws Exception {
+		ViewerFilter viewerFilter = new ViewerFilterExtension(true);
+		NotFilter notFilter = new NotFilter(viewerFilter);
+		assertFalse(notFilter.select(null, null, null));
+	}
+	
+	public void testReversesFilter2() throws Exception {
+		ViewerFilter viewerFilter = new ViewerFilterExtension(false);
+		NotFilter notFilter = new NotFilter(viewerFilter);
+		assertTrue(notFilter.select(null, null, null));
 	}
 }

@@ -22,13 +22,13 @@ import net.sourceforge.jcctray.model.Host;
 import net.sourceforge.jcctray.model.IJCCTraySettings;
 import net.sourceforge.jcctray.ui.Utils;
 import net.sourceforge.jcctray.ui.settings.providers.EnabledProjectsFilter;
-import net.sourceforge.jcctray.ui.settings.providers.HostContentProvider;
 import net.sourceforge.jcctray.ui.settings.providers.HostLabelProvider;
 import net.sourceforge.jcctray.ui.settings.providers.NotFilter;
 import net.sourceforge.jcctray.ui.settings.providers.ProjectContentProvider;
 import net.sourceforge.jcctray.ui.settings.providers.ProjectLabelProvider;
 
 import org.apache.log4j.Logger;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -192,15 +192,15 @@ public class AddProjectDialog {
 		}
 	}
 
-	private Shell		shell;
-	private final Shell	parentShell;
-	private ListViewer	serverListViewer;
-	private ListViewer	projectListViewer;
-	private Button		addProjectButton;
-	private Button		removeServerButton;
-	private Button		addServerButton;
-	private Button		okButton;
-	private IJCCTraySettings	traySettings;
+	private Shell					shell;
+	private final Shell				parentShell;
+	private ListViewer				serverListViewer;
+	private ListViewer				projectListViewer;
+	private Button					addProjectButton;
+	private Button					removeServerButton;
+	private Button					addServerButton;
+	private Button					okButton;
+	private final IJCCTraySettings	traySettings;
 
 	public AddProjectDialog(Shell shell, IJCCTraySettings traySettings) {
 		parentShell = shell;
@@ -222,7 +222,7 @@ public class AddProjectDialog {
 
 		projectListViewer.addSelectionChangedListener(new ButtonEnabler(addProjectButton));
 		projectListViewer.addDoubleClickListener(new AddProjectListener(serverListViewer, projectListViewer));
-		
+
 		addProjectButton.addSelectionListener(new AddProjectListener(serverListViewer, projectListViewer));
 
 		addServerButton.addSelectionListener(new AddServerListener(shell));
@@ -256,8 +256,8 @@ public class AddProjectDialog {
 		projectListViewer = new ListViewer(projectList);
 		projectListViewer.setContentProvider(new ProjectContentProvider());
 		projectListViewer.setLabelProvider(new ProjectLabelProvider());
-		projectListViewer.setFilters(new ViewerFilter[]{new NotFilter(new EnabledProjectsFilter(traySettings))});
-		
+		projectListViewer.setFilters(new ViewerFilter[] { new NotFilter(new EnabledProjectsFilter(traySettings)) });
+
 		addProjectButton = new Button(availableProjectsGroup, SWT.NONE);
 		addProjectButton.setText("Add &Project");
 		addProjectButton.setEnabled(false);
@@ -273,7 +273,7 @@ public class AddProjectDialog {
 		serverList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		serverListViewer = new ListViewer(serverList);
 		serverListViewer.setLabelProvider(new HostLabelProvider());
-		serverListViewer.setContentProvider(new HostContentProvider());
+		serverListViewer.setContentProvider(new ArrayContentProvider());
 
 		Composite composite = new Composite(buildServerGroup, SWT.NONE);
 		composite.setLayout(new GridLayout(2, false));

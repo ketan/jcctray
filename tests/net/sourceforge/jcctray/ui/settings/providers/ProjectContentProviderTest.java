@@ -16,28 +16,24 @@
 package net.sourceforge.jcctray.ui.settings.providers;
 
 import net.sourceforge.jcctray.model.DashBoardProject;
-import net.sourceforge.jcctray.model.Host;
-import net.sourceforge.jcctray.model.IJCCTraySettings;
+import net.sourceforge.jcctray.model.DashBoardProjects;
+import junit.framework.TestCase;
 
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
+/**
+ * @author Ketan Padegaonkar
+ */
+public class ProjectContentProviderTest extends TestCase {
 
-public class EnabledProjectsFilter extends ViewerFilter {
-
-	private final IJCCTraySettings	traySettings;
-
-	public EnabledProjectsFilter(IJCCTraySettings traySettings) {
-		this.traySettings = traySettings;
+	public void testGetsProjectsAsArray() throws Exception {
+		DashBoardProjects projects = new DashBoardProjects();
+		projects.add(new DashBoardProject("a"));
+		projects.add(new DashBoardProject("b"));
+		projects.add(new DashBoardProject("c"));
+		Object[] elements = new ProjectContentProvider().getElements(projects);
+		assertEquals(3, elements.length);
 	}
-
-	public boolean select(Viewer viewer, Object parentElement, Object aProject) {
-		if (aProject instanceof DashBoardProject) {
-			DashBoardProject project = (DashBoardProject) aProject;
-			Host host = project.getHost();
-			Host hostInSettings = traySettings.findHostByString(host.getHostString());
-			DashBoardProject projectInSettings = hostInSettings.getConfiguredProject(project.getName());
-			return (projectInSettings != null && projectInSettings.isEnabled());
-		}
-		return false;
+	
+	public void testGetsAnythingElseAsNull() throws Exception {
+		assertNull(new ProjectContentProvider().getElements("asdf"));
 	}
 }

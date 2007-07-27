@@ -25,7 +25,7 @@ public class SettingsDialog {
 
 	private final Shell			parentShell;
 	private Shell				shell;
-	private IJCCTraySettings	traySettings;
+	private final IJCCTraySettings	traySettings;
 
 	public SettingsDialog(Shell shell, IJCCTraySettings traySettings) {
 		this.parentShell = shell;

@@ -142,7 +142,7 @@ public class BuildProjectsSettingsTab {
 	private final class AddButtonListener implements SelectionListener {
 
 		private final TableViewer	tableViewer;
-		private IJCCTraySettings	traySettings;
+		private final IJCCTraySettings	traySettings;
 
 		public AddButtonListener(TableViewer tableViewer, IJCCTraySettings	traySettings) {
 			this.tableViewer = tableViewer;

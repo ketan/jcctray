@@ -35,6 +35,6 @@ public class SettingTabs {
 	private void createTabs(Shell shell) {
 		TabFolder tabFolder = new TabFolder(shell, SWT.NONE);
 		new BuildProjectsSettingsTab(tabFolder, traySettings);
-		new GeneralSettingsTab(tabFolder);
+		new GeneralSettingsTab(tabFolder, traySettings);
 	}
 }

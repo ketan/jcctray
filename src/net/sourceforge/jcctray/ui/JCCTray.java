@@ -182,7 +182,7 @@ public class JCCTray {
 	private MenuItem			fileSettingsItem;
 	private MenuItem			fileExitItem;
 	private TableViewer			tableViewer;
-	private IJCCTraySettings	traySettings;
+	private final IJCCTraySettings	traySettings;
 
 	public JCCTray() {
 		this(JCCTraySettings.getInstance());

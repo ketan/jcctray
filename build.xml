@@ -28,6 +28,7 @@
 	<fileset id="swt.all.classpath" refid="swt.gtk.linux.x86.classpath, swt.gtk.linux.x86_64.classpath, swt.win32.classpath, swt.wpf.classpath" />
 
 	<fileset id="junit.classpath" file="${junit.jar}" />
+	<fileset id="jmock.classpath" file="${jmock.jar}" />
 
 	<fileset id="cctray.classpath" dir="${lib.dir}" includes="*.jar" excludes="**/*swt*.jar" />
 
@@ -60,6 +61,7 @@
 		<pathelement location="${build.test.dir}" />
 		<path refid="compile.classpath" />
 		<fileset refid="junit.classpath" />
+		<fileset refid="jmock.classpath" />
 	</path>
 
 	<target name="init">

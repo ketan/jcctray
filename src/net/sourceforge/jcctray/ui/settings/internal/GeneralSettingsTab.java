@@ -37,11 +37,11 @@ import org.eclipse.swt.widgets.Text;
 
 public class GeneralSettingsTab {
 
-	private final TabFolder	tabFolder;
-	private IJCCTraySettings	traySettings;
+	private final TabFolder			tabFolder;
+	private final IJCCTraySettings	traySettings;
 
 	private final class OKButtonListener implements SelectionListener {
-		private final Text	browserPath;
+		private final Text		browserPath;
 		private final Spinner	spinner;
 
 		private OKButtonListener(Spinner spinner, Text browserPath) {
@@ -60,7 +60,7 @@ public class GeneralSettingsTab {
 	}
 
 	private final class ApplyButtonListener implements SelectionListener {
-		private final Text	browserPath;
+		private final Text		browserPath;
 		private final Spinner	spinner;
 
 		private ApplyButtonListener(Text browserPath, Spinner spinner) {
@@ -88,7 +88,7 @@ public class GeneralSettingsTab {
 	}
 
 	private final class RestoreButtonListener implements SelectionListener {
-		private final Text	browserPath;
+		private final Text		browserPath;
 		private final Spinner	spinner;
 
 		private RestoreButtonListener(Text browserPath, Spinner spinner) {
@@ -106,8 +106,9 @@ public class GeneralSettingsTab {
 		}
 	}
 
-	public GeneralSettingsTab(TabFolder tabFolder) {
+	public GeneralSettingsTab(TabFolder tabFolder, IJCCTraySettings traySettings) {
 		this.tabFolder = tabFolder;
+		this.traySettings = traySettings;
 		createGeneralSettingsTab(tabFolder);
 	}
 

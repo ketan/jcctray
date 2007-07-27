@@ -33,11 +33,11 @@ import org.eclipse.swt.widgets.TrayItem;
 
 public class JCCTrayRunnable implements Runnable {
 
-	private static final Logger	log			= Logger.getLogger(JCCTrayRunnable.class);
-	private TableViewer			tableViewer;
-	public boolean				shouldRun	= true;
-	private final TrayItem		trayItem;
-	private IJCCTraySettings		traySettings;
+	private static final Logger		log			= Logger.getLogger(JCCTrayRunnable.class);
+	private TableViewer				tableViewer;
+	public boolean					shouldRun	= true;
+	private final TrayItem			trayItem;
+	private final IJCCTraySettings	traySettings;
 
 	public JCCTrayRunnable(TableViewer tableViewer, TrayItem trayItem, IJCCTraySettings traySettings) {
 		this.tableViewer = tableViewer;

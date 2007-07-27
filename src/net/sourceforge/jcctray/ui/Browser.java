@@ -36,12 +36,20 @@ public class Browser {
 		String browserPath = traySettings.get(ISettingsConstants.BROWSER_PATH);
 		if (browserPath != null && new File(browserPath).exists() && new File(browserPath).isFile())
 			try {
-				String string = browserPath + " " + url;
-				Runtime.getRuntime().exec(string);
+				exec(browserPath + " " + url);
 			} catch (IOException e) {
 				log.error("Could not open browser: " + browserPath, e);
+				launch(url);
 			}
 		else
-			Program.launch(url);
+			launch(url);
+	}
+
+	protected void launch(String url) {
+		Program.launch(url);
+	}
+
+	protected void exec(String string) throws IOException {
+		Runtime.getRuntime().exec(string);
 	}
 }
