@@ -275,7 +275,7 @@ public class JCCTray {
 		tableViewer = new TableViewer(table);
 		tableViewer.setLabelProvider(new ProjectLabelProvider());
 		tableViewer.setContentProvider(new ProjectContentProvider());
-		tableViewer.setFilters(new ViewerFilter[] { new EnabledProjectsFilter(true) });
+		tableViewer.setFilters(new ViewerFilter[] { new EnabledProjectsFilter() });
 	}
 
 	private void createMenus() {

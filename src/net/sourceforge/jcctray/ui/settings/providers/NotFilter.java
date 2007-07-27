@@ -15,23 +15,22 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.ui.settings.providers;
 
-import net.sourceforge.jcctray.model.DashBoardProject;
-import net.sourceforge.jcctray.model.Host;
-import net.sourceforge.jcctray.model.JCCTraySettings;
-
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
-public class EnabledProjectsFilter extends ViewerFilter {
+/**
+ * @author Ketan Padegaonkar
+ */
+public class NotFilter extends ViewerFilter {
+
+	private final ViewerFilter	filter;
+
+	public NotFilter(ViewerFilter filter) {
+		this.filter = filter;
+	}
 
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
-		if (element instanceof DashBoardProject) {
-			DashBoardProject project = (DashBoardProject) element;
-			Host host = project.getHost();
-			Host hostInSettings = JCCTraySettings.getInstance().findHostByString(host.getHostString());
-			DashBoardProject projectInSettings = hostInSettings.getConfiguredProject(project.getName());
-			return (projectInSettings != null && projectInSettings.isEnabled());
-		}
-		return false;
+		return !filter.select(viewer, parentElement, element);
 	}
+
 }

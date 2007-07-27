@@ -24,6 +24,7 @@ import net.sourceforge.jcctray.ui.Utils;
 import net.sourceforge.jcctray.ui.settings.providers.EnabledProjectsFilter;
 import net.sourceforge.jcctray.ui.settings.providers.HostContentProvider;
 import net.sourceforge.jcctray.ui.settings.providers.HostLabelProvider;
+import net.sourceforge.jcctray.ui.settings.providers.NotFilter;
 import net.sourceforge.jcctray.ui.settings.providers.ProjectContentProvider;
 import net.sourceforge.jcctray.ui.settings.providers.ProjectLabelProvider;
 
@@ -253,7 +254,7 @@ public class AddProjectDialog {
 		projectListViewer = new ListViewer(projectList);
 		projectListViewer.setContentProvider(new ProjectContentProvider());
 		projectListViewer.setLabelProvider(new ProjectLabelProvider());
-		projectListViewer.setFilters(new ViewerFilter[]{new EnabledProjectsFilter(false)});
+		projectListViewer.setFilters(new ViewerFilter[]{new NotFilter(new EnabledProjectsFilter())});
 		
 		addProjectButton = new Button(availableProjectsGroup, SWT.NONE);
 		addProjectButton.setText("Add &Project");
