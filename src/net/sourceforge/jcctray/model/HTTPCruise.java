@@ -31,6 +31,8 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 
 /**
+ * An abstract implementation of ICruise that can be connected to via HTTP.
+ * 
  * @author Ketan Padegaonkar
  */
 public abstract class HTTPCruise implements ICruise {
@@ -68,7 +70,8 @@ public abstract class HTTPCruise implements ICruise {
 	 * override. Calls {@link #configureMethod(HttpMethod, DashBoardProject)} to
 	 * configure the {@link HttpMethod} for the particular project.
 	 * 
-	 * @param project the project used to configure the {@link HttpMethod}
+	 * @param project
+	 *            the project used to configure the {@link HttpMethod}
 	 * @return a {@link GetMethod}
 	 */
 	protected HttpMethod httpMethod(DashBoardProject project) {
@@ -104,8 +107,13 @@ public abstract class HTTPCruise implements ICruise {
 				getLog().error("Method failed: " + method.getStatusLine());
 			return httpStatus;
 		} catch (Exception e) {
-			getLog().error("Could not force a build on project, either the webpage is not available, or there was a timeout in connecting to the cruise server.", e);
-			throw new HTTPErrorException("Could not force a build on project, either the webpage is not available, or there was a timeout in connecting to the cruise server.", e);
+			getLog()
+					.error(
+							"Could not force a build on project, either the webpage is not available, or there was a timeout in connecting to the cruise server.",
+							e);
+			throw new HTTPErrorException(
+					"Could not force a build on project, either the webpage is not available, or there was a timeout in connecting to the cruise server.",
+					e);
 		}
 	}
 

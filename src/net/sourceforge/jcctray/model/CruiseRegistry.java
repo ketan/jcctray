@@ -27,8 +27,9 @@ import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 /**
- * @author Ketan Padegaonkar
+ * A registry to maintain a list of all CI servers that JCCTray is aware of.
  * 
+ * @author Ketan Padegaonkar
  */
 public class CruiseRegistry {
 

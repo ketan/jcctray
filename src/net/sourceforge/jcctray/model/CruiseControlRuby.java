@@ -24,17 +24,19 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
 /**
- * @author Ketan Padegaonkar
+ * An implementation of {@link ICruise} that connects to CruiseControl.rb (<a
+ * href="http://cruisecontrolrb.thoughtworks.com">http://cruisecontrolrb.thoughtworks.com</a>)
  * 
+ * @author Ketan Padegaonkar
  */
 public class CruiseControlRuby extends HTTPCruise implements ICruise {
 
 	protected String forceBuildURL(DashBoardProject project) {
-		return project.getHost().getHostName().replaceAll("/*$", "") + "/projects/build/"+project.getName();
+		return project.getHost().getHostName().replaceAll("/*$", "") + "/projects/build/" + project.getName();
 	}
 
 	protected String getSuccessMessage(DashBoardProject project) {
-		return ""; //anything passes
+		return ""; // anything passes
 	}
 
 	protected String getXmlReportURL(Host host) {

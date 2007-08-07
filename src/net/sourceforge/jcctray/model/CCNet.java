@@ -24,6 +24,9 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
 /**
+ * An implementation of {@link ICruise} that connects to CruiseControl.NET (<a
+ * href="http://ccnet.thoughtworks.com">http://ccnet.thoughtworks.com</a>)
+ * 
  * @author Ketan Padegaonkar
  */
 public class CCNet extends HTTPCruise implements ICruise {

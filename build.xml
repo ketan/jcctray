@@ -144,11 +144,10 @@
 	</target>
 
 	<target name="javadoc">
-		<!--
 		<javadoc access="package" author="true" classpathref="compile.classpath" destdir="${build.docs.dir}" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="${source.version}" splitindex="true" use="true" version="true">
+			<link href="http://commons.apache.org/httpclient/apidocs" resolveLink="true"/>
 			<fileset dir="${src.dir}" includes="**/*.java" />
 		</javadoc>
-		-->
 	</target>
 
 	<target name="create.cp">

@@ -15,6 +15,11 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.model;
 
+/**
+ * Represents a project that is part of a CruiseControl instance.
+ * 
+ * @author Ketan Padegaonkar
+ */
 public class DashBoardProject {
 
 	private String	name;
@@ -31,7 +36,7 @@ public class DashBoardProject {
 	public DashBoardProject() {
 		this("");
 	}
-	
+
 	public DashBoardProject(String name, Host host) {
 		this(name, "", "", "", "", "", "", "", host);
 	}
@@ -42,9 +47,10 @@ public class DashBoardProject {
 
 	public DashBoardProject(String name, String activity, String lastBuildStatus, String lastBuildLabel,
 			String lastBuildTime, String nextBuildTime, String webUrl, String category) {
-		this(name, activity, lastBuildStatus, lastBuildLabel, lastBuildTime, nextBuildTime, webUrl, category, new Host());
+		this(name, activity, lastBuildStatus, lastBuildLabel, lastBuildTime, nextBuildTime, webUrl, category,
+				new Host());
 	}
-	
+
 	public DashBoardProject(String name, String activity, String lastBuildStatus, String lastBuildLabel,
 			String lastBuildTime, String nextBuildTime, String webUrl, String category, Host host) {
 		this.name = name;
@@ -172,6 +178,6 @@ public class DashBoardProject {
 	}
 
 	public void forceBuild() throws Exception {
-		getHost().getCruise().forceBuild(this);
+		getHost().forceBuild(this);
 	}
 }

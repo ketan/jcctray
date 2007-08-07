@@ -32,20 +32,28 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.xml.sax.SAXException;
 
+/**
+ * Parses the XML file provided by cruisecontrol and returns an object representation of the status report xml. See <a
+ * href="http://confluence.public.thoughtworks.org/display/CI/Multiple+Project+Summary+Reporting+Standard">http://confluence.public.thoughtworks.org/display/CI/Multiple+Project+Summary+Reporting+Standard</a>
+ * for more.
+ * 
+ * @author Ketan Padegaonkar
+ */
 public class DashboardXmlParser {
 
-	public static DashBoardProjects getProjects(String url, HttpClient client) throws HttpException, IOException, SAXException {
+	public static DashBoardProjects getProjects(String url, HttpClient client) throws HttpException, IOException,
+			SAXException {
 		GetMethod method = new GetMethod(url);
 		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
 		try {
 			int statusCode = client.executeMethod(method);
 			if (statusCode != HttpStatus.SC_OK) {
-				throw new RuntimeException("Could not connect to " + url + ". The server returned a " + statusCode
-						+ " status code");
+				throw new RuntimeException(
+						("Could not connect to " + url + ". The server returned a " + statusCode + " status code"));
 			}
 			return getProjects(method.getResponseBodyAsStream());
-		}finally{
-			method.releaseConnection();	
+		} finally {
+			method.releaseConnection();
 		}
 	}
 

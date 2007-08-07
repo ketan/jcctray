@@ -24,8 +24,14 @@ import net.sourceforge.jcctray.model.ISettingsConstants;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.program.Program;
 
+/**
+ * Represents a web browser. Automagically detects whether there is a default
+ * browser set in the settings, if not uses the default OS browser.
+ * 
+ * @author Ketan Padegaonkar
+ */
 public class Browser {
-	private static final Logger	log	= Logger.getLogger(Browser.class);
+	private static final Logger		log	= Logger.getLogger(Browser.class);
 	private final IJCCTraySettings	traySettings;
 
 	public Browser(IJCCTraySettings traySettings) {

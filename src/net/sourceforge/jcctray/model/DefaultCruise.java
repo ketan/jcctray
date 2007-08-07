@@ -16,8 +16,9 @@
 package net.sourceforge.jcctray.model;
 
 /**
- * @author Ketan Padegaonkar
+ * A null implementation of ICruise.
  * 
+ * @author Ketan Padegaonkar
  */
 public class DefaultCruise implements ICruise {
 

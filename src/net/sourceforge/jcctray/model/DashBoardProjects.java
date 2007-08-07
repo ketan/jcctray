@@ -19,12 +19,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Represents a collection of {@link DashBoardProject}s.
+ * 
+ * @author Ketan Padegaonkar
+ */
 public class DashBoardProjects {
 
 	private List	projectList	= new ArrayList();
 
 	public void add(DashBoardProject project) {
-		projectList.remove(project); // we're not a set - want to maintain order and be called a set
+		projectList.remove(project); // we're not a set - want to maintain
+										// order and be called a set
 		projectList.add(project);
 	}
 
@@ -47,15 +53,15 @@ public class DashBoardProjects {
 		for (Iterator iterator = projects.iterator(); iterator.hasNext();) {
 			add((DashBoardProject) iterator.next());
 		}
-			
+
 	}
 
 	public String toString() {
 		return "Projects - " + projectList;
 	}
 
-	public Iterator iterator(){
+	public Iterator iterator() {
 		return projectList.iterator();
 	}
-	
+
 }

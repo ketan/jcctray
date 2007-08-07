@@ -20,6 +20,11 @@ import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Represents a host that runs CruiseControl.
+ * 
+ * @author Ketan Padegaonkar
+ */
 public class Host {
 	private static final Logger	log	= Logger.getLogger(Host.class);
 	public String				hostName;
@@ -139,6 +144,10 @@ public class Host {
 
 	public void removeConfiguredProject(DashBoardProject project) {
 		configuredProjects.remove(project.getName());
+	}
+
+	public void forceBuild(DashBoardProject project) throws Exception {
+		getCruise().forceBuild(project);
 	}
 
 }

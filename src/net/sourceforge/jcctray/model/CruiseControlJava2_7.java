@@ -21,12 +21,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
-
 /**
+ * An implementation of {@link ICruise} that connects to CruiseControl version
+ * 2.7 (or possibly higher) (<a
+ * href="http://cruisecontrol.sourceforge.net">http://cruisecontrol.sourceforge.net</a>)
+ * 
  * @author Ketan Padegaonkar
  */
 public class CruiseControlJava2_7 extends HTTPCruise implements ICruise {
@@ -36,9 +35,8 @@ public class CruiseControlJava2_7 extends HTTPCruise implements ICruise {
 		URL url = null;
 		try {
 			url = new URL(hostName);
-			return url.getProtocol() + "://" + url.getHost()  
-					+ ":8000" + url.getPath().replaceAll("/*$", "")+
-							"/invoke?operation=build&objectname=CruiseControl+Project%3Aname%3D" + project.getName();
+			return url.getProtocol() + "://" + url.getHost() + ":8000" + url.getPath().replaceAll("/*$", "")
+					+ "/invoke?operation=build&objectname=CruiseControl+Project%3Aname%3D" + project.getName();
 		} catch (MalformedURLException e) {
 			getLog().error("The url was malformed: " + url, e);
 		}

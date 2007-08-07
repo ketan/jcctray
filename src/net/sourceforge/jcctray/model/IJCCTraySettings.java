@@ -24,6 +24,9 @@ import net.sourceforge.jcctray.model.JCCTraySettings.NameValuePair;
 import org.xml.sax.SAXException;
 
 /**
+ * Interface to store the JCCTray settings.
+ * 
+ * @see JCCTraySettings
  * @author Ketan Padegaonkar
  */
 public interface IJCCTraySettings {

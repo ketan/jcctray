@@ -26,32 +26,39 @@ import net.sourceforge.jcctray.utils.ObjectPersister;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
+/**
+ * Implementation of {@link IJCCTraySettings} that saves configuration to XML
+ * file.
+ * 
+ * @see ObjectPersister#saveSettings(IJCCTraySettings, String)
+ * @author Ketan Padegaonkar
+ */
 public class JCCTraySettings implements ISettingsConstants, IJCCTraySettings {
 
 	public static final class NameValuePair {
-		
-		private Object key;
-		private Object value;
-		
-        public Object getKey() {
-            return this.key;
-        }
 
-        public Object getValue() {
-            return value;
-        }
-    
-        public void setValue(Object value) {
-            this.value = value;
-        }
-        
+		private Object	key;
+		private Object	value;
+
+		public Object getKey() {
+			return this.key;
+		}
+
+		public Object getValue() {
+			return value;
+		}
+
+		public void setValue(Object value) {
+			this.value = value;
+		}
+
 		public void setKey(Object key) {
 			this.key = key;
 		}
-    
-        public String toString() {
-            return getKey() + "=" + getValue();
-        }
+
+		public String toString() {
+			return getKey() + "=" + getValue();
+		}
 
 	}
 
@@ -156,11 +163,11 @@ public class JCCTraySettings implements ISettingsConstants, IJCCTraySettings {
 	public void set(String key, String value) {
 		this.settings.put(key, value);
 	}
-	
+
 	public void set(NameValuePair entry) {
 		this.settings.put(entry.getKey(), entry.getValue());
 	}
-	
+
 	public HashMap getSettings() {
 		return this.settings;
 	}
