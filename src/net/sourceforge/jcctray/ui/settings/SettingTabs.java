@@ -23,6 +23,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 
+/**
+ * Holds the {@link BuildProjectsSettingsTab} and {@link GeneralSettingsTab}.
+ * 
+ * @author Ketan Padegaonkar
+ */
 public class SettingTabs {
 
 	private final IJCCTraySettings	traySettings;

@@ -35,6 +35,11 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 
+/**
+ * A tab that shows some general settings.
+ * 
+ * @author Ketan Padegaonkar
+ */
 public class GeneralSettingsTab {
 
 	private final TabFolder			tabFolder;

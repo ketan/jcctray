@@ -51,6 +51,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 
+/**
+ * Shows a dialog box that adds projects to JCCTray.
+ * 
+ * @author Ketan Padegaonkar
+ */
 public class AddProjectDialog {
 
 	private static final Logger	log	= Logger.getLogger(AddProjectDialog.class);

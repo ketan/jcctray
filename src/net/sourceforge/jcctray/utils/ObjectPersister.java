@@ -39,6 +39,9 @@ import org.apache.commons.digester.SetPropertiesRule;
 import org.xml.sax.SAXException;
 
 /**
+ * Helper object to persist objects. Currently used to persist
+ * {@link IJCCTraySettings} and {@link CruiseRegistry}.
+ * 
  * @author Ketan Padegaonkar
  */
 public class ObjectPersister {
@@ -101,7 +104,7 @@ public class ObjectPersister {
 		}
 		writer.write("	</hosts>\n");
 	}
-	
+
 	private static void saveKeyValues(Writer writer, HashMap settings) throws IOException {
 		writer.write("	<settings>\n");
 		for (Iterator iterator = settings.entrySet().iterator(); iterator.hasNext();) {
@@ -139,7 +142,7 @@ public class ObjectPersister {
 		digester.addRule("cctraysettings/hosts/host/projects/project", new ObjectCreateRule(DashBoardProject.class));
 		digester.addRule("cctraysettings/hosts/host/projects/project", new SetPropertiesRule());
 		digester.addRule("cctraysettings/hosts/host/projects/project", new SetNextRule("addConfiguredProject"));
-		
+
 		digester.addRule("cctraysettings/settings/entry", new ObjectCreateRule(NameValuePair.class));
 		digester.addRule("cctraysettings/settings/entry", new SetPropertiesRule());
 		digester.addRule("cctraysettings/settings/entry", new SetNextRule("set"));

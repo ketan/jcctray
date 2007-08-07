@@ -48,6 +48,12 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
+/**
+ * A tab that configures JCCTray with cruisecontrol {@link Host}s and
+ * {@link DashBoardProject}s.
+ * 
+ * @author Ketan Padegaonkar
+ */
 public class BuildProjectsSettingsTab {
 
 	private final class ShellRefreshListener extends ShellAdapter {
@@ -141,10 +147,10 @@ public class BuildProjectsSettingsTab {
 
 	private final class AddButtonListener implements SelectionListener {
 
-		private final TableViewer	tableViewer;
+		private final TableViewer		tableViewer;
 		private final IJCCTraySettings	traySettings;
 
-		public AddButtonListener(TableViewer tableViewer, IJCCTraySettings	traySettings) {
+		public AddButtonListener(TableViewer tableViewer, IJCCTraySettings traySettings) {
 			this.tableViewer = tableViewer;
 			this.traySettings = traySettings;
 
@@ -159,9 +165,9 @@ public class BuildProjectsSettingsTab {
 		}
 	}
 
-	private TableViewer	tableViewer;
-	private Button		addButton;
-	private Button		removeButton;
+	private TableViewer			tableViewer;
+	private Button				addButton;
+	private Button				removeButton;
 	private IJCCTraySettings	traySettings;
 
 	public BuildProjectsSettingsTab(TabFolder folder, IJCCTraySettings traySettings) {

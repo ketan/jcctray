@@ -21,10 +21,15 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Shell;
 
+/**
+ * Shows the settings dialog, this holds the {@link SettingTabs}.
+ * 
+ * @author Ketan Padegaonkar
+ */
 public class SettingsDialog {
 
-	private final Shell			parentShell;
-	private Shell				shell;
+	private final Shell				parentShell;
+	private Shell					shell;
 	private final IJCCTraySettings	traySettings;
 
 	public SettingsDialog(Shell shell, IJCCTraySettings traySettings) {

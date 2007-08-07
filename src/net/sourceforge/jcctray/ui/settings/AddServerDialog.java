@@ -37,6 +37,11 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+/**
+ * Shows a dialog box that adds {@link Host}s to JCCTray.
+ * 
+ * @author Ketan Padegaonkar
+ */
 public class AddServerDialog {
 
 	public class LabelProvider extends org.eclipse.jface.viewers.LabelProvider {
