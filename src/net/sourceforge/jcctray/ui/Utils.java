@@ -22,6 +22,12 @@ import org.eclipse.swt.widgets.Shell;
 
 import net.sourceforge.jcctray.model.JCCTraySettings;
 
+/**
+ * Saves the {@link JCCTraySettings} and pops up a messagebox in case there is
+ * an exception saving the {@link JCCTraySettings}.
+ * 
+ * @author Ketan Padegaonkar
+ */
 public class Utils {
 	private static final Logger	log	= Logger.getLogger(Utils.class);
 

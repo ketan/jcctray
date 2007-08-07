@@ -48,6 +48,11 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
+/**
+ * The main JCCTray window.
+ * 
+ * @author Ketan Padegaonkar
+ */
 public class JCCTray {
 
 	private static final Logger	log	= Logger.getLogger(JCCTray.class);
@@ -170,18 +175,18 @@ public class JCCTray {
 
 	}
 
-	private Shell				shell;
-	private Display				display;
-	private Menu				menuBar;
-	private MenuItem			fileMenuHeader;
-	private Menu				fileMenu;
-	private Table				table;
-	private TrayItem			trayItem;
-	private Button				displayWebPageButton;
-	private Button				forceBuildButton;
-	private MenuItem			fileSettingsItem;
-	private MenuItem			fileExitItem;
-	private TableViewer			tableViewer;
+	private Shell					shell;
+	private Display					display;
+	private Menu					menuBar;
+	private MenuItem				fileMenuHeader;
+	private Menu					fileMenu;
+	private Table					table;
+	private TrayItem				trayItem;
+	private Button					displayWebPageButton;
+	private Button					forceBuildButton;
+	private MenuItem				fileSettingsItem;
+	private MenuItem				fileExitItem;
+	private TableViewer				tableViewer;
 	private final IJCCTraySettings	traySettings;
 
 	public JCCTray() {

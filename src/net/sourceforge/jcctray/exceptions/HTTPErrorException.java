@@ -15,6 +15,13 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.exceptions;
 
+import org.apache.commons.httpclient.HttpMethod;
+
+/**
+ * Thrown when an {@link HttpMethod} fails to execute.
+ * 
+ * @author Ketan Padegaonkar
+ */
 public class HTTPErrorException extends Exception {
 
 	private static final long	serialVersionUID	= 4317866513329514582L;

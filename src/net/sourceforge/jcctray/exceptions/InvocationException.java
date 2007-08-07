@@ -16,8 +16,9 @@
 package net.sourceforge.jcctray.exceptions;
 
 /**
- * @author Ketan Padegaonkar
+ * Thrown when an attempt to force a build is not successful.
  * 
+ * @author Ketan Padegaonkar
  */
 public class InvocationException extends Exception {
 

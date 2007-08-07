@@ -15,6 +15,11 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.ui;
 
+/**
+ * The main class. Opens up {@link JCCTray}.
+ * 
+ * @author Ketan Padegaonkar
+ */
 public class JCCTrayMain {
 
 	public static void main(String[] args) {

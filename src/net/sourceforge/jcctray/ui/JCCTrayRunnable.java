@@ -31,6 +31,12 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TrayItem;
 
+/**
+ * Monitors CruiseControl servers, and updates the JCCTray UI and system tray
+ * icon.
+ * 
+ * @author Ketan Padegaonkar
+ */
 public class JCCTrayRunnable implements Runnable {
 
 	private static final Logger		log			= Logger.getLogger(JCCTrayRunnable.class);
