@@ -23,6 +23,8 @@ package net.sourceforge.jcctray.model;
  * @see CruiseControlJava
  * @see CCNet
  * @see CruiseControlRuby
+ * @see CruiseControlJava2_7
+ * @see HTTPCruise
  */
 public interface ICruise {
 

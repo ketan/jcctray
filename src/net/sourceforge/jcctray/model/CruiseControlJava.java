@@ -67,10 +67,4 @@ public class CruiseControlJava extends HTTPCruise implements ICruise {
 		return host.getHostName().replaceAll("/*$", "") + "/xml";
 	}
 
-	protected HttpMethod httpMethod(DashBoardProject project) {
-		HttpMethod method = new GetMethod(forceBuildURL(project));
-		configureMethod(method, project);
-		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
-		return method;
-	}
 }

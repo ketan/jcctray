@@ -20,17 +20,20 @@ import java.io.IOException;
 import net.sourceforge.jcctray.exceptions.HTTPErrorException;
 import net.sourceforge.jcctray.exceptions.InvocationException;
 
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 
 /**
  * @author Ketan Padegaonkar
  */
-public abstract class HTTPCruise implements ICruise{
+public abstract class HTTPCruise implements ICruise {
 
 	private static HttpClient	client;
 
@@ -48,20 +51,34 @@ public abstract class HTTPCruise implements ICruise{
 
 	public void forceBuild(DashBoardProject project) throws Exception {
 		HttpMethod method = httpMethod(project);
-		try{
+		try {
 			if (executeMethod(method) != HttpStatus.SC_OK)
-				throw new Exception("There was an http error connecting to the server at " + project.getHost().getHostName());
+				throw new Exception("There was an http error connecting to the server at "
+						+ project.getHost().getHostName());
 			if (!isInvokeSuccessful(method, project))
-				throw new Exception("The force build was not successful, the server did not return what JCCTray was expecting.");
-		}
-		finally{
+				throw new Exception(
+						"The force build was not successful, the server did not return what JCCTray was expecting.");
+		} finally {
 			method.releaseConnection();
 		}
 	}
 
-	protected abstract HttpMethod httpMethod(DashBoardProject project);
+	/**
+	 * Returns a {@link GetMethod} with some configuration set. Clients may
+	 * override. Calls {@link #configureMethod(HttpMethod, DashBoardProject)} to
+	 * configure the {@link HttpMethod} for the particular project.
+	 * 
+	 * @param project the project used to configure the {@link HttpMethod}
+	 * @return a {@link GetMethod}
+	 */
+	protected HttpMethod httpMethod(DashBoardProject project) {
+		HttpMethod method = new GetMethod(forceBuildURL(project));
+		configureMethod(method, project);
+		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+		return method;
+	}
 
-	protected void configureMethod(HttpMethod method, DashBoardProject project){
+	protected void configureMethod(HttpMethod method, DashBoardProject project) {
 		// do nothing
 	}
 
