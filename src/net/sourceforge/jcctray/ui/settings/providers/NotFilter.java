@@ -19,6 +19,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
 /**
+ * A decorator for an existing filter, that reverses the filter.
+ * 
  * @author Ketan Padegaonkar
  */
 public class NotFilter extends ViewerFilter {

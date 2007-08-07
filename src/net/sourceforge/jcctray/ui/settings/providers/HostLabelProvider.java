@@ -22,6 +22,12 @@ import org.eclipse.jface.viewers.LabelProvider;
 
 import net.sourceforge.jcctray.model.Host;
 
+/**
+ * Returns a text representation of a {@link Host}.
+ * 
+ * @see Host#getHostString()
+ * @author Ketan Padegaonkar
+ */
 public class HostLabelProvider extends LabelProvider {
 	public String getText(Object element) {
 		return ((Host) element).getHostString();

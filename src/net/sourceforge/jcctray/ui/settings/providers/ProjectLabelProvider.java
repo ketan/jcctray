@@ -26,18 +26,23 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
+/**
+ * Provides text and images for {@link DashBoardProject} for viewers.
+ * 
+ * @author Ketan Padegaonkar
+ */
 public class ProjectLabelProvider implements ITableLabelProvider, ILabelProvider {
 
-	public static final Image	GRAY_IMG	= new Image(Display.getDefault(), ProjectLabelProvider.class.getClassLoader()
-													.getResourceAsStream("icons/Gray.png"));
-	public static final Image	GREEN_IMG	= new Image(Display.getDefault(), ProjectLabelProvider.class.getClassLoader()
-													.getResourceAsStream("icons/Green.png"));
-	public static final Image	ORANGE_IMG	= new Image(Display.getDefault(), ProjectLabelProvider.class.getClassLoader()
-													.getResourceAsStream("icons/Orange.png"));
-	public static final Image	RED_IMG		= new Image(Display.getDefault(), ProjectLabelProvider.class.getClassLoader()
-													.getResourceAsStream("icons/Red.png"));
-	public static final Image	YELLOW_IMG	= new Image(Display.getDefault(), ProjectLabelProvider.class.getClassLoader()
-													.getResourceAsStream("icons/Yellow.png"));
+	public static final Image	GRAY_IMG	= new Image(Display.getDefault(), ProjectLabelProvider.class
+													.getClassLoader().getResourceAsStream("icons/Gray.png"));
+	public static final Image	GREEN_IMG	= new Image(Display.getDefault(), ProjectLabelProvider.class
+													.getClassLoader().getResourceAsStream("icons/Green.png"));
+	public static final Image	ORANGE_IMG	= new Image(Display.getDefault(), ProjectLabelProvider.class
+													.getClassLoader().getResourceAsStream("icons/Orange.png"));
+	public static final Image	RED_IMG		= new Image(Display.getDefault(), ProjectLabelProvider.class
+													.getClassLoader().getResourceAsStream("icons/Red.png"));
+	public static final Image	YELLOW_IMG	= new Image(Display.getDefault(), ProjectLabelProvider.class
+													.getClassLoader().getResourceAsStream("icons/Yellow.png"));
 
 	public Image getColumnImage(Object arg0, int column) {
 		DashBoardProject project = (DashBoardProject) arg0;

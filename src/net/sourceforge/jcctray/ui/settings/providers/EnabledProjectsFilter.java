@@ -22,6 +22,14 @@ import net.sourceforge.jcctray.model.IJCCTraySettings;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
+/**
+ * A filter that selects projects that have been enabled in the
+ * {@link IJCCTraySettings}.
+ * 
+ * @see Host#getConfiguredProject(String)
+ * @see DashBoardProject#isEnabled()
+ * @author Ketan Padegaonkar
+ */
 public class EnabledProjectsFilter extends ViewerFilter {
 
 	private final IJCCTraySettings	traySettings;

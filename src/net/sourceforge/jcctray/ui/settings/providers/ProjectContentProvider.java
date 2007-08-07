@@ -23,6 +23,11 @@ import org.eclipse.jface.viewers.Viewer;
 
 import net.sourceforge.jcctray.model.DashBoardProjects;
 
+/**
+ * Interprets the {@link DashBoardProjects} model for structured viewers.
+ * 
+ * @author Ketan Padegaonkar
+ */
 public class ProjectContentProvider implements IStructuredContentProvider {
 
 	public Object[] getElements(Object inputElement) {
