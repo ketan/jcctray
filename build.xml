@@ -123,6 +123,7 @@
 
 
 			<formatter type="xml" />
+			<formatter type="plain" usefile="false" />
 
 			<batchtest fork="yes" todir="${junit.reports.xml.dir}">
 				<fileset dir="${test.dir}">
