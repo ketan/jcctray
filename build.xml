@@ -29,7 +29,12 @@
 
 	<fileset id="junit.classpath" file="${junit.jar}" />
 	<fileset id="jmock.classpath" file="${jmock.jar}" />
-
+	
+	<fileset id="commonfiles" dir=".">
+		<include name="LICENSE.txt"/>
+		<include name="ChangeLog"/>
+	</fileset>
+	
 	<fileset id="cctray.classpath" dir="${lib.dir}" includes="*.jar" excludes="**/*swt*.jar" />
 
 	<path id="cobertura.classpath">
@@ -201,7 +206,7 @@
 		</copy>
 
 		<copy todir="${dist.dir}">
-			<fileset dir="." includes="LICENSE.txt" />
+			<fileset refid="commonfiles" />
 		</copy>
 
 		<antcall target="create.cp">
@@ -247,7 +252,7 @@
 		</copy>
 
 		<copy todir="${dist.dir}">
-			<fileset dir="." includes="LICENSE.txt" />
+			<fileset refid="commonfiles" />
 		</copy>
 
 		<antcall target="create.cp">
@@ -262,7 +267,15 @@
 		</zip>
 	</target>
 
-	<target name="dist" depends="all-instrument">
+	<target name="changelog">
+		<echo>Creating ChangeLog file</echo>
+		<delete file="ChangeLog" />
+		<exec executable="svn2cl" failonerror="false" failifexecutionfails="false">
+			<arg line="-i"/>
+		</exec>
+	</target>
+	
+	<target name="dist" depends="all-instrument, changelog">
 		<mkdir dir="${build.dist.dir}" />
 		<mkdir dir="${build.dist.installer.dir}" />
 
