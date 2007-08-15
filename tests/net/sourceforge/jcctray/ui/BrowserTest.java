@@ -81,7 +81,7 @@ public class BrowserTest extends MockObjectTestCase {
 			}
 		}.open(launchUrl);
 		assertNull(calledLaunch);
-		assertEquals(executablePath + " " + launchUrl, calledExec);
+		assertEquals("build.xml myUrl" , calledExec);
 	}
 
 	protected void tearDown() throws Exception {
