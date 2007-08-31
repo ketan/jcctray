@@ -193,7 +193,7 @@
 	</target>
 	<target name="-copy.executable.win">
 		<echo file="${dist.dir}/jcctray.cmd">
-				start javaw -jar lib/JCCTray.jar
+				@start javaw -jar %~dp0/lib/JCCTray.jar
 		</echo>
 	</target>
 
