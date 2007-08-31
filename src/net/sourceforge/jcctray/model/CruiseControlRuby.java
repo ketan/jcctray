@@ -16,7 +16,7 @@
 package net.sourceforge.jcctray.model;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Locale;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpMethod;
@@ -30,6 +30,10 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
  * @author Ketan Padegaonkar
  */
 public class CruiseControlRuby extends HTTPCruise implements ICruise {
+
+	private static final Locale	LOCALE_US	= Locale.US;
+	private static final SimpleDateFormat	DATE_PARSER	= new SimpleDateFormat("h:mm:ss a, dd MMM", LOCALE_US);
+	private static final SimpleDateFormat	DATE_FORMATTER	= new SimpleDateFormat("yyyy-MM-dd'T'HHmmssZ", LOCALE_US);
 
 	protected String forceBuildURL(DashBoardProject project) {
 		return project.getHost().getHostName().replaceAll("/*$", "") + "/projects/build/" + project.getName();
@@ -52,10 +56,8 @@ public class CruiseControlRuby extends HTTPCruise implements ICruise {
 
 	public String formatDate(String date) {
 		try {
-			String theDate = date.replaceAll("\\.\\d+", "");
-			theDate = theDate.replaceAll(":", "");
-			Date parse = new SimpleDateFormat("yyyy-MM-dd'T'HHmmssZ").parse(theDate);
-			return new SimpleDateFormat("h:mm:ss a, dd MMM").format(parse);
+			String theDate = date.replaceAll("\\.\\d+", "").replaceAll(":", "");
+			return DATE_PARSER.format(DATE_FORMATTER.parse(theDate));
 		} catch (Exception e) {
 			getLog().error("Could not parse date: " + date);
 		}

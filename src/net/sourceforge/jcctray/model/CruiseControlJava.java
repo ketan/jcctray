@@ -19,7 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Locale;
 
 /**
  * An implementation of {@link ICruise} that connects to CruiseControl (<a
@@ -29,6 +29,10 @@ import java.util.Date;
  */
 public class CruiseControlJava extends HTTPCruise implements ICruise {
 
+	private static final Locale	LOCALE_US	= Locale.US;
+	private static final SimpleDateFormat	DATE_FORMATTER	= new SimpleDateFormat("h:mm:ss a, dd MMM", LOCALE_US);
+	private static final SimpleDateFormat	DATE_PARSER		= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", LOCALE_US);
+	
 	protected String forceBuildURL(DashBoardProject project) {
 		String hostName = project.getHost().getHostName();
 		URL url = null;
@@ -44,8 +48,7 @@ public class CruiseControlJava extends HTTPCruise implements ICruise {
 
 	public String formatDate(String date) {
 		try {
-			Date parse = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(date);
-			return new SimpleDateFormat("h:mm:ss a, dd MMM").format(parse);
+			return DATE_FORMATTER.format(DATE_PARSER.parse(date));
 		} catch (ParseException e) {
 			getLog().error("Could not parse date: " + date);
 		}
