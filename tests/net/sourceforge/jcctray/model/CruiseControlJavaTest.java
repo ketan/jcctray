@@ -38,13 +38,13 @@ public class CruiseControlJavaTest extends TestCase {
 	public void testGetsForceBuildURL() throws Exception {
 		DashBoardProject dashBoardProject = new DashBoardProject("myProject", new Host("myHost", "http://my.host.name", cruiseControl));
 		String forceBuildURL = cruiseControl.forceBuildURL(dashBoardProject);
-		assertEquals("http://my.host.name:8000/invoke?operation=build&objectname=CruiseControl+Project%3Aname%3DmyProject", forceBuildURL);
+		assertEquals("http://my.host.name:" + cruiseControl.getForceBuildPort() + "/invoke?operation=build&objectname=CruiseControl+Project%3Aname%3DmyProject", forceBuildURL);
 	}
 	
 	public void testGetsForceBuildURLWithTrailingSlashInHostURL() throws Exception {
 		DashBoardProject dashBoardProject = new DashBoardProject("myProject", new Host("myHost", "http://my.host.name/myCruise//", cruiseControl));
 		String forceBuildURL = cruiseControl.forceBuildURL(dashBoardProject);
-		assertEquals("http://my.host.name:8000/myCruise/invoke?operation=build&objectname=CruiseControl+Project%3Aname%3DmyProject", forceBuildURL);
+		assertEquals("http://my.host.name:" + cruiseControl.getForceBuildPort() + "/myCruise/invoke?operation=build&objectname=CruiseControl+Project%3Aname%3DmyProject", forceBuildURL);
 	}
 	
 	public void testGetXmlReportURL() throws Exception {

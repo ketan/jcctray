@@ -38,12 +38,16 @@ public class CruiseControlJava extends HTTPCruise implements ICruise {
 		URL url = null;
 		try {
 			url = new URL(hostName);
-			return url.getProtocol() + "://" + url.getHost() + ":8000" + url.getPath().replaceAll("/*$", "")
+			return url.getProtocol() + "://" + url.getHost() + ":" + getForceBuildPort() + url.getPath().replaceAll("/*$", "")
 					+ "/invoke?operation=build&objectname=CruiseControl+Project%3Aname%3D" + project.getName();
 		} catch (MalformedURLException e) {
 			getLog().error("The url was malformed: " + url, e);
 		}
 		return null;
+	}
+	
+	protected String getForceBuildPort() {
+		return "8080";
 	}
 
 	public String formatDate(String date) {

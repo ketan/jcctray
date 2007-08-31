@@ -48,7 +48,7 @@ public class CruiseControlJava2_7 extends HTTPCruise implements ICruise {
 	}
 
 	protected String getForceBuildPort() {
-		return "8000";
+		return "8080";
 	}
 
 	public String formatDate(String date) {
