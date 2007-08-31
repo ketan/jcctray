@@ -16,7 +16,7 @@
     | limitations under the License.
     |==========================================================================
     |-->
-<project basedir="." default="all-instrument" name="JCCTray">
+<project basedir="." default="all" name="JCCTray">
 	<property name="target.jar" value="${ant.project.name}.jar" />
 	<property file="build.properties" />
 
@@ -269,7 +269,10 @@
 
 	<target name="changelog">
 		<echo>Creating ChangeLog file</echo>
-		<delete file="ChangeLog" />
+		<delete file="ChangeLog*.*" />
+		<exec executable="svn2cl" failonerror="false" failifexecutionfails="false">
+			<arg line="-i --html"/>
+		</exec>
 		<exec executable="svn2cl" failonerror="false" failifexecutionfails="false">
 			<arg line="-i"/>
 		</exec>
