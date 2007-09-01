@@ -25,6 +25,7 @@ import net.sourceforge.jcctray.model.Host;
  */
 public class ProjectLabelProviderTest extends TestCase {
 
+	private static final String		SOME_TIME		= "Some time";
 	private static final String		PROJECT_NAME	= "myProject";
 	private ProjectLabelProvider	labelProvider;
 	private DashBoardProject		project;
@@ -80,24 +81,40 @@ public class ProjectLabelProviderTest extends TestCase {
 		project.setName(PROJECT_NAME);
 		assertEquals(PROJECT_NAME, labelProvider.getColumnText(project, 0));
 	}
-	
+
 	public void testGetsProjectHostStringOnFirstColumn() throws Exception {
 		project.setHost(new Host("MyHost", null));
 		assertEquals("MyHost", labelProvider.getColumnText(project, 1));
 	}
-	
+
 	public void testGetsActivityOnSecondColumn() throws Exception {
 		project.setActivity(IProjectLabelConstants.BUILDING);
 		assertEquals(IProjectLabelConstants.BUILDING, labelProvider.getColumnText(project, 2));
 	}
-	
+
 	public void testGetsProjectDetailOnThirdColumn() throws Exception {
-		
+		project.setNextBuildTime(SOME_TIME);
+		assertEquals("Next build check at: Some time", labelProvider.getColumnText(project, 3));
+
+		project.setNextBuildTime(null);
+		assertEquals(IProjectLabelConstants.WAITING_FOR_BUILD, labelProvider.getColumnText(project, 3));
 	}
-	
+
 	public void testGetsLastBuildLabelOnFourthColumn() throws Exception {
 		project.setLastBuildLabel(IProjectLabelConstants.FAILURE);
 		assertEquals(IProjectLabelConstants.FAILURE, labelProvider.getColumnText(project, 4));
+	}
+
+	public void testGetsLastBuildLabelOnFifthColumn() throws Exception {
+		project.setLastBuildTime(null);
+		assertEquals("", labelProvider.getColumnText(project, 5));
+
+		project.setLastBuildTime(SOME_TIME);
+		assertEquals(SOME_TIME, labelProvider.getColumnText(project, 5));
+	}
+
+	public void testGetsEmptyStringOnAnyOtherColumn() throws Exception {
+		assertEquals("", labelProvider.getColumnText(project, 8));
 	}
 
 	protected void setUp() throws Exception {

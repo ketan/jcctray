@@ -13,12 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-/**
- * 
- */
 package net.sourceforge.jcctray.ui.settings.providers;
 
 import net.sourceforge.jcctray.model.DashBoardProject;
+import net.sourceforge.jcctray.utils.StringUtils;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -78,7 +76,7 @@ public class ProjectLabelProvider implements ITableLabelProvider, ILabelProvider
 		case 3:
 			String formatDate = project.getHost().getCruise().formatDate(nextBuildTime);
 
-			if (isEmptyOrNull(nextBuildTime) || isEmptyOrNull(formatDate))
+			if (StringUtils.isEmptyOrNull(nextBuildTime) || StringUtils.isEmptyOrNull(formatDate))
 				return WAITING_FOR_BUILD;
 
 			return "Next build check at: " + formatDate;
@@ -86,15 +84,12 @@ public class ProjectLabelProvider implements ITableLabelProvider, ILabelProvider
 		case 4:
 			return lastBuildLabel;
 		case 5:
-			if (isEmptyOrNull(lastBuildTime))
+			if (StringUtils.isEmptyOrNull(lastBuildTime))
 				return "";
 			return project.getHost().getCruise().formatDate(lastBuildTime);
+		default:
+			return "";
 		}
-		return null;
-	}
-
-	private boolean isEmptyOrNull(String formatDate) {
-		return formatDate == null || "".equals(formatDate.trim());
 	}
 
 	public void addListener(ILabelProviderListener arg0) {

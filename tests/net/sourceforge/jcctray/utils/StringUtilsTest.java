@@ -13,33 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package net.sourceforge.jcctray.ui.settings.providers;
+package net.sourceforge.jcctray.utils;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
-
-import net.sourceforge.jcctray.model.DashBoardProjects;
+import junit.framework.TestCase;
 
 /**
- * Interprets the {@link DashBoardProjects} model for structured viewers.
- * 
  * @author Ketan Padegaonkar
+ *
  */
-public class ProjectContentProvider implements IStructuredContentProvider {
+public class StringUtilsTest extends TestCase {
 
-	public Object[] getElements(Object inputElement) {
-		if (inputElement instanceof DashBoardProjects) {
-			return ((DashBoardProjects) inputElement).toArray();
-		}
-		return null;
+	public void testsEmptyOrTrue() throws Exception {
+		assertTrue(StringUtils.isEmptyOrNull(""));
+		assertTrue(StringUtils.isEmptyOrNull("   "));
+		assertTrue(StringUtils.isEmptyOrNull(null));
 	}
-
-	public void dispose() {
-
-	}
-
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
-	}
-
 }
