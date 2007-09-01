@@ -24,52 +24,40 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * Provides text and images for {@link DashBoardProject} for viewers.
  * 
  * @author Ketan Padegaonkar
  */
-public class ProjectLabelProvider implements ITableLabelProvider, ILabelProvider {
-
-	public static final Image	GRAY_IMG	= new Image(Display.getDefault(), ProjectLabelProvider.class
-													.getClassLoader().getResourceAsStream("icons/Gray.png"));
-	public static final Image	GREEN_IMG	= new Image(Display.getDefault(), ProjectLabelProvider.class
-													.getClassLoader().getResourceAsStream("icons/Green.png"));
-	public static final Image	ORANGE_IMG	= new Image(Display.getDefault(), ProjectLabelProvider.class
-													.getClassLoader().getResourceAsStream("icons/Orange.png"));
-	public static final Image	RED_IMG		= new Image(Display.getDefault(), ProjectLabelProvider.class
-													.getClassLoader().getResourceAsStream("icons/Red.png"));
-	public static final Image	YELLOW_IMG	= new Image(Display.getDefault(), ProjectLabelProvider.class
-													.getClassLoader().getResourceAsStream("icons/Yellow.png"));
+public class ProjectLabelProvider implements ITableLabelProvider, ILabelProvider, IProjectLabelConstants {
 
 	public Image getColumnImage(Object arg0, int column) {
 		DashBoardProject project = (DashBoardProject) arg0;
-		switch (column) {
-		case 0:
+		if (column == 0)
 			return getImage(project);
-		}
-		return null;
+		else
+			return null;
 	}
 
 	public Image getImage(Object element) {
 		DashBoardProject project = (DashBoardProject) element;
 		String activity = project.getActivity();
 		String lastBuildStatus = project.getLastBuildStatus();
-		if (activity.equals("Sleeping") && lastBuildStatus.equals("Success"))
-			return ProjectLabelProvider.GREEN_IMG;
-		else if (activity.equals("Sleeping") && lastBuildStatus.equals("Failure"))
-			return ProjectLabelProvider.RED_IMG;
-		else if (activity.equals("Building") && lastBuildStatus.equals("Success"))
-			return ProjectLabelProvider.YELLOW_IMG;
-		else if (activity.equals("Building") && lastBuildStatus.equals("Failure"))
-			return ProjectLabelProvider.ORANGE_IMG;
-		else if (activity.equals("Building") && lastBuildStatus.equals("Unknown"))
-			return ProjectLabelProvider.YELLOW_IMG;
-		else if (activity.equals("CheckingModifications"))
-			return ProjectLabelProvider.GRAY_IMG;
-		return ProjectLabelProvider.GRAY_IMG;
+
+		if (lastBuildStatus.equals(SUCCESS)) {
+			if (activity.equals(BUILDING))
+				return IProjectLabelConstants.YELLOW_IMG;
+			else
+				return IProjectLabelConstants.GREEN_IMG;
+		} else if (lastBuildStatus.equals(FAILURE)) {
+			if (activity.equals(BUILDING))
+				return IProjectLabelConstants.ORANGE_IMG;
+			else
+				return IProjectLabelConstants.RED_IMG;
+		} else if (activity.equals(BUILDING))
+			return IProjectLabelConstants.YELLOW_IMG;
+		return IProjectLabelConstants.GRAY_IMG;
 	}
 
 	public String getColumnText(Object element, int column) {
@@ -88,20 +76,25 @@ public class ProjectLabelProvider implements ITableLabelProvider, ILabelProvider
 		case 2:
 			return activity;
 		case 3:
-			if (nextBuildTime == null || "".equals(nextBuildTime.trim()))
-				return "";
 			String formatDate = project.getHost().getCruise().formatDate(nextBuildTime);
-			if (formatDate != null && !formatDate.trim().equals(""))
-				return "Next build check at: " + formatDate;
-			return "";
+
+			if (isEmptyOrNull(nextBuildTime) || isEmptyOrNull(formatDate))
+				return WAITING_FOR_BUILD;
+
+			return "Next build check at: " + formatDate;
+
 		case 4:
 			return lastBuildLabel;
 		case 5:
-			if (lastBuildTime == null || "".equals(lastBuildTime.trim()))
+			if (isEmptyOrNull(lastBuildTime))
 				return "";
 			return project.getHost().getCruise().formatDate(lastBuildTime);
 		}
 		return null;
+	}
+
+	private boolean isEmptyOrNull(String formatDate) {
+		return formatDate == null || "".equals(formatDate.trim());
 	}
 
 	public void addListener(ILabelProviderListener arg0) {

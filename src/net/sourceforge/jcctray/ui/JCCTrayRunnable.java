@@ -23,6 +23,7 @@ import net.sourceforge.jcctray.model.DashBoardProjects;
 import net.sourceforge.jcctray.model.Host;
 import net.sourceforge.jcctray.model.IJCCTraySettings;
 import net.sourceforge.jcctray.model.ISettingsConstants;
+import net.sourceforge.jcctray.ui.settings.providers.IProjectLabelConstants;
 import net.sourceforge.jcctray.ui.settings.providers.ProjectLabelProvider;
 
 import org.apache.log4j.Logger;
@@ -69,15 +70,15 @@ public class JCCTrayRunnable implements Runnable {
 
 	private Image deduceImageToSet(DashBoardProjects projects) {
 		DashBoardProject[] projectList = projects.toArray();
-		Image icon = ProjectLabelProvider.GREEN_IMG;
+		Image icon = IProjectLabelConstants.GREEN_IMG;
 		for (int i = 0; i < projectList.length; i++) {
 			Image projectIcon = new ProjectLabelProvider().getImage(projectList[i]);
-			if (projectIcon == ProjectLabelProvider.RED_IMG)
-				icon = ProjectLabelProvider.RED_IMG;
-			if (projectIcon == ProjectLabelProvider.YELLOW_IMG)
-				icon = ProjectLabelProvider.YELLOW_IMG;
-			if (projectIcon == ProjectLabelProvider.ORANGE_IMG)
-				icon = ProjectLabelProvider.ORANGE_IMG;
+			if (projectIcon == IProjectLabelConstants.RED_IMG)
+				icon = IProjectLabelConstants.RED_IMG;
+			if (projectIcon == IProjectLabelConstants.YELLOW_IMG)
+				icon = IProjectLabelConstants.YELLOW_IMG;
+			if (projectIcon == IProjectLabelConstants.ORANGE_IMG)
+				icon = IProjectLabelConstants.ORANGE_IMG;
 		}
 		return icon;
 	}
