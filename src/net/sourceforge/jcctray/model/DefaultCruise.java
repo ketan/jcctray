@@ -15,6 +15,8 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.model;
 
+import java.util.TimeZone;
+
 /**
  * A null implementation of ICruise.
  * 
@@ -30,7 +32,7 @@ public class DefaultCruise implements ICruise {
 		return null;
 	}
 
-	public String formatDate(String date) {
+	public String formatDate(String date, TimeZone timeZone) {
 		return date;
 	}
 

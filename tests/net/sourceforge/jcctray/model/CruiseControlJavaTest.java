@@ -25,13 +25,13 @@ public class CruiseControlJavaTest extends TestCase {
 	private CruiseControlJava	cruiseControl;
 
 	public void testFormatsDate() throws Exception {
-		String formattedDate = cruiseControl.formatDate("2007-07-01T10:14:34");
+		String formattedDate = cruiseControl.formatDate("2007-07-01T10:14:34", null);
 		assertEquals("10:14:34 AM, 01 Jul", formattedDate);
 	}
 
 	public void testInvalidDateReturnsSameDate() throws Exception {
 		String invalidDate = "xyz";
-		String formattedDate = cruiseControl.formatDate(invalidDate);
+		String formattedDate = cruiseControl.formatDate(invalidDate, null);
 		assertEquals(invalidDate, formattedDate);
 	}
 	

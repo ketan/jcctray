@@ -15,6 +15,8 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.model;
 
+import java.util.TimeZone;
+
 /**
  * This represents the specific implementation of CruiseControl, and helps in
  * forcing a build, and opening a browser on a specific {@link DashBoardProject}.
@@ -32,7 +34,7 @@ public interface ICruise {
 
 	public String getName();
 
-	public String formatDate(String date);
+	public String formatDate(String date, TimeZone timeZone);
 
 	public DashBoardProjects getProjects(Host host) throws Exception;
 }

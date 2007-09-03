@@ -15,6 +15,8 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.ui.settings.providers;
 
+import java.util.TimeZone;
+
 import net.sourceforge.jcctray.model.DashBoardProject;
 import net.sourceforge.jcctray.utils.StringUtils;
 
@@ -74,7 +76,7 @@ public class ProjectLabelProvider implements ITableLabelProvider, ILabelProvider
 		case 2:
 			return activity;
 		case 3:
-			String formatDate = project.getHost().getCruise().formatDate(nextBuildTime);
+			String formatDate = project.getHost().getCruise().formatDate(nextBuildTime, TimeZone.getDefault());
 
 			if (StringUtils.isEmptyOrNull(nextBuildTime) || StringUtils.isEmptyOrNull(formatDate))
 				return WAITING_FOR_BUILD;
@@ -86,7 +88,7 @@ public class ProjectLabelProvider implements ITableLabelProvider, ILabelProvider
 		case 5:
 			if (StringUtils.isEmptyOrNull(lastBuildTime))
 				return "";
-			return project.getHost().getCruise().formatDate(lastBuildTime);
+			return project.getHost().getCruise().formatDate(lastBuildTime, null);
 		default:
 			return "";
 		}

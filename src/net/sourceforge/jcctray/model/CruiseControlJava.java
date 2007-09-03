@@ -20,6 +20,7 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * An implementation of {@link ICruise} that connects to CruiseControl (<a
@@ -50,7 +51,7 @@ public class CruiseControlJava extends HTTPCruise implements ICruise {
 		return Integer.getInteger("forcebuild." + host.getHostString() + ".port", 8000).toString();
 	}
 
-	public String formatDate(String date) {
+	public String formatDate(String date, TimeZone timeZone) {
 		try {
 			return DATE_FORMATTER.format(DATE_PARSER.parse(date));
 		} catch (ParseException e) {
