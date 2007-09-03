@@ -9,7 +9,7 @@
 ;General
   ;Name and file
   Name "JCCTray"
-  OutFile "..\build\dist\installers\JCCTray-win32-1.0.exe"
+  OutFile "..\build\dist\installers\JCCTray-@DIST_NAME_SUFFIX@-@VERSION@.exe"
   ;Default installation folder
   InstallDir "$PROGRAMFILES\JCCTray"
   
@@ -19,6 +19,7 @@
   ;Vista redirects $SMPROGRAMS to all users without this
   RequestExecutionLevel admin
 
+  SetCompressor /SOLID lzma
 ;--------------------------------
 ;Variables
   Var MUI_TEMP
@@ -99,7 +100,7 @@ Section "Install" InstallSection
   SetOutPath "$INSTDIR"
   
   ;ADD YOUR OWN FILES HERE...
-  File /r ..\build\dist\win32\*.* 
+  File /r ..\build\dist\@DIST_NAME_SUFFIX@\*.* 
 
   ;Store installation folder
   WriteRegStr HKCU "Software\JCCTray" "" $INSTDIR

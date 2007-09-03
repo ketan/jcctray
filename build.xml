@@ -178,7 +178,7 @@
 		<echo file="${dist.dir}/jcctray" append="true"># to point to the jmx port of cruise control java servers.${line.separator}</echo>
 		<echo file="${dist.dir}/jcctray" append="true"># This ensures that you are able to force builds on cruise control servers.${line.separator}</echo>
 		<echo file="${dist.dir}/jcctray" append="true"># e.g. java -Dforcebuild.YOUR_BUILD_SERVER.port=YOUR_JMX_PORT -jar lib/JCCTray.jar${line.separator}</echo>
-		<echo file="${dist.dir}/jcctray" append="true">java -jar `dirname $0`/lib/JCCTray.jar</echo>
+		<echo file="${dist.dir}/jcctray" append="true">java -jar "`dirname $0`/lib/JCCTray.jar"</echo>
 	</target>
 	<target name="-copy.executable.win">
 		<echo file="${dist.dir}/jcctray.cmd">${line.separator}</echo>
@@ -187,7 +187,7 @@
 		<echo file="${dist.dir}/jcctray.cmd" append="true">@rem to point to the jmx port of cruise control java servers.${line.separator}</echo>
 		<echo file="${dist.dir}/jcctray.cmd" append="true">@rem This ensures that you are able to force builds on cruise control servers.${line.separator}</echo>
 		<echo file="${dist.dir}/jcctray.cmd" append="true">@rem e.g. @start javaw -Dforcebuild.YOUR_BUILD_SERVER.port=YOUR_JMX_PORT -jar %~dp0/lib/JCCTray.jar${line.separator}</echo>
-		<echo file="${dist.dir}/jcctray.cmd" append="true">@start javaw -jar %~dp0/lib/JCCTray.jar</echo>
+		<echo file="${dist.dir}/jcctray.cmd" append="true">@start javaw -jar "%~dp0/lib/JCCTray.jar"</echo>
 	</target>
 
 	<target name="create.dist.unix">
@@ -236,10 +236,14 @@
 	</target>
 	
 	<target name="-create.install.dist" if="nsis.available">
-		<filter token=""/>
+		<property name="nsis.script" value="${build.dir}/JCCTray-${dist.name.suffix}.nsi" />
+		<copy file="nsis/JCCTray.template.nsi" tofile="${nsis.script}">
+			<filterset>
+				<filter token="DIST_NAME_SUFFIX" value="${dist.name.suffix}"/>
+				<filter token="VERSION" value="${version}"/>
+			</filterset>
+		</copy>
 		<exec executable="${makensis.exe}" failifexecutionfails="false" failonerror="true">
-			<arg value="/X"/>
-			<arg value="SetCompressor /FINAL lzma"/>
 			<arg value="${nsis.script}"/>
 		</exec>
 	</target>
