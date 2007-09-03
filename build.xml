@@ -249,7 +249,7 @@
 
 	<target name="create.dist.win">
 		<mkdir dir="${dist.dir}" />
-		<copy todir="${dist.dir}/lib" verbose="true">
+		<copy todir="${dist.dir}/lib" verbose="false">
 			<fileset refid="cctray.classpath" />
 			<fileset refid="swt.jars" />
 			<fileset dir="build" includes="${target.jar}" />
