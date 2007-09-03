@@ -154,31 +154,19 @@
 		</javadoc>
 	</target>
 
-	<target name="create.cp">
-		<property name="target.os" value="unix" />
-
-		<pathconvert targetos="${target.os}" property="cp">
-			<path>
+	<target name="create.dist.jar">
+		<!-- create classpath for jar -->
+		<manifestclasspath property="jar.classpath" jarfile="${dist.dir}/lib/${target.jar}">
+			<classpath>
 				<fileset dir="${dist.dir}/lib" />
-			</path>
-		</pathconvert>
-
-		<pathconvert targetos="${target.os}" property="basedir.dist">
-			<path>
-				<dirset dir="${dist.dir}/lib" />
-			</path>
-		</pathconvert>
-
-		<propertyregex property="cp" override="true" input="${cp}" regexp="${basedir.dist}/" replace=" " casesensitive="false" />
-		<propertyregex property="cp" override="true" input="${cp}" regexp=":" replace="" casesensitive="false" />
-
-		<copy todir="${build.classes.dir}">
-			<fileset dir="src" excludes="**/*.java" />
-		</copy>
+			</classpath>
+		</manifestclasspath>
+		
+		<echo>Creating jar with classpath: ${jar.classpath}</echo>
 		<jar destfile="${dist.dir}/lib/${target.jar}" basedir="${build.classes.dir}">
 			<manifest>
 				<attribute name="Main-class" value="net.sourceforge.jcctray.ui.JCCTrayMain" />
-				<attribute name="Class-Path" value="${cp}" />
+				<attribute name="Class-Path" value="${jar.classpath}" />
 			</manifest>
 		</jar>
 	</target>
@@ -214,7 +202,7 @@
 			<fileset refid="commonfiles" />
 		</copy>
 
-		<antcall target="create.cp">
+		<antcall target="create.dist.jar">
 			<param name="dist.dir" value="${dist.dir}" />
 		</antcall>
 
@@ -246,6 +234,20 @@
 			<tarfileset dir="${dist.dir}" prefix="jcctray-${version}_src" preserveLeadingSlashes="false" />
 		</tar>
 	</target>
+	
+	<target name="-create.install.dist" if="nsis.available">
+		<filter token=""/>
+		<exec executable="${makensis.exe}" failifexecutionfails="false" failonerror="true">
+			<arg value="/X"/>
+			<arg value="SetCompressor /FINAL lzma"/>
+			<arg value="${nsis.script}"/>
+		</exec>
+	</target>
+	
+	<target name="create.install.dist">
+		<available file="${makensis.exe}" property="nsis.available" />
+		<antcall target="-create.install.dist"/>
+	</target>
 
 	<target name="create.dist.win">
 		<mkdir dir="${dist.dir}" />
@@ -259,7 +261,7 @@
 			<fileset refid="commonfiles" />
 		</copy>
 
-		<antcall target="create.cp">
+		<antcall target="create.dist.jar">
 			<param name="dist.dir" value="${dist.dir}" />
 		</antcall>
 
@@ -318,6 +320,18 @@
 		<antcall target="create.src.dist">
 			<param name="dist.dir" value="${build.dist.src.dir}" />
 			<reference refid="swt.all.classpath" torefid="swt.jars" />
+		</antcall>
+		
+		<!-- win32 installable -->
+		<antcall target="create.install.dist">
+			<param name="dist.dir" value="${build.dist.win32.dir}" />
+			<param name="dist.name.suffix" value="win32" />
+		</antcall>
+		
+		<!-- wpf installable -->
+		<antcall target="create.install.dist">
+			<param name="dist.dir" value="${build.dist.wpf.dir}" />
+			<param name="dist.name.suffix" value="wpf" />
 		</antcall>
 	</target>
 
