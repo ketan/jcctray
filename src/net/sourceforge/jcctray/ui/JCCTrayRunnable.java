@@ -23,6 +23,7 @@ import net.sourceforge.jcctray.model.DashBoardProjects;
 import net.sourceforge.jcctray.model.Host;
 import net.sourceforge.jcctray.model.IJCCTraySettings;
 import net.sourceforge.jcctray.model.ISettingsConstants;
+import net.sourceforge.jcctray.ui.settings.providers.EnabledProjectsFilter;
 import net.sourceforge.jcctray.ui.settings.providers.IProjectLabelConstants;
 import net.sourceforge.jcctray.ui.settings.providers.ProjectLabelProvider;
 
@@ -72,13 +73,16 @@ public class JCCTrayRunnable implements Runnable {
 		DashBoardProject[] projectList = projects.toArray();
 		Image icon = IProjectLabelConstants.GREEN_IMG;
 		for (int i = 0; i < projectList.length; i++) {
-			Image projectIcon = new ProjectLabelProvider().getImage(projectList[i]);
-			if (projectIcon == IProjectLabelConstants.RED_IMG)
-				icon = IProjectLabelConstants.RED_IMG;
-			if (projectIcon == IProjectLabelConstants.YELLOW_IMG)
-				icon = IProjectLabelConstants.YELLOW_IMG;
-			if (projectIcon == IProjectLabelConstants.ORANGE_IMG)
-				icon = IProjectLabelConstants.ORANGE_IMG;
+			DashBoardProject project = projectList[i];
+			if (new EnabledProjectsFilter(this.traySettings).select(project)){
+				Image projectIcon = new ProjectLabelProvider().getImage(project);
+				if (projectIcon == IProjectLabelConstants.RED_IMG)
+					icon = IProjectLabelConstants.RED_IMG;
+				if (projectIcon == IProjectLabelConstants.YELLOW_IMG)
+					icon = IProjectLabelConstants.YELLOW_IMG;
+				if (projectIcon == IProjectLabelConstants.ORANGE_IMG)
+					icon = IProjectLabelConstants.ORANGE_IMG;
+			}
 		}
 		return icon;
 	}

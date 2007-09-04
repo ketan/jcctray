@@ -39,6 +39,10 @@ public class EnabledProjectsFilter extends ViewerFilter {
 	}
 
 	public boolean select(Viewer viewer, Object parentElement, Object aProject) {
+		return select(aProject);
+	}
+
+	public boolean select(Object aProject) {
 		if (aProject instanceof DashBoardProject) {
 			DashBoardProject project = (DashBoardProject) aProject;
 			Host host = project.getHost();
