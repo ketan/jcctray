@@ -16,8 +16,10 @@
     | limitations under the License.
     |==========================================================================
     |-->
-<project basedir="." default="all" name="JCCTray">
+<project basedir="." default="dist" name="JCCTray">
 	<property name="target.jar" value="${ant.project.name}.jar" />
+	
+	<property file="version.properties" />
 	<property file="build.local.properties" />
 	<property file="build.properties" />
 
@@ -34,7 +36,8 @@
 	<fileset id="jmock.classpath" file="${jmock.jar}" />
 	
 	<fileset id="commonfiles" dir=".">
-		<include name="LICENSE.txt"/>
+		<include name="LICENSE.*"/>
+		<include name="version.properties"/>
 		<include name="ChangeLog"/>
 	</fileset>
 	
@@ -208,9 +211,9 @@
 
 		<antcall target="-copy.executable.unix" />
 		
-		<tar destfile="${build.dist.installer.dir}/jcctray-${version}_${dist.name.suffix}.tar.gz" compression="gzip">
-			<tarfileset dir="${dist.dir}" prefix="jcctray-${version}_${dist.name.suffix}" preserveLeadingSlashes="false" excludes="jcctray" />
-			<tarfileset dir="${dist.dir}" prefix="jcctray-${version}_${dist.name.suffix}" preserveLeadingSlashes="false" mode="755" includes="jcctray" />
+		<tar destfile="${build.dist.installer.dir}/jcctray-${jcctray.version}_${dist.name.suffix}.tar.gz" compression="gzip">
+			<tarfileset dir="${dist.dir}" prefix="jcctray-${jcctray.version}_${dist.name.suffix}" preserveLeadingSlashes="false" excludes="jcctray" />
+			<tarfileset dir="${dist.dir}" prefix="jcctray-${jcctray.version}_${dist.name.suffix}" preserveLeadingSlashes="false" mode="755" includes="jcctray" />
 		</tar>
 	</target>
 
@@ -230,8 +233,8 @@
 		<antcall target="-copy.executable.win"/>
 		<antcall target="-copy.executable.unix"/>
 		
-		<tar destfile="${build.dist.installer.dir}/jcctray-${version}_src.tar.gz" compression="gzip">
-			<tarfileset dir="${dist.dir}" prefix="jcctray-${version}_src" preserveLeadingSlashes="false" />
+		<tar destfile="${build.dist.installer.dir}/jcctray-${jcctray.version}_src.tar.gz" compression="gzip">
+			<tarfileset dir="${dist.dir}" prefix="jcctray-${jcctray.version}_src" preserveLeadingSlashes="false" />
 		</tar>
 	</target>
 	
@@ -240,7 +243,7 @@
 		<copy file="nsis/JCCTray.template.nsi" tofile="${nsis.script}">
 			<filterset>
 				<filter token="DIST_NAME_SUFFIX" value="${dist.name.suffix}"/>
-				<filter token="VERSION" value="${version}"/>
+				<filter token="VERSION" value="${jcctray.version}"/>
 			</filterset>
 		</copy>
 		<exec executable="${makensis.exe}" failifexecutionfails="false" failonerror="true">
@@ -271,9 +274,9 @@
 
 		<antcall target="-copy.executable.win"/>
 		
-		<zip destfile="${build.dist.installer.dir}/jcctray-${version}_${dist.name.suffix}.zip" compress="true">
-			<zipfileset dir="${dist.dir}" prefix="jcctray-${version}_${dist.name.suffix}" excludes="jcctray" />
-			<zipfileset dir="${dist.dir}" prefix="jcctray-${version}_${dist.name.suffix}" includes="jcctray.cmd" />
+		<zip destfile="${build.dist.installer.dir}/jcctray-${jcctray.version}_${dist.name.suffix}.zip" compress="true">
+			<zipfileset dir="${dist.dir}" prefix="jcctray-${jcctray.version}_${dist.name.suffix}" excludes="jcctray" />
+			<zipfileset dir="${dist.dir}" prefix="jcctray-${jcctray.version}_${dist.name.suffix}" includes="jcctray.cmd" />
 		</zip>
 	</target>
 

@@ -57,6 +57,26 @@ public class JCCTray {
 
 	private static final Logger	log	= Logger.getLogger(JCCTray.class);
 
+	private final class AboutDialogListener implements SelectionListener {
+		public void widgetDefaultSelected(SelectionEvent e) {
+			new AboutDialog(shell, traySettings).open();
+		}
+
+		public void widgetSelected(SelectionEvent e) {
+			widgetDefaultSelected(e);
+		}
+	}
+
+	private final class BugsWebPageListener implements SelectionListener {
+		public void widgetDefaultSelected(SelectionEvent e) {
+			new Browser(traySettings).open("http://jcctray.sourceforge.net/wiki/Bugs");
+		}
+
+		public void widgetSelected(SelectionEvent e) {
+			widgetDefaultSelected(e);
+		}
+	}
+
 	private final class TableSelectionListener implements SelectionListener {
 		public void widgetDefaultSelected(SelectionEvent e) {
 			setButtonVisibilities();
@@ -188,6 +208,10 @@ public class JCCTray {
 	private MenuItem				fileExitItem;
 	private TableViewer				tableViewer;
 	private final IJCCTraySettings	traySettings;
+	private MenuItem				helpMenuHeader;
+	private Menu					helpMenu;
+	private MenuItem				helpAboutItem;
+	private MenuItem				helpBugsItem;
 
 	public JCCTray() {
 		this(JCCTraySettings.getInstance());
@@ -238,6 +262,9 @@ public class JCCTray {
 
 		fileSettingsItem.addSelectionListener(new SettingsMenuListener());
 		fileExitItem.addSelectionListener(new FileExitMenuListener());
+
+		helpBugsItem.addSelectionListener(new BugsWebPageListener());
+		helpAboutItem.addSelectionListener(new AboutDialogListener());
 
 		table.addSelectionListener(new TableSelectionListener());
 		tableViewer.addDoubleClickListener(new DisplayWebPageListener());
@@ -294,6 +321,7 @@ public class JCCTray {
 	private void createMenus() {
 		menuBar = new Menu(shell, SWT.BAR);
 		createFileMenu();
+		createHelpMenu();
 		shell.setMenuBar(menuBar);
 	}
 
@@ -310,6 +338,28 @@ public class JCCTray {
 		menuItem.addSelectionListener(new ForceBuildListener());
 
 		table.setMenu(menu);
+	}
+
+	private void createHelpMenu() {
+		helpMenuHeader = new MenuItem(menuBar, SWT.CASCADE);
+		helpMenuHeader.setText("&Help");
+		helpMenu = new Menu(shell, SWT.DROP_DOWN);
+		helpMenuHeader.setMenu(helpMenu);
+		createBugsItem();
+		new MenuItem(helpMenu, SWT.SEPARATOR);
+		createAboutMenuItem();
+	}
+
+	private void createAboutMenuItem() {
+		helpAboutItem = new MenuItem(helpMenu, SWT.PUSH);
+		helpAboutItem.setText("&About JCCTray	CTRL+J");
+		helpAboutItem.setAccelerator(SWT.MOD1 | 'J');
+	}
+
+	private void createBugsItem() {
+		helpBugsItem = new MenuItem(helpMenu, SWT.PUSH);
+		helpBugsItem.setText("&Bugs	CTRL+B");
+		helpBugsItem.setAccelerator(SWT.MOD1 | 'B');
 	}
 
 	private void createFileMenu() {
