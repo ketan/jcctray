@@ -74,7 +74,8 @@ public class JCCTrayRunnable implements Runnable {
 		Image icon = IProjectLabelConstants.GREEN_IMG;
 		for (int i = 0; i < projectList.length; i++) {
 			DashBoardProject project = projectList[i];
-			if (new EnabledProjectsFilter(this.traySettings).select(project)){
+			boolean projectEnabled = new EnabledProjectsFilter(this.traySettings).select(project);
+			if (projectEnabled){
 				Image projectIcon = new ProjectLabelProvider().getImage(project);
 				if (projectIcon == IProjectLabelConstants.RED_IMG)
 					icon = IProjectLabelConstants.RED_IMG;
