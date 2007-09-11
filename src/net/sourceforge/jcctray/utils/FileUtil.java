@@ -24,8 +24,8 @@ import java.io.File;
  */
 public class FileUtil {
 
-	private static final String	USER_DIR	= System.getProperty("user.dir");
-	private static final String	USER_HOME	= System.getProperty("user.home");
+	private static final String	JCCTRAY_HOME		= System.getProperty("user.dir");
+	private static final String	USER_HOME_JCCTRAY	= System.getProperty("user.home") + File.separator + ".jcctray";
 
 	/**
 	 * Returns the location of the given config file. Looks for the file in the
@@ -38,13 +38,21 @@ public class FileUtil {
 	 *         if the file cannot be found.
 	 */
 	public static String findConfigFile(String fileName) {
-		File file = new File(getFileName(USER_HOME, fileName));
+		File file = new File(getFileNameInUserHome(fileName));
 		if (file.exists())
 			return file.getAbsolutePath();
-		file = new File(getFileName(USER_DIR, fileName));
+		file = new File(getFileNameInJCCTrayHome(fileName));
 		if (file.exists())
 			return file.getAbsolutePath();
 		return null;
+	}
+
+	public static String getFileNameInJCCTrayHome(String fileName) {
+		return getFileName(JCCTRAY_HOME, fileName);
+	}
+
+	public static String getFileNameInUserHome(String fileName) {
+		return getFileName(USER_HOME_JCCTRAY, fileName);
 	}
 
 	private static String getFileName(String baseDir, String fileName) {

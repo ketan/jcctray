@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 
+import net.sourceforge.jcctray.utils.FileUtil;
 import net.sourceforge.jcctray.utils.ObjectPersister;
 
 import org.apache.log4j.Logger;
@@ -81,7 +82,11 @@ public class CruiseRegistry {
 		return new HashSet(registry);
 	}
 
-	public void save(String fileName) throws IOException, SAXException, IntrospectionException {
+	public void save() throws IOException, SAXException, IntrospectionException {
+		save (FileUtil.findConfigFile("cruiseregistry.xml"));
+	}
+	
+	void save(String fileName) throws IOException, SAXException, IntrospectionException {
 		ObjectPersister.saveCruiseRegistry(this, fileName);
 	}
 

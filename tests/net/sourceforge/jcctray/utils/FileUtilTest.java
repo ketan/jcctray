@@ -24,12 +24,18 @@ import junit.framework.TestCase;
  */
 public class FileUtilTest extends TestCase {
 
+	private static final String	USER_HOME_JCCTRAY		= System.getProperty("user.home") + File.separator + ".jcctray";
 	private static final String	MY_CONFIG				= "my.config";
-	private static final String	FILEPATH_IN_USER_HOME	= System.getProperty("user.home") + File.separator + MY_CONFIG;
+	private static final String	FILEPATH_IN_USER_HOME	= USER_HOME_JCCTRAY + File.separator + MY_CONFIG;
 	private static final String	FILEPATH_IN_USER_DIR	= System.getProperty("user.dir") + File.separator + MY_CONFIG;
-	
+
 	private File				fileInUserHome;
 	private File				fileInUserDir;
+
+	protected void setUp() throws Exception {
+		new File(USER_HOME_JCCTRAY).mkdirs();
+		super.setUp();
+	}
 
 	public void testGetsSettingsFromUserHomeDirFirst() throws Exception {
 		fileInUserHome = new File(FILEPATH_IN_USER_HOME);
@@ -42,7 +48,7 @@ public class FileUtilTest extends TestCase {
 		fileInUserDir.createNewFile();
 		assertEquals(FILEPATH_IN_USER_DIR, FileUtil.findConfigFile(MY_CONFIG));
 	}
-	
+
 	public void testGetsNullIfNoFileInUserHomeAndUserDir() throws Exception {
 		assertNull(FileUtil.findConfigFile(MY_CONFIG));
 	}
@@ -50,7 +56,7 @@ public class FileUtilTest extends TestCase {
 	protected void tearDown() throws Exception {
 		if (fileInUserHome != null)
 			fileInUserHome.delete();
-		
+
 		if (fileInUserDir != null)
 			fileInUserDir.delete();
 	}

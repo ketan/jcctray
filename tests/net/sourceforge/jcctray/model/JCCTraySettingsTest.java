@@ -22,10 +22,11 @@ import junit.framework.TestCase;
 
 public class JCCTraySettingsTest extends TestCase {
 
+	private static final String	JCCTRAY_TEST_XML	= "jcctray.test.xml";
 	private IJCCTraySettings	settings;
-	private Host			host;
-	private Host			host1;
-	private Host			host2;
+	private Host				host;
+	private Host				host1;
+	private Host				host2;
 
 	protected void setUp() throws Exception {
 		host = new Host("human Readable Name", "my.host.name");
@@ -35,7 +36,7 @@ public class JCCTraySettingsTest extends TestCase {
 	}
 
 	protected void tearDown() throws Exception {
-		new File("jcctray.test.xml").delete();
+		new File(JCCTRAY_TEST_XML).delete();
 	}
 
 	public void testAddsHosts() throws Exception {
@@ -94,10 +95,10 @@ public class JCCTraySettingsTest extends TestCase {
 
 		settings1.addHost(host1);
 		settings1.addHost(host2);
-		settings1.save("jcctray.test.xml");
+		settings1.save(JCCTRAY_TEST_XML);
 
 		JCCTraySettings loadedSettings = new JCCTraySettings();
-		loadedSettings.load("jcctray.test.xml");
+		loadedSettings.load(JCCTRAY_TEST_XML);
 
 		assertEquals(2, loadedSettings.hostCount());
 		assertTrue(loadedSettings.getHosts().contains(host1));

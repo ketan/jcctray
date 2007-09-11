@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import net.sourceforge.jcctray.utils.FileUtil;
 import net.sourceforge.jcctray.utils.ObjectPersister;
 
 import org.apache.log4j.Logger;
@@ -111,7 +112,7 @@ public class JCCTraySettings implements ISettingsConstants, IJCCTraySettings {
 	}
 
 	public void save() throws IOException {
-		save("jcctray.xml");
+		save(FileUtil.getFileNameInUserHome("jcctray.xml"));
 	}
 
 	void save(String configFile) throws IOException {
@@ -119,7 +120,7 @@ public class JCCTraySettings implements ISettingsConstants, IJCCTraySettings {
 	}
 
 	public void load() throws IOException, SAXException {
-		load("jcctray.xml");
+		load(FileUtil.findConfigFile("jcctray.xml"));
 	}
 
 	void load(String fileName) throws IOException, SAXException {
@@ -133,7 +134,7 @@ public class JCCTraySettings implements ISettingsConstants, IJCCTraySettings {
 			if (JCCTraySettings.instance == null) {
 				JCCTraySettings.instance = new JCCTraySettings();
 				try {
-					JCCTraySettings.instance.load("jcctray.xml");
+					JCCTraySettings.instance.load();
 				} catch (FileNotFoundException e) {
 					// we don't care if the settings do not exist
 				} catch (SAXException e) {
