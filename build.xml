@@ -320,10 +320,10 @@
 		<echo>Creating ChangeLog file</echo>
 		<delete file="ChangeLog*.*" />
 		<exec executable="svn2cl" failonerror="false" failifexecutionfails="false">
-			<arg line="-i --html"/>
+			<arg line="-i --html https://jcctray.svn.sourceforge.net/svnroot/jcctray/"/>
 		</exec>
 		<exec executable="svn2cl" failonerror="false" failifexecutionfails="false">
-			<arg line="-i"/>
+			<arg line="-i https://jcctray.svn.sourceforge.net/svnroot/jcctray/"/>
 		</exec>
 	</target>
 	
