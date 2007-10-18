@@ -184,6 +184,17 @@
 		<echo file="${dist.dir}/jcctray" append="true"># e.g. java -Dforcebuild.YOUR_BUILD_SERVER.port=YOUR_JMX_PORT -jar lib/JCCTray.jar${line.separator}</echo>
 		<echo file="${dist.dir}/jcctray" append="true">java -jar "`dirname $0`/lib/JCCTray.jar"</echo>
 	</target>
+	
+	<target name="-copy.executable.macosx">
+		<echo file="${dist.dir}/jcctray">${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray" append="true"># You can set the environment variables of the form${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray" append="true"># forcebuild.YOUR_BUILD_SERVER.port=YOUR_JMX_PORT${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray" append="true"># to point to the jmx port of cruise control java servers.${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray" append="true"># This ensures that you are able to force builds on cruise control servers.${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray" append="true"># e.g. java -Dforcebuild.YOUR_BUILD_SERVER.port=YOUR_JMX_PORT -jar lib/JCCTray.jar${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray" append="true">java -XstartOnFirstThread -jar "`dirname $0`/lib/JCCTray.jar"</echo>
+	</target>
+	
 	<target name="-copy.executable.win">
 		<echo file="${dist.dir}/jcctray.cmd">${line.separator}</echo>
 		<echo file="${dist.dir}/jcctray.cmd" append="true">@rem You can set the environment variables of the form${line.separator}</echo>
@@ -211,6 +222,30 @@
 		</antcall>
 
 		<antcall target="-copy.executable.unix" />
+		
+		<tar destfile="${build.dist.installer.dir}/jcctray-${jcctray.version}_${dist.name.suffix}.tar.gz" compression="gzip">
+			<tarfileset dir="${dist.dir}" prefix="jcctray-${jcctray.version}_${dist.name.suffix}" preserveLeadingSlashes="false" excludes="jcctray" />
+			<tarfileset dir="${dist.dir}" prefix="jcctray-${jcctray.version}_${dist.name.suffix}" preserveLeadingSlashes="false" mode="755" includes="jcctray" />
+		</tar>
+	</target>
+	
+	<target name="create.dist.macosx">
+		<mkdir dir="${dist.dir}" />
+		<copy todir="${dist.dir}/lib" verbose="false">
+			<fileset refid="cctray.classpath" />
+			<fileset refid="swt.jars" />
+			<fileset dir="build" includes="${target.jar}" />
+		</copy>
+
+		<copy todir="${dist.dir}">
+			<fileset refid="commonfiles" />
+		</copy>
+
+		<antcall target="create.dist.jar">
+			<param name="dist.dir" value="${dist.dir}" />
+		</antcall>
+
+		<antcall target="-copy.executable.macosx" />
 		
 		<tar destfile="${build.dist.installer.dir}/jcctray-${jcctray.version}_${dist.name.suffix}.tar.gz" compression="gzip">
 			<tarfileset dir="${dist.dir}" prefix="jcctray-${jcctray.version}_${dist.name.suffix}" preserveLeadingSlashes="false" excludes="jcctray" />
@@ -311,7 +346,7 @@
 		</antcall>
 		
 		<!-- carbon macosx deployable -->
-		<antcall target="create.dist.unix">
+		<antcall target="create.dist.macosx">
 			<param name="dist.dir" value="${build.dist.carbon.macosx.dir}" />
 			<param name="dist.name.suffix" value="carbon_macosx" />
 			<reference refid="swt.carbon.macosx.classpath" torefid="swt.jars" />
