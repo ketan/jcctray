@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--+
+    |==========================================================================
+    | Copyright 2007 Ketan Padegaonkar http://ketan.padegaonkar.name
+    |
+    | Licensed under the Apache License, Version 2.0 (the "License");
+    | you may not use this file except in compliance with the License.
+    | You may obtain a copy of the License at
+    |
+    |     http://www.apache.org/licenses/LICENSE-2.0
+    |
+    | Unless required by applicable law or agreed to in writing, software
+    | distributed under the License is distributed on an "AS IS" BASIS,
+    | WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    | See the License for the specific language governing permissions and
+    | limitations under the License.
+    |==========================================================================
+    |-->
+<project basedir="." default="all-instrument" name="JCCTray">
+	<property name="target.jar" value="${ant.project.name}.jar" />
+	
+	<property file="version.properties" />
+	<property file="build.local.properties" />
+	<property file="build.properties" />
+
+	<fileset id="swt.gtk.linux.x86.classpath" dir="${lib.dir}" includes="org.eclipse.swt.gtk.linux.x86_3*.jar" />
+	<fileset id="swt.gtk.linux.x86_64.classpath" dir="${lib.dir}" includes="org.eclipse.swt.gtk.linux.x86_64*.jar" />
+	<fileset id="swt.win32.win32.classpath" dir="${lib.dir}" includes="org.eclipse.swt.win32.win32*.jar" />
+	<fileset id="swt.wpf.win32.classpath" dir="${lib.dir}" includes="org.eclipse.swt.wpf.win32*.jar" />
+	<fileset id="swt.carbon.macosx.classpath" dir="${lib.dir}" includes="org.eclipse.swt.carbon.macosx*.jar" />
+
+	<fileset id="swt.all.classpath" refid="swt.gtk.linux.x86.classpath, swt.gtk.linux.x86_64.classpath, swt.win32.win32.classpath, swt.wpf.win32.classpath, swt.carbon.macosx.classpath" />
+	
+	<fileset id="swt.classpath" dir="${lib.dir}" includes="org.eclipse.swt.${build.ws}*${build.os}*${build.arch}_3*.jar"/>
+
+	<fileset id="junit.classpath" file="${junit.jar}" />
+	<fileset id="jmock.classpath" file="${jmock.jar}" />
+	
+	<fileset id="commonfiles" dir=".">
+		<include name="LICENSE.*"/>
+		<include name="version.properties"/>
+		<include name="ChangeLog"/>
+	</fileset>
+	
+	<fileset id="cctray.classpath" dir="${lib.dir}" includes="*.jar" excludes="**/*swt*.jar" />
+
+	<path id="cobertura.classpath">
+		<fileset dir="${cobertura.dir}">
+			<include name="cobertura.jar" />
+			<include name="lib/**/*.jar" />
+		</fileset>
+	</path>
+
+	<path id="antlib.classpath" path="${antcontrib.jar}" />
+
+	<taskdef classpathref="antlib.classpath" resource="net/sf/antcontrib/antlib.xml" />
+	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+
+	<path id="compile.classpath">
+		<pathelement location="${build.classes.dir}" />
+		<fileset refid="cctray.classpath" />
+		<!-- swt.classpath defined by the set.classpath targets -->
+		<fileset refid="swt.classpath" />
+	</path>
+
+	<path id="test.classpath">
+		<pathelement location="${build.test.dir}" />
+		<path refid="compile.classpath" />
+		<fileset refid="junit.classpath" />
+		<fileset refid="jmock.classpath" />
+	</path>
+	
+	<target name="init">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.classes.dir}" />
+		<copy includeemptydirs="false" todir="${build.classes.dir}">
+			<fileset dir="${src.dir}" excludes="**/*.java" />
+		</copy>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="instrument" depends="build-src">
+		<delete file="${cobertura.data.file}" />
+
+		<cobertura-instrument todir="${build.instrumented.classes.dir}" datafile="${cobertura.data.file}">
+			<fileset dir="${build.classes.dir}" />
+		</cobertura-instrument>
+	</target>
+
+	<target name="test-coverage" depends="instrument, test">
+		<cobertura-report format="html" destdir="${build.instrumentation.reports.dir}" srcdir="${src.dir}" datafile="${cobertura.data.file}" />
+	</target>
+
+	<target depends="init" name="build-src">
+		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" classpathref="compile.classpath" debug="${debug.enabled}" debuglevel="${debug.level}" source="${source.version}" target="${target.version}" verbose="${javac.verbose}">
+			<include name="**/*.java" />
+		</javac>
+	</target>
+
+	<target depends="build-src" name="build-tests">
+		<mkdir dir="${build.test.dir}" />
+		<javac srcdir="${test.dir}" destdir="${build.test.dir}" classpathref="test.classpath" debug="${debug.enabled}" debuglevel="${debug.level}" source="${source.version}" target="${target.version}" verbose="${javac.verbose}">
+			<include name="**/*.java" />
+		</javac>
+	</target>
+
+	<target name="jar" depends="build-src">
+		<copy todir="${build.classes.dir}">
+			<fileset dir="src" excludes="**/*.java" />
+		</copy>
+		<jar destfile="${build.dir}/${target.jar}" basedir="${build.classes.dir}">
+			<manifest>
+				<attribute name="Main-class" value="net.sourceforge.jcctray.ui.JCCTrayMain" />
+			</manifest>
+		</jar>
+	</target>
+
+
+	<target name="test" depends="build-tests">
+		<mkdir dir="${junit.reports.xml.dir}" />
+		<junit fork="true" forkmode="once" printsummary="yes" haltonfailure="no" haltonerror="no" failureproperty="junit.failure" errorproperty="junit.failure">
+			<sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.data.file}" />
+
+			<classpath location="${build.instrumented.classes.dir}" />
+			<classpath refid="test.classpath" />
+			<classpath refid="cobertura.classpath" />
+
+
+			<formatter type="xml" />
+			<formatter type="plain" usefile="false" />
+
+			<batchtest fork="yes" todir="${junit.reports.xml.dir}">
+				<fileset dir="${test.dir}">
+					<include name="**/*Test.java" />
+					<exclude name="**/AllTests.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+
+		<mkdir dir="${junit.reports.html.dir}" />
+		<junitreport todir="${junit.reports.xml.dir}">
+			<fileset dir="${junit.reports.xml.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.reports.html.dir}" />
+		</junitreport>
+		<echo>Test reports available at: ${basedir}/${junit.reports.html.dir}/index.html</echo>
+		<!--fail message="Tests failed: check test reports." if="junit.failure" /-->
+	</target>
+
+	<target name="javadoc">
+		<javadoc access="package" author="true" classpathref="compile.classpath" destdir="${build.docs.dir}" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="${source.version}" splitindex="true" use="true" version="true">
+			<link href="http://commons.apache.org/httpclient/apidocs" resolveLink="true"/>
+			<fileset dir="${src.dir}" includes="**/*.java" />
+		</javadoc>
+	</target>
+
+	<target name="create.dist.jar">
+		<!-- create classpath for jar -->
+		<manifestclasspath property="jar.classpath" jarfile="${dist.dir}/lib/${target.jar}">
+			<classpath>
+				<fileset dir="${dist.dir}/lib" />
+			</classpath>
+		</manifestclasspath>
+		
+		<echo>Creating jar with classpath: ${jar.classpath}</echo>
+		<jar destfile="${dist.dir}/lib/${target.jar}" basedir="${build.classes.dir}">
+			<manifest>
+				<attribute name="Main-class" value="net.sourceforge.jcctray.ui.JCCTrayMain" />
+				<attribute name="Class-Path" value="${jar.classpath}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="-copy.executable.unix">
+		<echo file="${dist.dir}/jcctray">${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray" append="true"># You can set the environment variables of the form${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray" append="true"># forcebuild.YOUR_BUILD_SERVER.port=YOUR_JMX_PORT${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray" append="true"># to point to the jmx port of cruise control java servers.${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray" append="true"># This ensures that you are able to force builds on cruise control servers.${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray" append="true"># e.g. java -Dforcebuild.YOUR_BUILD_SERVER.port=YOUR_JMX_PORT -jar lib/JCCTray.jar${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray" append="true">java -jar "`dirname $0`/lib/JCCTray.jar"</echo>
+	</target>
+	
+	<target name="-copy.executable.macosx">
+		<echo file="${dist.dir}/jcctray">${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray" append="true"># You can set the environment variables of the form${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray" append="true"># forcebuild.YOUR_BUILD_SERVER.port=YOUR_JMX_PORT${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray" append="true"># to point to the jmx port of cruise control java servers.${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray" append="true"># This ensures that you are able to force builds on cruise control servers.${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray" append="true"># e.g. java -Dforcebuild.YOUR_BUILD_SERVER.port=YOUR_JMX_PORT -jar lib/JCCTray.jar${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray" append="true">java -XstartOnFirstThread -jar "`dirname $0`/lib/JCCTray.jar"</echo>
+	</target>
+	
+	<target name="-copy.executable.win">
+		<echo file="${dist.dir}/jcctray.cmd">${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray.cmd" append="true">@rem You can set the environment variables of the form${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray.cmd" append="true">@rem forcebuild.YOUR_BUILD_SERVER.port=YOUR_JMX_PORT${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray.cmd" append="true">@rem to point to the jmx port of cruise control java servers.${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray.cmd" append="true">@rem This ensures that you are able to force builds on cruise control servers.${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray.cmd" append="true">@rem e.g. @start javaw -Dforcebuild.YOUR_BUILD_SERVER.port=YOUR_JMX_PORT -jar %~dp0/lib/JCCTray.jar${line.separator}</echo>
+		<echo file="${dist.dir}/jcctray.cmd" append="true">@start javaw -jar "%~dp0/lib/JCCTray.jar"</echo>
+	</target>
+
+	<target name="create.dist.unix">
+		<mkdir dir="${dist.dir}" />
+		<copy todir="${dist.dir}/lib" verbose="false">
+			<fileset refid="cctray.classpath" />
+			<fileset refid="swt.jars" />
+			<fileset dir="build" includes="${target.jar}" />
+		</copy>
+
+		<copy todir="${dist.dir}">
+			<fileset refid="commonfiles" />
+		</copy>
+
+		<antcall target="create.dist.jar">
+			<param name="dist.dir" value="${dist.dir}" />
+		</antcall>
+
+		<antcall target="-copy.executable.unix" />
+		
+		<tar destfile="${build.dist.installer.dir}/jcctray-${jcctray.version}_${dist.name.suffix}.tar.gz" compression="gzip">
+			<tarfileset dir="${dist.dir}" prefix="jcctray-${jcctray.version}_${dist.name.suffix}" preserveLeadingSlashes="false" excludes="jcctray" />
+			<tarfileset dir="${dist.dir}" prefix="jcctray-${jcctray.version}_${dist.name.suffix}" preserveLeadingSlashes="false" mode="755" includes="jcctray" />
+		</tar>
+	</target>
+	
+	<target name="create.dist.macosx">
+		<mkdir dir="${dist.dir}" />
+		<copy todir="${dist.dir}/lib" verbose="false">
+			<fileset refid="cctray.classpath" />
+			<fileset refid="swt.jars" />
+			<fileset dir="build" includes="${target.jar}" />
+		</copy>
+
+		<copy todir="${dist.dir}">
+			<fileset refid="commonfiles" />
+		</copy>
+
+		<antcall target="create.dist.jar">
+			<param name="dist.dir" value="${dist.dir}" />
+		</antcall>
+
+		<antcall target="-copy.executable.macosx" />
+		
+		<tar destfile="${build.dist.installer.dir}/jcctray-${jcctray.version}_${dist.name.suffix}.tar.gz" compression="gzip">
+			<tarfileset dir="${dist.dir}" prefix="jcctray-${jcctray.version}_${dist.name.suffix}" preserveLeadingSlashes="false" excludes="jcctray" />
+			<tarfileset dir="${dist.dir}" prefix="jcctray-${jcctray.version}_${dist.name.suffix}" preserveLeadingSlashes="false" mode="755" includes="jcctray" />
+		</tar>
+	</target>
+
+	<target name="create.src.dist">
+		<mkdir dir="${dist.dir}" />
+
+		<copy todir="${dist.dir}" verbose="false">
+			<fileset dir=".">
+				<exclude name="**/build/**/**.*" />
+				<exclude name="**/bin/**/**.*" />
+			</fileset>
+		</copy>
+
+		<delete dir="${dist.dir}/build" />
+		<delete dir="${dist.dir}/src" />
+		
+		<antcall target="-copy.executable.win"/>
+		<antcall target="-copy.executable.unix"/>
+		
+		<tar destfile="${build.dist.installer.dir}/jcctray-${jcctray.version}_src.tar.gz" compression="gzip">
+			<tarfileset dir="${dist.dir}" prefix="jcctray-${jcctray.version}_src" preserveLeadingSlashes="false" />
+		</tar>
+	</target>
+	
+	<target name="-create.install.dist" if="nsis.available">
+		<property name="nsis.script" value="${build.dir}/JCCTray-${dist.name.suffix}.nsi" />
+		<copy file="nsis/JCCTray.template.nsi" tofile="${nsis.script}">
+			<filterset>
+				<filter token="DIST_NAME_SUFFIX" value="${dist.name.suffix}"/>
+				<filter token="VERSION" value="${jcctray.version}"/>
+			</filterset>
+		</copy>
+		<exec executable="${makensis.exe}" failifexecutionfails="false" failonerror="true">
+			<arg value="${nsis.script}"/>
+		</exec>
+	</target>
+	
+	<target name="create.install.dist">
+		<available file="${makensis.exe}" property="nsis.available" />
+		<antcall target="-create.install.dist"/>
+	</target>
+
+	<target name="create.dist.win">
+		<mkdir dir="${dist.dir}" />
+		<copy todir="${dist.dir}/lib" verbose="false">
+			<fileset refid="cctray.classpath" />
+			<fileset refid="swt.jars" />
+			<fileset dir="build" includes="${target.jar}" />
+		</copy>
+
+		<copy todir="${dist.dir}">
+			<fileset refid="commonfiles" />
+		</copy>
+
+		<antcall target="create.dist.jar">
+			<param name="dist.dir" value="${dist.dir}" />
+		</antcall>
+
+		<antcall target="-copy.executable.win"/>
+		
+		<zip destfile="${build.dist.installer.dir}/jcctray-${jcctray.version}_${dist.name.suffix}.zip" compress="true">
+			<zipfileset dir="${dist.dir}" prefix="jcctray-${jcctray.version}_${dist.name.suffix}" excludes="jcctray" />
+			<zipfileset dir="${dist.dir}" prefix="jcctray-${jcctray.version}_${dist.name.suffix}" includes="jcctray.cmd" />
+		</zip>
+	</target>
+
+	<target name="changelog">
+		<echo>Creating ChangeLog file</echo>
+		<delete file="ChangeLog*.*" />
+		<exec executable="svn2cl" failonerror="false" failifexecutionfails="false">
+			<arg line="-i --html https://jcctray.svn.sourceforge.net/svnroot/jcctray/"/>
+		</exec>
+		<exec executable="svn2cl" failonerror="false" failifexecutionfails="false">
+			<arg line="-i https://jcctray.svn.sourceforge.net/svnroot/jcctray/"/>
+		</exec>
+	</target>
+	
+	<target name="dist" depends="all-instrument, changelog">
+		<mkdir dir="${build.dist.dir}" />
+		<mkdir dir="${build.dist.installer.dir}" />
+
+		<!-- linux x86 deployable -->
+		<antcall target="create.dist.unix">
+			<param name="dist.dir" value="${build.dist.linux.x86.dir}" />
+			<param name="dist.name.suffix" value="linux_gtk_x86" />
+			<reference refid="swt.gtk.linux.x86.classpath" torefid="swt.jars" />
+		</antcall>
+
+		<!-- linux x86_64 deployable -->
+		<antcall target="create.dist.unix">
+			<param name="dist.dir" value="${build.dist.linux.x86_64.dir}" />
+			<param name="dist.name.suffix" value="linux_gtk_x86_64" />
+			<reference refid="swt.gtk.linux.x86_64.classpath" torefid="swt.jars" />
+		</antcall>
+		
+		<!-- carbon macosx deployable -->
+		<antcall target="create.dist.macosx">
+			<param name="dist.dir" value="${build.dist.carbon.macosx.dir}" />
+			<param name="dist.name.suffix" value="carbon_macosx" />
+			<reference refid="swt.carbon.macosx.classpath" torefid="swt.jars" />
+		</antcall>
+
+		<!-- win32 deployable -->
+		<antcall target="create.dist.win">
+			<param name="dist.dir" value="${build.dist.win32.dir}" />
+			<param name="dist.name.suffix" value="win32" />
+			<reference refid="swt.win32.win32.classpath" torefid="swt.jars" />
+		</antcall>
+
+		<!-- wpf deployable -->
+		<antcall target="create.dist.win">
+			<param name="dist.dir" value="${build.dist.wpf.dir}" />
+			<param name="dist.name.suffix" value="wpf" />
+			<reference refid="swt.wpf.win32.classpath" torefid="swt.jars" />
+		</antcall>
+
+		<!-- src deployable -->
+		<antcall target="create.src.dist">
+			<param name="dist.dir" value="${build.dist.src.dir}" />
+			<reference refid="swt.all.classpath" torefid="swt.jars" />
+		</antcall>
+		
+		<!-- win32 installable -->
+		<antcall target="create.install.dist">
+			<param name="dist.dir" value="${build.dist.win32.dir}" />
+			<param name="dist.name.suffix" value="win32" />
+		</antcall>
+		
+		<!-- wpf installable -->
+		<antcall target="create.install.dist">
+			<param name="dist.dir" value="${build.dist.wpf.dir}" />
+			<param name="dist.name.suffix" value="wpf" />
+		</antcall>
+	</target>
+
+	<target name="build-all" depends="init, build-src, build-tests" />
+
+	<target name="all" depends="clean, init, build-all, jar, javadoc, test" />
+
+	<target name="all-instrument" depends="clean, init, jar, javadoc, test-coverage" />
+</project>
