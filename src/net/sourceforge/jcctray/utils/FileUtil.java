@@ -44,7 +44,13 @@ public class FileUtil {
 		file = new File(getFileNameInJCCTrayHome(fileName));
 		if (file.exists())
 			return file.getAbsolutePath();
-		return null;
+		
+		File jcctrayDir = new File(getFileNameInUserHome(""));
+		jcctrayDir.mkdirs();
+		
+	return new File(getFileNameInUserHome(fileName)).getAbsolutePath();
+		
+//		return null;
 	}
 
 	public static String getFileNameInJCCTrayHome(String fileName) {

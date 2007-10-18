@@ -49,8 +49,8 @@ public class FileUtilTest extends TestCase {
 		assertEquals(FILEPATH_IN_USER_DIR, FileUtil.findConfigFile(MY_CONFIG));
 	}
 
-	public void testGetsNullIfNoFileInUserHomeAndUserDir() throws Exception {
-		assertNull(FileUtil.findConfigFile(MY_CONFIG));
+	public void testGetsFileInHomeDirIfNoFileInUserHomeAndUserDir() throws Exception {
+		assertEquals(FILEPATH_IN_USER_HOME, FileUtil.findConfigFile(MY_CONFIG));
 	}
 
 	protected void tearDown() throws Exception {
