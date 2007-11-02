@@ -257,14 +257,11 @@
 		<mkdir dir="${dist.dir}" />
 
 		<copy todir="${dist.dir}" verbose="false">
-			<fileset dir=".">
-				<exclude name="**/build/**/**.*" />
-				<exclude name="**/bin/**/**.*" />
-			</fileset>
+			<fileset dir="." />
 		</copy>
 
 		<delete dir="${dist.dir}/build" />
-		<delete dir="${dist.dir}/src" />
+		<delete dir="${dist.dir}/bin" />
 		
 		<antcall target="-copy.executable.win"/>
 		<antcall target="-copy.executable.unix"/>
