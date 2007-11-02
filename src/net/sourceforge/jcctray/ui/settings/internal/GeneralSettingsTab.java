@@ -47,15 +47,17 @@ public class GeneralSettingsTab {
 
 	private final class OKButtonListener implements SelectionListener {
 		private final Text		browserPath;
-		private final Spinner	spinner;
+		private final Spinner	pollIntervalSpinner;
+		private final Spinner	timeoutSpinner;
 
-		private OKButtonListener(Spinner spinner, Text browserPath) {
-			this.spinner = spinner;
+		private OKButtonListener(Spinner pollIntervalSpinner, Text browserPath, Spinner timeoutSpinner) {
+			this.pollIntervalSpinner = pollIntervalSpinner;
 			this.browserPath = browserPath;
+			this.timeoutSpinner = timeoutSpinner;
 		}
 
 		public void widgetDefaultSelected(SelectionEvent e) {
-			applySettings(spinner.getSelection(), browserPath.getText());
+			applySettings(browserPath.getText(), pollIntervalSpinner.getSelection(), timeoutSpinner.getSelection());
 			((Control) e.widget).getShell().close();
 		}
 
@@ -66,15 +68,17 @@ public class GeneralSettingsTab {
 
 	private final class ApplyButtonListener implements SelectionListener {
 		private final Text		browserPath;
-		private final Spinner	spinner;
+		private final Spinner	pollIntervalSpinner;
+		private final Spinner	timeoutSpinner;
 
-		private ApplyButtonListener(Text browserPath, Spinner spinner) {
+		private ApplyButtonListener(Text browserPath, Spinner pollIntervalSpinner, Spinner timeoutSpinner) {
 			this.browserPath = browserPath;
-			this.spinner = spinner;
+			this.pollIntervalSpinner = pollIntervalSpinner;
+			this.timeoutSpinner = timeoutSpinner;
 		}
 
 		public void widgetDefaultSelected(SelectionEvent e) {
-			applySettings(spinner.getSelection(), browserPath.getText());
+			applySettings(browserPath.getText(), pollIntervalSpinner.getSelection(), timeoutSpinner.getSelection());
 		}
 
 		public void widgetSelected(SelectionEvent e) {
@@ -94,16 +98,19 @@ public class GeneralSettingsTab {
 
 	private final class RestoreButtonListener implements SelectionListener {
 		private final Text		browserPath;
-		private final Spinner	spinner;
+		private final Spinner	pollIntervalSpinner;
+		private final Spinner	timeoutSpinner;
 
-		private RestoreButtonListener(Text browserPath, Spinner spinner) {
+		private RestoreButtonListener(Text browserPath, Spinner pollIntervalSpinner, Spinner timeoutSpinner) {
 			this.browserPath = browserPath;
-			this.spinner = spinner;
+			this.pollIntervalSpinner = pollIntervalSpinner;
+			this.timeoutSpinner = timeoutSpinner;
 		}
 
 		public void widgetDefaultSelected(SelectionEvent e) {
 			browserPath.setText(traySettings.get(ISettingsConstants.BROWSER_PATH));
-			spinner.setSelection(traySettings.getInt(ISettingsConstants.POLL_INTERVAL));
+			pollIntervalSpinner.setSelection(traySettings.getInt(ISettingsConstants.POLL_INTERVAL));
+			timeoutSpinner.setSelection(traySettings.getInt(ISettingsConstants.HTTP_TIMEOUT));
 		}
 
 		public void widgetSelected(SelectionEvent e) {
@@ -152,11 +159,22 @@ public class GeneralSettingsTab {
 		new Label(composite, SWT.NONE).setText("Seconds");
 		new Label(composite, SWT.NONE);
 
+		// http timeout
+		new Label(composite, SWT.NONE).setText("&HTTP Timeout:");
+		Spinner timeoutSpinner = new Spinner(composite, SWT.NONE);
+		timeoutSpinner.setMinimum(1);
+		timeoutSpinner.setMaximum(300);
+		timeoutSpinner.setSelection(traySettings.getInt(ISettingsConstants.HTTP_TIMEOUT));
+		// just a filler
+		new Label(composite, SWT.NONE).setText("Seconds");
+		new Label(composite, SWT.NONE);
+
+		
 		// restore, cancel, apply, ok buttons
 
 		Button restoreButton = new Button(composite, SWT.NONE);
 		restoreButton.setText("&Restore");
-		restoreButton.addSelectionListener(new RestoreButtonListener(browserPath, spinner));
+		restoreButton.addSelectionListener(new RestoreButtonListener(browserPath, spinner, timeoutSpinner));
 
 		Button cancelButton = new Button(composite, SWT.NONE);
 		cancelButton.setText("&Cancel");
@@ -164,11 +182,11 @@ public class GeneralSettingsTab {
 
 		Button applyButton = new Button(composite, SWT.NONE);
 		applyButton.setText("&Apply");
-		applyButton.addSelectionListener(new ApplyButtonListener(browserPath, spinner));
+		applyButton.addSelectionListener(new ApplyButtonListener(browserPath, spinner, timeoutSpinner));
 
 		Button okButton = new Button(composite, SWT.NONE);
 		okButton.setText("&Ok");
-		okButton.addSelectionListener(new OKButtonListener(spinner, browserPath));
+		okButton.addSelectionListener(new OKButtonListener(spinner, browserPath, timeoutSpinner));
 	}
 
 	private String openFileDialog(Shell shell) {
@@ -179,9 +197,10 @@ public class GeneralSettingsTab {
 		return fileDialog.open();
 	}
 
-	private void applySettings(int pollInterval, String browserPath) {
+	private void applySettings(String browserPath, int pollInterval, int httpTimeout) {
 		traySettings.set(ISettingsConstants.BROWSER_PATH, browserPath);
 		traySettings.set(ISettingsConstants.POLL_INTERVAL, "" + pollInterval);
+		traySettings.set(ISettingsConstants.HTTP_TIMEOUT, "" + httpTimeout);
 		Utils.saveSettings(tabFolder.getShell());
 	}
 

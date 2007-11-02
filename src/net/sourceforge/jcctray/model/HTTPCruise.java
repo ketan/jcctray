@@ -43,8 +43,8 @@ public abstract class HTTPCruise implements ICruise {
 		if (client == null) {
 			MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
 			HttpConnectionManagerParams params = new HttpConnectionManagerParams();
-			params.setConnectionTimeout(10000);
-			params.setSoTimeout(10000);
+			params.setConnectionTimeout(JCCTraySettings.getInstance().getInt(ISettingsConstants.HTTP_TIMEOUT));
+			params.setSoTimeout(JCCTraySettings.getInstance().getInt(ISettingsConstants.HTTP_TIMEOUT));
 			connectionManager.setParams(params);
 			client = new HttpClient(connectionManager);
 		}

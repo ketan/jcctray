@@ -23,4 +23,5 @@ package net.sourceforge.jcctray.model;
 public interface ISettingsConstants {
 	public static final String	POLL_INTERVAL	= "poll.interval";
 	public static final String	BROWSER_PATH	= "browser.path";
+	public static final String	HTTP_TIMEOUT	= "http.timeout";
 }
