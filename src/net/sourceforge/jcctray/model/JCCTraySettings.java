@@ -79,7 +79,7 @@ public class JCCTraySettings implements ISettingsConstants, IJCCTraySettings {
 
 	private void initializeDefaultSettings() {
 		set(ISettingsConstants.POLL_INTERVAL, "5");
-		set(ISettingsConstants.HTTP_TIMEOUT, "30");
+		set(ISettingsConstants.HTTP_TIMEOUT, "30000");
 		set(ISettingsConstants.BROWSER_PATH, "");
 	}
 
