@@ -95,14 +95,14 @@
 	</target>
 
 	<target depends="init" name="build-src">
-		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" classpathref="compile.classpath" debug="${debug.enabled}" debuglevel="${debug.level}" source="${source.version}" target="${target.version}" verbose="${javac.verbose}">
+		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" classpathref="compile.classpath" debug="${debug.enabled}" source="${source.version}" target="${target.version}" verbose="${javac.verbose}">
 			<include name="**/*.java" />
 		</javac>
 	</target>
 
 	<target depends="build-src" name="build-tests">
 		<mkdir dir="${build.test.dir}" />
-		<javac srcdir="${test.dir}" destdir="${build.test.dir}" classpathref="test.classpath" debug="${debug.enabled}" debuglevel="${debug.level}" source="${source.version}" target="${target.version}" verbose="${javac.verbose}">
+		<javac srcdir="${test.dir}" destdir="${build.test.dir}" classpathref="test.classpath" debug="${debug.enabled}" source="${source.version}" target="${target.version}" verbose="${javac.verbose}">
 			<include name="**/*.java" />
 		</javac>
 	</target>
