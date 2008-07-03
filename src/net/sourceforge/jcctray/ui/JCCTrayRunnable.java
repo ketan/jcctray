@@ -68,21 +68,43 @@ public class JCCTrayRunnable implements Runnable {
 	private void updateTrayIcon(DashBoardProjects projects) {
 		trayItem.setImage(deduceImageToSet(projects));
 	}
+	
+	private int imageToLevel(Image icon) {
+		int value = -1;
+		if (icon == IProjectLabelConstants.RED_IMG) {
+			value = 5;
+		}
+		if (icon == IProjectLabelConstants.YELLOW_IMG) {
+			value = 4;
+		}
+		if (icon == IProjectLabelConstants.ORANGE_IMG) {
+			value = 3;
+		}
+		if (icon == IProjectLabelConstants.GREEN_IMG) {
+			value = 2;
+		}
+		if (icon == IProjectLabelConstants.GRAY_IMG) {
+			value = 1;
+		}
+		return value;
+	}
 
 	private Image deduceImageToSet(DashBoardProjects projects) {
 		DashBoardProject[] projectList = projects.toArray();
-		Image icon = IProjectLabelConstants.GREEN_IMG;
+		// start off with a gray image to keep the resulting icon gray
+		// if all projects are disabled
+		Image icon = IProjectLabelConstants.GRAY_IMG;
+		int globalLevel = imageToLevel(icon);
 		for (int i = 0; i < projectList.length; i++) {
 			DashBoardProject project = projectList[i];
 			boolean projectEnabled = new EnabledProjectsFilter(this.traySettings).select(project);
 			if (projectEnabled){
 				Image projectIcon = new ProjectLabelProvider().getImage(project);
-				if (projectIcon == IProjectLabelConstants.RED_IMG)
-					icon = IProjectLabelConstants.RED_IMG;
-				if (projectIcon == IProjectLabelConstants.YELLOW_IMG)
-					icon = IProjectLabelConstants.YELLOW_IMG;
-				if (projectIcon == IProjectLabelConstants.ORANGE_IMG)
-					icon = IProjectLabelConstants.ORANGE_IMG;
+				int projectLevel = imageToLevel(projectIcon);
+				if (projectLevel > globalLevel) {
+					icon = projectIcon;
+					globalLevel = projectLevel;
+				}
 			}
 		}
 		return icon;
