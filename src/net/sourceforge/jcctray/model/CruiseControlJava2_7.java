@@ -15,14 +15,6 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.model;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-import java.util.TimeZone;
-
-import net.sourceforge.jcctray.utils.StringUtils;
 
 /**
  * An implementation of {@link ICruise} that connects to CruiseControl version
@@ -31,46 +23,11 @@ import net.sourceforge.jcctray.utils.StringUtils;
  * 
  * @author Ketan Padegaonkar
  */
-public class CruiseControlJava2_7 extends HTTPCruise implements ICruise {
+public class CruiseControlJava2_7 extends CruiseControlJava implements ICruise {
 
-	private static final Locale	LOCALE_US	= Locale.US;
-	private static final SimpleDateFormat	DATE_FORMATTER	= new SimpleDateFormat("h:mm:ss a, dd MMM", LOCALE_US);
-	private static final SimpleDateFormat	DATE_PARSER		= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", LOCALE_US);
-
-	protected String forceBuildURL(DashBoardProject project) {
-		String hostName = project.getHost().getHostName();
-		URL url = null;
-		try {
-			url = new URL(hostName);
-			return url.getProtocol() + "://" + url.getHost() + ":" + getForceBuildPort(project.getHost()) + url.getPath().replaceAll("/*$", "")
-					+ "/invoke?operation=build&objectname=CruiseControl+Project%3Aname%3D" + project.getName();
-		} catch (MalformedURLException e) {
-			getLog().error("The url was malformed: " + url, e);
-		}
-		return null;
-	}
-
-	protected String getForceBuildPort(Host host) {
-		return host.getForceBuildPort().toString();
-	}
-
-	public String formatDate(String date, TimeZone timeZone) {
-		if (StringUtils.isEmptyOrNull(date))
-			return null;
-		try {
-			return DATE_FORMATTER.format(DATE_PARSER.parse(date));
-		} catch (ParseException e) {
-			getLog().error("Could not parse date: " + date);
-		}
-		return date;
-	}
 
 	public String getName() {
 		return "CruiseControl >= V2.7";
-	}
-
-	protected String getSuccessMessage(DashBoardProject project) {
-		return "Invocation successful";
 	}
 
 	protected String getXmlReportURL(Host host) {
