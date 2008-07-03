@@ -15,6 +15,7 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.model;
 
+import java.util.Date;
 import java.util.TimeZone;
 
 import junit.framework.TestCase;
@@ -29,20 +30,34 @@ public class CruiseControlRubyTest extends TestCase {
 	public void testFormatsDate() throws Exception {
 		String formattedDate;
 		
+		String estTime = "1:00:28 AM, 22 Jun";
+		String istTime = "11:30:28 AM, 22 Jun";
+		
+		// is this test run during summer time?
+		TimeZone tz = TimeZone.getTimeZone("EST");
+		if (tz.useDaylightTime() && tz.inDaylightTime(new Date())) {
+			estTime = "2:00:28 AM, 22 Jun";
+		}
+		
+		tz = TimeZone.getTimeZone("IST");
+		if (tz.useDaylightTime() && tz.inDaylightTime(new Date())) {
+			istTime = "12:30:28 AM, 22 Jun";
+		}
+
 		formattedDate = cruiseControl.formatDate("2007-06-22T11:30:28.82815+05:30", TimeZone.getTimeZone("EST"));
-		assertEquals("1:00:28 AM, 22 Jun", formattedDate);
+		assertEquals(estTime, formattedDate);
 
 		formattedDate = cruiseControl.formatDate("2007-06-22T11:30:28.8281+05:30", TimeZone.getTimeZone("EST"));
-		assertEquals("1:00:28 AM, 22 Jun", formattedDate);
+		assertEquals(estTime, formattedDate);
 
 		formattedDate = cruiseControl.formatDate("2007-06-22T11:30:28.82+05:30", TimeZone.getTimeZone("EST"));
-		assertEquals("1:00:28 AM, 22 Jun", formattedDate);
+		assertEquals(estTime, formattedDate);
 
 		formattedDate = cruiseControl.formatDate("2007-06-22T11:30:28.82+05:30", TimeZone.getTimeZone("EST"));
-		assertEquals("1:00:28 AM, 22 Jun", formattedDate);
+		assertEquals(estTime, formattedDate);
 
 		formattedDate = cruiseControl.formatDate("2007-06-22T11:30:28+05:30", TimeZone.getTimeZone("IST"));
-		assertEquals("11:30:28 AM, 22 Jun", formattedDate);
+		assertEquals(istTime, formattedDate);
 	}
 
 	public void testInvalidDateReturnsSameDate() throws Exception {
