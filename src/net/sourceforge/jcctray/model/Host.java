@@ -150,4 +150,8 @@ public class Host {
 		getCruise().forceBuild(project);
 	}
 
+	public Integer getForceBuildPort() {
+		return Integer.getInteger("forcebuild." + getHostString() + ".port", 8000);
+	}
+
 }

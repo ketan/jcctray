@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
@@ -397,9 +398,7 @@ public class JCCTray {
 	}
 
 	public void open() {
-		shell.open();
-
-		JCCTrayRunnable runnable = new JCCTrayRunnable(tableViewer, trayItem, traySettings);
+		JCCTrayRunnable runnable = new JCCTrayRunnable(tableViewer, trayItem, traySettings, this);
 		Thread thread = new Thread(runnable, "XmlStatusReportThread");
 		thread.start();
 		while (!shell.isDisposed())
@@ -411,5 +410,15 @@ public class JCCTray {
 		} catch (InterruptedException e) {
 			log.error("Interrupted when waiting on thread.", e);
 		}
+	}
+
+	public void showBubble(String message, boolean failure) {
+		final int style = SWT.BALLOON | (failure ? SWT.ICON_ERROR : SWT.ICON_INFORMATION);
+		final ToolTip tip = new ToolTip(shell, style);
+		tip.setText("CruiseControl Update");
+		tip.setMessage(message);
+		trayItem.setToolTip(tip);
+		tip.setVisible(true);
+		tip.setAutoHide(true);
 	}
 }

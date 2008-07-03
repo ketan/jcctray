@@ -31,7 +31,7 @@
 
 	<fileset id="swt.all.classpath" refid="swt.gtk.linux.x86.classpath, swt.gtk.linux.x86_64.classpath, swt.win32.win32.classpath, swt.wpf.win32.classpath, swt.carbon.macosx.classpath" />
 	
-	<fileset id="swt.classpath" dir="${lib.dir}" includes="org.eclipse.swt.${build.ws}*${build.os}*${build.arch}_3*.jar"/>
+	<fileset id="swt.classpath" dir="${lib.dir}" includes="${swt.jar}"/>
 
 	<fileset id="junit.classpath" file="${junit.jar}" />
 	<fileset id="jmock.classpath" file="${jmock.jar}" />
@@ -138,6 +138,7 @@
 					<exclude name="**/AllTests.java" />
 				</fileset>
 			</batchtest>
+			<jvmarg line="-XstartOnFirstThread"/>
 		</junit>
 
 		<mkdir dir="${junit.reports.html.dir}" />

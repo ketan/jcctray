@@ -24,7 +24,7 @@ import java.util.List;
  * 
  * @author Ketan Padegaonkar
  */
-public class DashBoardProjects {
+public class DashBoardProjects implements Iterable {
 
 	private List	projectList	= new ArrayList();
 
@@ -62,6 +62,26 @@ public class DashBoardProjects {
 
 	public Iterator iterator() {
 		return projectList.iterator();
+	}
+
+	/**
+	 * Returns a project which is "same as" the given project. Note: "same as" is defined
+	 * as equal name and host, so the project may have a different status.
+	 * 
+	 * @param newProject
+	 *            A project to find
+	 * @return A project with the same name and host, or null.
+	 */
+	public DashBoardProject get(DashBoardProject newProject) {
+		Iterator it = projectList.iterator();
+		while (it.hasNext())
+		{
+			Object project = it.next();
+			if (project.equals(newProject)) {
+				return (DashBoardProject) project;
+			}
+		}
+		return null;
 	}
 
 }

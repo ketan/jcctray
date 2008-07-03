@@ -26,6 +26,7 @@ import net.sourceforge.jcctray.model.ISettingsConstants;
 import net.sourceforge.jcctray.ui.settings.providers.EnabledProjectsFilter;
 import net.sourceforge.jcctray.ui.settings.providers.IProjectLabelConstants;
 import net.sourceforge.jcctray.ui.settings.providers.ProjectLabelProvider;
+import net.sourceforge.jcctray.utils.StringUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.TableViewer;
@@ -46,15 +47,16 @@ public class JCCTrayRunnable implements Runnable {
 	public boolean					shouldRun	= true;
 	private final TrayItem			trayItem;
 	private final IJCCTraySettings	traySettings;
+	private final JCCTray			tray;
 
-	public JCCTrayRunnable(TableViewer tableViewer, TrayItem trayItem, IJCCTraySettings traySettings) {
+	public JCCTrayRunnable(TableViewer tableViewer, TrayItem trayItem, IJCCTraySettings traySettings, JCCTray tray) {
 		this.tableViewer = tableViewer;
 		this.trayItem = trayItem;
 		this.traySettings = traySettings;
+		this.tray = tray;
 	}
 
 	public void run() {
-		updateProjectsList(getAllProjects());
 		while (shouldRun) {
 			try {
 				updateUI();
@@ -126,19 +128,63 @@ public class JCCTrayRunnable implements Runnable {
 		updateProjectsList(projects);
 	}
 
-	private void updateProjectsList(final DashBoardProjects projects) {
-		final Table table = tableViewer.getTable();
-		table.getDisplay().asyncExec(new Runnable() {
-			public void run() {
-				if (!table.isDisposed()) {
-					tableViewer.setInput(projects);
-					updateTrayIcon(projects);
-					updateShellIcon(projects);
-				}
-			}
-		});
-	}
 
+    private void updateProjectsList(final DashBoardProjects projects) {
+    	final Table table = tableViewer.getTable();
+    	table.getDisplay().asyncExec(new Runnable() {
+    		public void run() {
+    			if (!table.isDisposed()) {
+    				showBubble(projects);
+    				tableViewer.setInput(projects);
+    				updateTrayIcon(projects);
+    				updateShellIcon(projects);
+    			}
+    		}
+
+			private void showBubble(final DashBoardProjects projects) {
+				DashBoardProjects oldProjects = (DashBoardProjects) tableViewer.getInput();
+				if (oldProjects != null) {
+					String message = "";
+					boolean failure = false;
+					Iterator it = projects.iterator();
+					while (it.hasNext()) {
+						DashBoardProject newProject = (DashBoardProject) it.next();
+						DashBoardProject oldProject = oldProjects.get(newProject);
+						if (oldProject == null || differentStates(newProject, oldProject)) {
+							String projectMessage = "";
+							if (newProject.getActivity().equals(IProjectLabelConstants.BUILDING)) 
+								projectMessage = newProject.getActivity();
+							else if (newProject.getActivity().equals(IProjectLabelConstants.CHECKING_MODIFICATIONS))
+								projectMessage = "";
+							else
+								projectMessage = newProject.getLastBuildStatus();
+							if (!StringUtils.isEmptyOrNull(projectMessage))
+								message += newProject.getName() + ": " + projectMessage + "\n";
+							failure |= wasFailure(newProject) && notBuilding(newProject);
+						}
+					}
+					if (!StringUtils.isEmptyOrNull(message)) {
+						tray.showBubble(message, failure);
+					}
+				}
+				
+			}
+
+			private boolean notBuilding(DashBoardProject newProject) {
+				return !newProject.getActivity().equals(IProjectLabelConstants.BUILDING);
+			}
+
+			private boolean wasFailure(DashBoardProject newProject) {
+				return newProject.getLastBuildStatus().equals(IProjectLabelConstants.FAILURE);
+			}
+
+			private boolean differentStates(DashBoardProject newProject,
+					DashBoardProject oldProject) {
+				return !oldProject.getActivity().equals(newProject.getActivity());
+			}
+    	});
+    }
+    
 	private DashBoardProjects getAllProjects() {
 		DashBoardProjects enabledProjects = new DashBoardProjects();
 

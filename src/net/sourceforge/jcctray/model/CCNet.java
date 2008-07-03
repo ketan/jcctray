@@ -49,11 +49,11 @@ public class CCNet extends HTTPCruise implements ICruise {
 	}
 
 	public String formatDate(String date, TimeZone timeZone) {
+		String theDate = date.replaceAll("\\.\\d+", "").replaceAll(":", "");
 		try {
-			String theDate = date.replaceAll("\\.\\d+", "").replaceAll(":", "");
 			return getDateFormatter(timeZone).format(DATE_PARSER.parse(theDate));
 		} catch (Exception e) {
-			getLog().error("Could not parse date: " + date);
+			getLog().error("Could not parse date: " + theDate);
 		}
 		return date;
 	}

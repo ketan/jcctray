@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import net.sourceforge.jcctray.utils.StringUtils;
+
 /**
  * An implementation of {@link ICruise} that connects to CruiseControl version
  * 2.7 (or possibly higher) (<a
@@ -40,7 +42,7 @@ public class CruiseControlJava2_7 extends HTTPCruise implements ICruise {
 		URL url = null;
 		try {
 			url = new URL(hostName);
-			return url.getProtocol() + "://" + url.getHost() + ":"+ getForceBuildPort(project.getHost()) + url.getPath().replaceAll("/*$", "")
+			return url.getProtocol() + "://" + url.getHost() + ":" + getForceBuildPort(project.getHost()) + url.getPath().replaceAll("/*$", "")
 					+ "/invoke?operation=build&objectname=CruiseControl+Project%3Aname%3D" + project.getName();
 		} catch (MalformedURLException e) {
 			getLog().error("The url was malformed: " + url, e);
@@ -49,10 +51,12 @@ public class CruiseControlJava2_7 extends HTTPCruise implements ICruise {
 	}
 
 	protected String getForceBuildPort(Host host) {
-		return Integer.getInteger("forcebuild." + host.getHostString() + ".port", 8000).toString();
+		return host.getForceBuildPort().toString();
 	}
 
 	public String formatDate(String date, TimeZone timeZone) {
+		if (StringUtils.isEmptyOrNull(date))
+			return null;
 		try {
 			return DATE_FORMATTER.format(DATE_PARSER.parse(date));
 		} catch (ParseException e) {
