@@ -32,6 +32,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -99,7 +100,7 @@ public class AddServerDialog {
 	private Button					cancelButton;
 	private Text					hostStringText;
 	private Text					serverURLString;
-	private CCombo					serverType;
+	private Combo					serverType;
 	private ComboViewer				comboViewer;
 	private final IJCCTraySettings	traySettings;
 
@@ -121,7 +122,7 @@ public class AddServerDialog {
 		hostStringText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		new Label(shell, SWT.NONE).setText("Server &Type:");
-		serverType = new CCombo(shell, SWT.BORDER);
+		serverType = new Combo(shell, SWT.BORDER);
 		serverType.setText("Select");
 		serverType.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		comboViewer = new ComboViewer(serverType);
