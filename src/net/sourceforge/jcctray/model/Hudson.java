@@ -53,4 +53,8 @@ public class Hudson extends CruiseControlJava implements ICruise {
 		}
 		return null;
 	}
+	
+	protected String getSuccessMessage(DashBoardProject project) {
+		return ""; // don't expect a return message
+	}
 }
