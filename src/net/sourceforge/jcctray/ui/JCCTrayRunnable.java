@@ -80,11 +80,11 @@ public class JCCTrayRunnable implements Runnable {
 			if (projectEnabled){
 				Image projectIcon = new ProjectLabelProvider().getImage(project);
 				if (projectIcon == IProjectLabelConstants.RED_IMG)
-					return IProjectLabelConstants.RED_IMG; // break out
+					icon = IProjectLabelConstants.RED_IMG;
 				if (projectIcon == IProjectLabelConstants.ORANGE_IMG)
 					return IProjectLabelConstants.ORANGE_IMG; // break out
 				if (projectIcon == IProjectLabelConstants.YELLOW_IMG)
-					icon = IProjectLabelConstants.YELLOW_IMG;
+					return IProjectLabelConstants.YELLOW_IMG; // break out
 			}
 		}
 		return icon;
