@@ -67,6 +67,7 @@ public class CruiseRegistry {
 		addCruiseImpl(CruiseControlJava.class);
 		addCruiseImpl(CruiseControlRuby.class);
 		addCruiseImpl(CruiseControlJava2_7.class);
+		addCruiseImpl(Cruise.class);
 	}
 
 	public void addCruiseImpl(Class clazz) {

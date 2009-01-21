@@ -20,57 +20,51 @@ import junit.framework.TestCase;
 /**
  * @author Ketan Padegaonkar
  */
-public class HudsonTest extends TestCase {
+public class CruiseTest extends TestCase {
 
-	private Hudson	hudson;
+	private Cruise	cruise;
 
 	public void testFormatsDate() throws Exception {
-		String formattedDate = hudson.formatDate("2007-07-01T10:14:34", null);
+		String formattedDate = cruise.formatDate("2007-07-01T10:14:34", null);
 		assertEquals("10:14:34 AM, 01 Jul", formattedDate);
 	}
 
 	public void testInvalidDateReturnsSameDate() throws Exception {
 		String invalidDate = "xyz";
-		String formattedDate = hudson.formatDate(invalidDate, null);
+		String formattedDate = cruise.formatDate(invalidDate, null);
 		assertEquals(invalidDate, formattedDate);
 	}
 	
 	public void testGetsForceBuildPortWhenSystemPropertyIsSet() throws Exception {
 		System.setProperty("forcebuild.myCruiseServer.port", "1000");
-		assertEquals("1000", hudson.getForceBuildPort(new Host("myCruiseServer", "my.ip.add.ress")));
-	}
-	
-	public void testGetsForceBuildURLWhenPortIsSet() throws Exception {
-		DashBoardProject dashBoardProject = new DashBoardProject("myProject", new Host("myHost", "http://my.host.name", hudson));
-		String forceBuildURL = hudson.forceBuildURL(dashBoardProject);
-		assertEquals("http://my.host.name:80/job/myProject/build?delay=0sec", forceBuildURL);
+		assertEquals("1000", cruise.getForceBuildPort(new Host("myCruiseServer", "my.ip.add.ress")));
 	}
 	
 	public void testGetsForceBuildURL() throws Exception {
-		DashBoardProject dashBoardProject = new DashBoardProject("myProject", new Host("myHost", "http://my.host.name", hudson));
-		String forceBuildURL = hudson.forceBuildURL(dashBoardProject);
-		assertEquals("http://my.host.name:80/job/myProject/build?delay=0sec", forceBuildURL);
+		DashBoardProject dashBoardProject = new DashBoardProject("myProject", new Host("myHost", "http://my.host.name", cruise));
+		String forceBuildURL = cruise.forceBuildURL(dashBoardProject);
+		assertEquals("http://my.host.name:8000/invoke?operation=build&objectname=CruiseControl+Project%3Aname%3DmyProject", forceBuildURL);
 	}
 	
 	public void testGetsForceBuildURLWithTrailingSlashInHostURL() throws Exception {
-		DashBoardProject dashBoardProject = new DashBoardProject("myProject", new Host("myHost", "http://my.host.name/myHudson//", hudson));
-		String forceBuildURL = hudson.forceBuildURL(dashBoardProject);
-		assertEquals("http://my.host.name:80/myHudson/job/myProject/build?delay=0sec", forceBuildURL);
+		DashBoardProject dashBoardProject = new DashBoardProject("myProject", new Host("myHost", "http://my.host.name/myCruise//", cruise));
+		String forceBuildURL = cruise.forceBuildURL(dashBoardProject);
+		assertEquals("http://my.host.name:8000/myCruise/invoke?operation=build&objectname=CruiseControl+Project%3Aname%3DmyProject", forceBuildURL);
 	}
 	
 	public void testGetXmlReportURL() throws Exception {
-		assertEquals("http://host.name/hudson/cc.xml",hudson.getXmlReportURL(new Host("blah", "http://host.name/hudson//"))); 
+		assertEquals("http://host.name/cruise/cruise/cctray.xml",cruise.getXmlReportURL(new Host("blah", "http://host.name/cruise//"))); 
 	}
 	
 	public void testGetsName() throws Exception {
-		assertEquals("Hudson",hudson.getName());
+		assertEquals("ThoughtWorks Cruise",cruise.getName());
 	}
 	
 	public void testGetsSuccessMessage() throws Exception {
-		assertEquals("", hudson.getSuccessMessage(null));
+		assertEquals("Invocation successful",cruise.getSuccessMessage(null));
 	}
 	
 	protected void setUp() throws Exception {
-		hudson = new Hudson();
+		cruise = new Cruise();
 	}
 }
