@@ -15,7 +15,7 @@ and allows control over some of the server's operations.
 -----------------------------
 1.0 INSTALLING FROM BINARIES:
 -----------------------------
-  You can download the binaries for windows and Linux via the Sourceforge 
+  You can download the binaries for Windows and Linux via the Sourceforge 
   File Release System
   (http://sourceforge.net/project/showfiles.php?group_id=197757)
 
@@ -23,7 +23,7 @@ and allows control over some of the server's operations.
     * A windows installer
     * A zip file
 
-  The prefered way of downloading JCCTray is to build it yourself :)
+  The preferred way of downloading JCCTray is to build it yourself :)
 
 ----------------------------
 2.0 INSTALLING FROM SOURCES:
