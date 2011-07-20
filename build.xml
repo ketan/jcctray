@@ -26,10 +26,9 @@
 	<fileset id="swt.gtk.linux.x86.classpath" dir="${lib.dir}" includes="org.eclipse.swt.gtk.linux.x86_3*.jar" />
 	<fileset id="swt.gtk.linux.x86_64.classpath" dir="${lib.dir}" includes="org.eclipse.swt.gtk.linux.x86_64*.jar" />
 	<fileset id="swt.win32.win32.classpath" dir="${lib.dir}" includes="org.eclipse.swt.win32.win32*.jar" />
-	<fileset id="swt.wpf.win32.classpath" dir="${lib.dir}" includes="org.eclipse.swt.wpf.win32*.jar" />
-	<fileset id="swt.carbon.macosx.classpath" dir="${lib.dir}" includes="org.eclipse.swt.carbon.macosx*.jar" />
+	<fileset id="swt.cocoa.macosx.classpath" dir="${lib.dir}" includes="org.eclipse.swt.cocoa.macosx.x86_64*.jar" />
 
-	<fileset id="swt.all.classpath" refid="swt.gtk.linux.x86.classpath, swt.gtk.linux.x86_64.classpath, swt.win32.win32.classpath, swt.wpf.win32.classpath, swt.carbon.macosx.classpath" />
+	<fileset id="swt.all.classpath" refid="swt.gtk.linux.x86.classpath, swt.gtk.linux.x86_64.classpath, swt.win32.win32.classpath, swt.cocoa.macosx.classpath" />
 	
 	<fileset id="swt.classpath" dir="${lib.dir}" includes="${swt.jar}"/>
 
@@ -343,11 +342,11 @@
 			<reference refid="swt.gtk.linux.x86_64.classpath" torefid="swt.jars" />
 		</antcall>
 		
-		<!-- carbon macosx deployable -->
+		<!-- cocoa macosx deployable -->
 		<antcall target="create.dist.macosx">
-			<param name="dist.dir" value="${build.dist.carbon.macosx.dir}" />
-			<param name="dist.name.suffix" value="carbon_macosx" />
-			<reference refid="swt.carbon.macosx.classpath" torefid="swt.jars" />
+			<param name="dist.dir" value="${build.dist.cocoa.macosx.dir}" />
+			<param name="dist.name.suffix" value="cocoa_macosx" />
+			<reference refid="swt.cocoa.macosx.classpath" torefid="swt.jars" />
 		</antcall>
 
 		<!-- win32 deployable -->
@@ -355,13 +354,6 @@
 			<param name="dist.dir" value="${build.dist.win32.dir}" />
 			<param name="dist.name.suffix" value="win32" />
 			<reference refid="swt.win32.win32.classpath" torefid="swt.jars" />
-		</antcall>
-
-		<!-- wpf deployable -->
-		<antcall target="create.dist.win">
-			<param name="dist.dir" value="${build.dist.wpf.dir}" />
-			<param name="dist.name.suffix" value="wpf" />
-			<reference refid="swt.wpf.win32.classpath" torefid="swt.jars" />
 		</antcall>
 
 		<!-- src deployable -->
@@ -376,11 +368,6 @@
 			<param name="dist.name.suffix" value="win32" />
 		</antcall>
 		
-		<!-- wpf installable -->
-		<antcall target="create.install.dist">
-			<param name="dist.dir" value="${build.dist.wpf.dir}" />
-			<param name="dist.name.suffix" value="wpf" />
-		</antcall>
 	</target>
 
 	<target name="build-all" depends="init, build-src, build-tests" />
