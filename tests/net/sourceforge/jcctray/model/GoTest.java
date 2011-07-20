@@ -20,9 +20,9 @@ import junit.framework.TestCase;
 /**
  * @author Ketan Padegaonkar
  */
-public class CruiseTest extends TestCase {
+public class GoTest extends TestCase {
 
-	private Cruise	cruise;
+	private Go	cruise;
 
 	public void testFormatsDate() throws Exception {
 		String formattedDate = cruise.formatDate("2007-07-01T10:14:34", null);
@@ -43,28 +43,30 @@ public class CruiseTest extends TestCase {
 	public void testGetsForceBuildURL() throws Exception {
 		DashBoardProject dashBoardProject = new DashBoardProject("myProject", new Host("myHost", "http://my.host.name", cruise));
 		String forceBuildURL = cruise.forceBuildURL(dashBoardProject);
-		assertEquals("http://my.host.name:8000/invoke?operation=build&objectname=CruiseControl+Project%3Aname%3DmyProject", forceBuildURL);
+		assertEquals("http://my.host.name:8000/go/api/pipelines/myProject/schedule", forceBuildURL);
 	}
 	
 	public void testGetsForceBuildURLWithTrailingSlashInHostURL() throws Exception {
-		DashBoardProject dashBoardProject = new DashBoardProject("myProject", new Host("myHost", "http://my.host.name/myCruise//", cruise));
+		DashBoardProject dashBoardProject = new DashBoardProject("myProject", new Host("myHost", "http://my.host.name/foo//", cruise));
 		String forceBuildURL = cruise.forceBuildURL(dashBoardProject);
-		assertEquals("http://my.host.name:8000/myCruise/invoke?operation=build&objectname=CruiseControl+Project%3Aname%3DmyProject", forceBuildURL);
+		assertEquals("http://my.host.name:8000/foo/go/api/pipelines/myProject/schedule", forceBuildURL);
 	}
 	
 	public void testGetXmlReportURL() throws Exception {
-		assertEquals("http://host.name/cruise/cruise/cctray.xml",cruise.getXmlReportURL(new Host("blah", "http://host.name/cruise//"))); 
+		assertEquals("http://host.name/foo/go/cctray.xml",cruise.getXmlReportURL(new Host("blah", "http://host.name/foo//"))); 
 	}
 	
 	public void testGetsName() throws Exception {
-		assertEquals("ThoughtWorks Cruise",cruise.getName());
+		assertEquals("ThoughtWorks Go",cruise.getName());
 	}
+	
+//	https://go01.thoughtworks.com/go/api/pipelines/GadgetToolkitJs/schedule
 	
 	public void testGetsSuccessMessage() throws Exception {
 		assertEquals("Invocation successful",cruise.getSuccessMessage(null));
 	}
 	
 	protected void setUp() throws Exception {
-		cruise = new Cruise();
+		cruise = new Go();
 	}
 }

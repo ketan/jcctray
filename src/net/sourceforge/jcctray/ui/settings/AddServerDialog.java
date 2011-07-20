@@ -24,15 +24,17 @@ import net.sourceforge.jcctray.ui.Utils;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -80,7 +82,7 @@ public class AddServerDialog {
 				return;
 			}
 
-			Host host = new Host(hostStringText.getText(), serverURLString.getText());
+			Host host = new Host(hostStringText.getText(), serverURLString.getText(), userName.getText(), password.getText());
 			IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
 			host.setCruiseClass(((Class) selection.getFirstElement()).getName());
 			traySettings.addHost(host);
@@ -103,6 +105,8 @@ public class AddServerDialog {
 	private Combo					serverType;
 	private ComboViewer				comboViewer;
 	private final IJCCTraySettings	traySettings;
+	private Text					userName;
+	private Text 					password;
 
 	public AddServerDialog(Shell shell, IJCCTraySettings traySettings) {
 		this.parentShell = shell;
@@ -133,6 +137,15 @@ public class AddServerDialog {
 		serverURLString = new Text(shell, SWT.BORDER);
 		serverURLString.setText("http://<somehost>:1234/cruise");
 		serverURLString.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+
+		new Label(shell, SWT.NONE).setText("&Username:");
+		userName = new Text(shell, SWT.BORDER);
+		userName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+		new Label(shell, SWT.NONE).setText("&Password:");
+		password = new Text(shell, SWT.BORDER | SWT.PASSWORD);
+		password.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		okButton = new Button(shell, SWT.NONE);
 		okButton.setText("&Ok");

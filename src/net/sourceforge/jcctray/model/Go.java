@@ -15,22 +15,38 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.model;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 
 /**
- * An implementation of {@link ICruise} that connects to ThoughtWorks Cruise
- * (<a href="http://studios.thoughtworks.com/cruise">http://studios.thoughtworks.com/cruise</a>)
+ * An implementation of {@link ICruise} that connects to ThoughtWorks Go
+ * (<a href="http://studios.thoughtworks.com/">http://studios.thoughtworks.com/go</a>)
  * 
  * @author Ketan Padegaonkar
  */
-public class Cruise extends CruiseControlJava implements ICruise {
+public class Go extends CruiseControlJava implements ICruise {
 
 
 	public String getName() {
-		return "ThoughtWorks Cruise";
+		return "ThoughtWorks Go";
+	}
+	
+	protected String forceBuildURL(DashBoardProject project) {
+		String hostName = project.getHost().getHostName();
+		URL url = null;
+		try {
+			url = new URL(hostName);
+			return url.getProtocol() + "://" + url.getHost() + ":" + getForceBuildPort(project.getHost()) + url.getPath().replaceAll("/*$", "")
+					+ "/go/api/pipelines/" + project.getName() + "/schedule";
+		} catch (MalformedURLException e) {
+			getLog().error("The url was malformed: " + url, e);
+		}
+		return null;
 	}
 
 	protected String getXmlReportURL(Host host) {
-		return host.getHostName().replaceAll("/*$", "") + "/cruise/cctray.xml";
+		return host.getHostName().replaceAll("/*$", "") + "/go/cctray.xml";
 	}
 
 }

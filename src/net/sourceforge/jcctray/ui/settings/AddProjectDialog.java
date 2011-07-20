@@ -302,7 +302,7 @@ public class AddProjectDialog {
 	}
 
 	private void createShell() {
-		shell = new Shell(parentShell, SWT.DIALOG_TRIM);
+		shell = new Shell(parentShell, SWT.DIALOG_TRIM | SWT.RESIZE);
 		shell.setText("Manage Projects");
 		shell.setLayout(new GridLayout());
 		shell.setSize(600, 300);

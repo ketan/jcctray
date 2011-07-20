@@ -31,20 +31,32 @@ public class Host {
 	public String				hostString;
 	private HashMap				configuredProjects;
 	private ICruise				cruise;
+	private String 				username;
+	private String 				password;
 
 	public Host() {
 		this("", "");
 	}
 
 	public Host(String hostString, String hostName, ICruise cruise) {
+		this(hostString, hostName, cruise, null, null);
+	}
+
+	public Host(String hostString, String hostName, ICruise cruise, String username, String password) {
 		this.hostString = hostString;
 		this.hostName = hostName;
 		this.cruise = cruise;
+		this.username = username;
+		this.password = password;
 		this.configuredProjects = new HashMap();
 	}
 
 	public Host(String hostString, String hostName) {
 		this(hostString, hostName, new DefaultCruise());
+	}
+
+	public Host(String hostString, String hostName, String username, String password) {
+		this(hostString, hostName, new DefaultCruise(), username, password);
 	}
 
 	public String getHostName() {
@@ -63,11 +75,29 @@ public class Host {
 		this.hostString = hostString;
 	}
 
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((hostName == null) ? 0 : hostName.hashCode());
 		result = prime * result + ((hostString == null) ? 0 : hostString.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
 
@@ -78,7 +108,7 @@ public class Host {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		final Host other = (Host) obj;
+		Host other = (Host) obj;
 		if (hostName == null) {
 			if (other.hostName != null)
 				return false;
@@ -88,6 +118,16 @@ public class Host {
 			if (other.hostString != null)
 				return false;
 		} else if (!hostString.equals(other.hostString))
+			return false;
+		if (password == null) {
+			if (other.password != null)
+				return false;
+		} else if (!password.equals(other.password))
+			return false;
+		if (username == null) {
+			if (other.username != null)
+				return false;
+		} else if (!username.equals(other.username))
 			return false;
 		return true;
 	}

@@ -36,6 +36,7 @@ import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.ObjectCreateRule;
 import org.apache.commons.digester.SetNextRule;
 import org.apache.commons.digester.SetPropertiesRule;
+import org.apache.commons.lang.Entities;
 import org.xml.sax.SAXException;
 
 /**
@@ -95,14 +96,27 @@ public class ObjectPersister {
 		for (Iterator iterator = hosts.iterator(); iterator.hasNext();) {
 			Host host = (Host) iterator.next();
 			writer.write("		<host");
-			writer.write(" cruiseClass=\"" + host.getCruiseClass() + "\"");
-			writer.write(" hostName=\"" + host.getHostName() + "\"");
-			writer.write(" hostString=\"" + host.getHostString() + "\"");
+			writer.write(" cruiseClass=\"" + escape(host.getCruiseClass()) + "\"");
+			writer.write(" hostName=\"" + escape(host.getHostName()) + "\"");
+			writer.write(" hostString=\"" + escape(host.getHostString()) + "\"");
+			if(!StringUtils.isEmptyOrNull(host.getUsername())){
+				writer.write(" username=\"" + escape(host.getUsername()) + "\"");
+			}
+			if(!StringUtils.isEmptyOrNull(host.getPassword())){
+				writer.write(" password=\"" + escape(host.getPassword()) + "\"");
+			}
 			writer.write(">\n");
 			saveProjects(writer, host.getConfiguredProjects());
 			writer.write("		</host>\n");
 		}
 		writer.write("	</hosts>\n");
+	}
+
+	private static String escape(String str) {
+		if (str == null) {
+			return null;
+		}
+		return Entities.XML.escape(str);
 	}
 
 	private static void saveKeyValues(Writer writer, HashMap settings) throws IOException {

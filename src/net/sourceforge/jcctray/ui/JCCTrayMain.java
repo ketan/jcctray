@@ -23,6 +23,7 @@ package net.sourceforge.jcctray.ui;
 public class JCCTrayMain {
 
 	public static void main(String[] args) {
+		System.setProperty("org.eclipse.swt.internal.carbon.smallFonts", "");
 		new JCCTray().open();
 	}
 }

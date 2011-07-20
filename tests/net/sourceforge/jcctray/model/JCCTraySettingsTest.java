@@ -15,7 +15,6 @@
  ******************************************************************************/
 package net.sourceforge.jcctray.model;
 
-import java.io.File;
 import java.util.Collection;
 
 import junit.framework.TestCase;
@@ -30,13 +29,13 @@ public class JCCTraySettingsTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		host = new Host("human Readable Name", "my.host.name");
-		host1 = new Host("human Readable Name1", "my.host.name");
+		host1 = new Host("human Readable Name1", "my.host.name", "us3rn@me", "p\"ssw&rd");
 		host2 = new Host("human Readable Name2", "my.host.name");
 		settings = new JCCTraySettings();
 	}
 
 	protected void tearDown() throws Exception {
-		new File(JCCTRAY_TEST_XML).delete();
+//		new File(JCCTRAY_TEST_XML).delete();
 	}
 
 	public void testAddsHosts() throws Exception {

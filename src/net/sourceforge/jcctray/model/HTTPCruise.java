@@ -19,12 +19,15 @@ import java.io.IOException;
 
 import net.sourceforge.jcctray.exceptions.HTTPErrorException;
 import net.sourceforge.jcctray.exceptions.InvocationException;
+import net.sourceforge.jcctray.utils.StringUtils;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.SimpleHttpConnectionManager;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
@@ -37,24 +40,28 @@ import org.apache.log4j.Logger;
  */
 public abstract class HTTPCruise implements ICruise {
 
-	private static HttpClient	client;
 
-	private static HttpClient getClient() {
-		if (client == null) {
-			MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
-			HttpConnectionManagerParams params = new HttpConnectionManagerParams();
-			params.setConnectionTimeout(JCCTraySettings.getInstance().getInt(ISettingsConstants.HTTP_TIMEOUT));
-			params.setSoTimeout(JCCTraySettings.getInstance().getInt(ISettingsConstants.HTTP_TIMEOUT));
-			connectionManager.setParams(params);
-			client = new HttpClient(connectionManager);
+	private static HttpClient getClient(Host host) {
+		SimpleHttpConnectionManager connectionManager =  new SimpleHttpConnectionManager();
+		HttpConnectionManagerParams connParams = new HttpConnectionManagerParams();
+		connParams.setConnectionTimeout(JCCTraySettings.getInstance().getInt(ISettingsConstants.HTTP_TIMEOUT));
+		connParams.setSoTimeout(JCCTraySettings.getInstance().getInt(ISettingsConstants.HTTP_TIMEOUT));
+		connectionManager.setParams(connParams);
+		HttpClient client = new HttpClient(connectionManager);
+
+		client.getParams().setAuthenticationPreemptive(true);
+		if (!StringUtils.isEmptyOrNull(host.getHostName()) && !StringUtils.isEmptyOrNull(host.getPassword())){
+			UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(host.getUsername(), host.getPassword());
+			client.getState().setCredentials(new AuthScope(null, -1, null, null), credentials);
 		}
+
 		return client;
 	}
 
 	public void forceBuild(DashBoardProject project) throws Exception {
 		HttpMethod method = httpMethod(project);
 		try {
-			if (executeMethod(method) != HttpStatus.SC_OK)
+			if (executeMethod(method, project.getHost()) != HttpStatus.SC_OK)
 				throw new Exception("There was an http error connecting to the server at "
 						+ project.getHost().getHostName());
 			if (!isInvokeSuccessful(method, project))
@@ -100,9 +107,9 @@ public abstract class HTTPCruise implements ICruise {
 
 	protected abstract String getSuccessMessage(DashBoardProject project);
 
-	private int executeMethod(HttpMethod method) throws HTTPErrorException {
+	private int executeMethod(HttpMethod method, Host host) throws HTTPErrorException {
 		try {
-			int httpStatus = getClient().executeMethod(method);
+			int httpStatus = getClient(host).executeMethod(method);
 			if (httpStatus != HttpStatus.SC_OK)
 				getLog().error("Method failed: " + method.getStatusLine());
 			return httpStatus;
@@ -120,7 +127,7 @@ public abstract class HTTPCruise implements ICruise {
 	protected abstract String forceBuildURL(DashBoardProject project);
 
 	public DashBoardProjects getProjects(Host host) throws Exception {
-		DashBoardProjects projects = DashboardXmlParser.getProjects(getXmlReportURL(host), getClient());
+		DashBoardProjects projects = DashboardXmlParser.getProjects(getXmlReportURL(host), getClient(host));
 		for (int i = 0; i < projects.count(); i++)
 			projects.getProject(i).setHost(host);
 		return projects;

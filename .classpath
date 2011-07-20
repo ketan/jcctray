@@ -11,9 +11,9 @@
 	<classpathentry kind="lib" path="lib/log4j-1.2.14.jar"/>
 	<classpathentry kind="lib" path="lib/build/junit.jar"/>
 	<classpathentry kind="lib" path="lib/build/jmock/jmock-core-1.2.0.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.jface_3.3.0.I20070606-0010.jar" sourcepath="/opt/eclipse-installs/eclipse-3.3/plugins/org.eclipse.rcp.source_3.3.0.v20070607-8y8eE8NEbsN3X_fjWS8HPNG/src/org.eclipse.jface_3.3.0.I20070606-0010/src.zip"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.core.commands_3.3.0.I20070605-0010.jar" sourcepath="D:/java/eclipse/plugins/org.eclipse.rcp.source_3.3.0.v20070607-8y8eE8NEbsN3X_fjWS8HPNG/src/org.eclipse.core.commands_3.3.0.I20070605-0010/src.zip"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.equinox.common_3.3.0.v20070426.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.swt.carbon.macosx_3.3.0.v3346.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.core.commands_3.6.0.I20110111-0800.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.equinox.common_3.6.0.v20110523.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.jface_3.7.0.I20110522-1430.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.swt.cocoa.macosx.x86_64_3.7.0.v3735b.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
