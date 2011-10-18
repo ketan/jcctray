@@ -253,24 +253,6 @@
 		</tar>
 	</target>
 
-	<target name="create.src.dist">
-		<mkdir dir="${dist.dir}" />
-
-		<copy todir="${dist.dir}" verbose="false">
-			<fileset dir="." />
-		</copy>
-
-		<delete dir="${dist.dir}/build" />
-		<delete dir="${dist.dir}/bin" />
-		
-		<antcall target="-copy.executable.win"/>
-		<antcall target="-copy.executable.unix"/>
-		
-		<tar destfile="${build.dist.installer.dir}/jcctray-${jcctray.version}_src.tar.gz" compression="gzip">
-			<tarfileset dir="${dist.dir}" prefix="jcctray-${jcctray.version}_src" preserveLeadingSlashes="false" />
-		</tar>
-	</target>
-	
 	<target name="-create.install.dist" if="nsis.available">
 		<property name="nsis.script" value="${build.dir}/JCCTray-${dist.name.suffix}.nsi" />
 		<copy file="nsis/JCCTray.template.nsi" tofile="${nsis.script}">
@@ -313,18 +295,7 @@
 		</zip>
 	</target>
 
-	<target name="changelog">
-		<echo>Creating ChangeLog file</echo>
-		<delete file="ChangeLog*.*" />
-		<exec executable="svn2cl" failonerror="false" failifexecutionfails="false">
-			<arg line="-i --html https://jcctray.svn.sourceforge.net/svnroot/jcctray/"/>
-		</exec>
-		<exec executable="svn2cl" failonerror="false" failifexecutionfails="false">
-			<arg line="-i https://jcctray.svn.sourceforge.net/svnroot/jcctray/"/>
-		</exec>
-	</target>
-	
-	<target name="dist" depends="all-instrument, changelog">
+	<target name="dist" depends="all-instrument">
 		<mkdir dir="${build.dist.dir}" />
 		<mkdir dir="${build.dist.installer.dir}" />
 
@@ -354,12 +325,6 @@
 			<param name="dist.dir" value="${build.dist.win32.dir}" />
 			<param name="dist.name.suffix" value="win32" />
 			<reference refid="swt.win32.win32.classpath" torefid="swt.jars" />
-		</antcall>
-
-		<!-- src deployable -->
-		<antcall target="create.src.dist">
-			<param name="dist.dir" value="${build.dist.src.dir}" />
-			<reference refid="swt.all.classpath" torefid="swt.jars" />
 		</antcall>
 		
 		<!-- win32 installable -->
